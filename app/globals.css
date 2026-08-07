@@ -130,6 +130,7 @@ button.button:disabled, .admin-table button:disabled { cursor: not-allowed; opac
 .badge--closing_soon, .badge--due_today { background: #fff0d7; color: var(--amber); }
 .badge--closed { background: #eee; color: #777; }
 .badge--secure { background: var(--burgundy-soft); color: var(--burgundy); }
+.badge--source { background: #e7f3ed; color: var(--green); }
 .content-card h3 { margin: 15px 0 9px; color: var(--burgundy-dark); font: 700 23px/1.16 var(--serif); letter-spacing: -.015em; }
 .content-card__summary { margin: 0; color: var(--muted); font-size: 13px; }
 .content-card__details { margin: 18px 0 0; padding: 12px 0; border-block: 1px solid var(--line); }
@@ -204,9 +205,53 @@ button.button:disabled, .admin-table button:disabled { cursor: not-allowed; opac
 .document-row p { margin: 0; color: var(--muted); font-size: 12px; }
 .document-row .tag-list { margin-top: 9px; }
 
+.source-banner { display: grid; grid-template-columns: 220px minmax(0,1fr); gap: 22px; align-items: center; margin: -10px 0 30px; padding: 19px 22px; border: 1px solid #ddcbd1; border-left: 4px solid var(--burgundy); border-radius: 10px; background: var(--burgundy-soft); }
+.source-banner strong, .source-banner span { display: block; }
+.source-banner strong { color: var(--burgundy); font: 700 19px/1.2 var(--serif); }
+.source-banner span { margin-top: 4px; color: #7c606a; font-size: 9px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.source-banner p { margin: 0; color: #66575c; font-size: 12px; }
+.source-footer { display: flex; justify-content: space-between; gap: 20px; margin-top: 34px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 10px; }
+
+.calendar-toolbar { display: flex; align-items: stretch; gap: 12px; margin-bottom: 9px; }
+.calendar-search { flex: 1 1 560px; max-width: 700px; margin: 0; }
+.select-field { display: flex; align-items: center; gap: 9px; padding: 0 12px; border: 1px solid #d9d0c7; border-radius: 10px; background: white; }
+.select-field span { color: var(--muted); font-size: 9px; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
+.select-field select { min-height: 48px; border: 0; outline: 0; background: white; color: var(--burgundy); font: 750 12px/1 var(--sans); }
+.result-count { margin: 0 0 28px; color: var(--muted); font-size: 10px; }
+.calendar-months { display: grid; gap: 36px; }
+.calendar-month { display: grid; grid-template-columns: 145px minmax(0,1fr); gap: 28px; padding-top: 25px; border-top: 1px solid var(--line); }
+.calendar-month__heading span { display: block; color: var(--orange); font-size: 10px; font-weight: 850; letter-spacing: .12em; }
+.calendar-month__heading h2 { margin: 3px 0 0; color: var(--burgundy); font: 700 30px/1.05 var(--serif); }
+.calendar-month__events { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
+.calendar-entry { display: grid; grid-template-columns: 54px minmax(0,1fr); gap: 15px; min-height: 126px; padding: 17px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); }
+.calendar-entry time { display: flex; flex-direction: column; align-items: center; align-self: start; overflow: hidden; border: 1px solid #ddcbd1; border-radius: 8px; color: var(--burgundy); }
+.calendar-entry time span { width: 100%; padding: 4px; background: var(--burgundy); color: white; font-size: 8px; font-weight: 850; letter-spacing: .08em; text-align: center; text-transform: uppercase; }
+.calendar-entry time strong { padding: 7px 4px 8px; font: 700 23px/1 var(--serif); }
+.calendar-entry h3 { margin: 8px 0 5px; color: var(--burgundy-dark); font: 700 19px/1.18 var(--serif); }
+.calendar-entry p { margin: 0; color: var(--muted); font-size: 11px; }
+.date-range { color: var(--muted); font-size: 9px; font-weight: 750; }
+.calendar-category--no-school { background: #f8e4e7; color: #8e233d; }
+.calendar-category--school-day { background: #e7f3ed; color: var(--green); }
+.calendar-category--family-event { background: var(--orange-soft); color: #a44519; }
+.calendar-category--faith { background: #eee7f7; color: #624184; }
+.calendar-category--academic { background: #e6eff8; color: #315f87; }
+
+.staff-search { max-width: 700px; }
+.staff-directory { display: grid; gap: 50px; }
+.staff-section .section-heading { margin-bottom: 16px; }
+.staff-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
+.staff-card { display: flex; gap: 15px; min-height: 142px; padding: 20px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); }
+.staff-card__monogram { display: grid; place-items: center; flex: 0 0 auto; width: 45px; height: 45px; border-radius: 50%; background: var(--burgundy-soft); color: var(--burgundy); font: 700 14px/1 var(--serif); }
+.staff-card__body { display: flex; flex: 1; flex-direction: column; min-width: 0; }
+.staff-card h3 { margin: 1px 0 6px; color: var(--burgundy-dark); font: 700 20px/1.15 var(--serif); }
+.staff-card p { margin: 0; color: var(--muted); font-size: 11px; }
+.staff-card__contact { display: flex; flex-wrap: wrap; gap: 12px; margin-top: auto; padding-top: 14px; }
+.staff-card__contact a { color: var(--burgundy); font-size: 10px; font-weight: 800; text-underline-offset: 3px; }
+
 .handbook-search { display: grid; grid-template-columns: 1fr auto; max-width: 800px; margin: 0 auto; padding: 8px; border: 1px solid #dacfc6; border-radius: 13px; background: white; box-shadow: var(--shadow); }
 .handbook-search label { display: flex; }
 .handbook-search input { width: 100%; min-height: 48px; padding: 0 14px; border: 0; outline: 0; font-size: 15px; }
+.handbook-search__label { display: inline-flex; align-items: center; padding-inline: 16px; color: var(--muted); font-size: 10px; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
 .suggestion-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 7px; margin: 13px 0 50px; }
 .suggestion-row button { padding: 5px 10px; border: 1px solid #d9d0c7; border-radius: 999px; background: transparent; color: var(--muted); font-size: 10px; cursor: pointer; }
 .suggestion-row button:hover { border-color: var(--burgundy); color: var(--burgundy); }
@@ -257,6 +302,7 @@ button.button:disabled, .admin-table button:disabled { cursor: not-allowed; opac
   .home-hero__copy { padding: 52px 42px; }
   .card-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
   .lunch-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
+  .calendar-month__events, .staff-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
   .workflow ol { grid-template-columns: repeat(2,1fr); }
   .admin-table__header { display: none; }
   .admin-table__row { grid-template-columns: 1.8fr 1fr .35fr .35fr .6fr; }
@@ -317,6 +363,13 @@ button.button:disabled, .admin-table button:disabled { cursor: not-allowed; opac
   .archive-row time { padding-right: 12px; }
   .handbook-result { display: block; }
   .page-cite { display: inline-flex; margin-top: 15px; }
+  .source-banner { grid-template-columns: 1fr; gap: 8px; }
+  .calendar-toolbar { align-items: stretch; flex-direction: column; }
+  .calendar-search { flex-basis: auto; max-width: none; }
+  .select-field { justify-content: space-between; }
+  .calendar-month { grid-template-columns: 1fr; gap: 14px; }
+  .calendar-month__events, .staff-grid { grid-template-columns: 1fr; }
+  .staff-directory { gap: 38px; }
   .admin-stats { grid-template-columns: 1fr; }
   .admin-table { border: 0; background: transparent; }
   .admin-table__row { grid-template-columns: 1fr 1fr; margin-bottom: 10px; padding: 16px; border: 1px solid var(--line) !important; border-radius: 10px; background: white; }
@@ -334,6 +387,8 @@ button.button:disabled, .admin-table button:disabled { cursor: not-allowed; opac
   .segmented button { min-width: 0; flex: 1; }
   .handbook-search { grid-template-columns: 1fr; }
   .handbook-search .button { width: 100%; }
+  .handbook-search__label { display: none; }
+  .source-footer { align-items: flex-start; flex-direction: column; }
   .fact-strip { grid-template-columns: 1fr; }
   .fact-strip p { grid-column: auto; }
   .fact-strip > div { border-right: 0; border-bottom: 1px solid #dbc5cd; padding-bottom: 14px; }

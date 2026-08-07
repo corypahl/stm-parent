@@ -25,6 +25,8 @@ test("exports every requested route", async () => {
   const routes = [
     ["action", "Needs action"],
     ["events", "Events"],
+    ["calendar", "Academic calendar"],
+    ["staff", "School staff"],
     ["lunch", "Lunch menu"],
     ["volunteer", "Volunteer"],
     ["documents", "Documents &amp; links"],
@@ -36,6 +38,15 @@ test("exports every requested route", async () => {
   for (const [pathname, heading] of routes) {
     assert.match(await readRoute(pathname), new RegExp(heading, "i"), pathname);
   }
+});
+
+test("publishes the source handbook and calendar PDFs", async () => {
+  await access(new URL("documents/2025-26-st-martha-handbook.pdf", outputRoot));
+  await access(new URL("documents/2026-27-academic-calendar.pdf", outputRoot));
+
+  assert.match(await readRoute("handbook"), /33 content pages/i);
+  assert.match(await readRoute("calendar"), /Updated July 29, 2026/i);
+  assert.match(await readRoute("staff"), /Verified August 7, 2026/i);
 });
 
 test("includes the GitHub Pages no-Jekyll marker", async () => {

@@ -1,38 +1,154 @@
 [
   {
-    "id": "handbook-uniform-example",
-    "title": "Uniforms and dress code (example result)",
-    "excerpt": "Example only: when the active handbook PDF is added, the matching handbook text and exact page citation will appear here.",
-    "keywords": ["uniform", "dress code", "shoes", "clothing"],
-    "page": 12,
-    "sourceUrl": "https://st-martha.org/school",
-    "isDemo": true
+    "id": "mission-philosophy",
+    "title": "Mission, philosophy, and family partnership",
+    "excerpt": "St. Martha describes its mission as forming students through prayer, study, and service in a loving, Christ-like environment. The section also explains the school's Catholic philosophy and expectations for family partnership.",
+    "keywords": ["mission", "philosophy", "faith", "prayer", "study", "service", "family", "admission"],
+    "pageStart": 4
   },
   {
-    "id": "handbook-attendance-example",
-    "title": "Attendance, absence, and tardies (example result)",
-    "excerpt": "Example only: this prototype demonstrates keyword matching and citation placement; it does not state school policy.",
-    "keywords": ["absence", "absent", "tardy", "late", "attendance", "pickup"],
-    "page": 18,
-    "sourceUrl": "https://st-martha.org/school",
-    "isDemo": true
+    "id": "hours-enrollment",
+    "title": "School hours and enrollment",
+    "excerpt": "Before-school care begins at 7:20 a.m.; the school day runs from 8:00 a.m. to 3:25 p.m.; after-school care runs until 6:00 p.m. This section also explains the annual enrollment order and waiting-list process.",
+    "keywords": ["hours", "school day", "office", "before care", "after care", "preschool", "enrollment", "waiting list"],
+    "pageStart": 6
   },
   {
-    "id": "handbook-health-example",
-    "title": "Health and medication (example result)",
-    "excerpt": "Example only: verified medication procedures will be searchable after an administrator uploads and reviews the current handbook.",
-    "keywords": ["medication", "medicine", "health", "sick"],
-    "page": 24,
-    "sourceUrl": "https://st-martha.org/school",
-    "isDemo": true
+    "id": "tuition-withdrawal",
+    "title": "Tuition, assistance, payments, and withdrawal",
+    "excerpt": "Tuition and fees are set annually. The handbook outlines assistance applications, FACTS payment expectations, RaiseRight credits, nonrefundable fees, and the withdrawal refund schedule.",
+    "keywords": ["tuition", "fees", "financial aid", "assistance", "FACTS", "RaiseRight", "refund", "withdrawal", "reenrollment"],
+    "pageStart": 6,
+    "pageEnd": 7
   },
   {
-    "id": "handbook-technology-example",
-    "title": "Technology and cell phones (example result)",
-    "excerpt": "Example only: future results will quote a short matching excerpt from the source PDF and link to the cited page.",
-    "keywords": ["cell phone", "phone", "technology", "device"],
-    "page": 31,
-    "sourceUrl": "https://st-martha.org/school",
-    "isDemo": true
+    "id": "attendance-tardiness",
+    "title": "Attendance, absences, and tardiness",
+    "excerpt": "Families should report absences to the school office. Students may enter at 7:50 a.m. and are marked tardy if they are not in class by 8:00 a.m.; arriving after 10:00 a.m. or leaving before 1:00 p.m. counts as a half-day absence.",
+    "keywords": ["attendance", "absence", "absent", "tardy", "late", "travel", "vacation", "pickup", "8:00", "10:00", "1:00"],
+    "pageStart": 7,
+    "pageEnd": 8
+  },
+  {
+    "id": "academics",
+    "title": "Conferences, homework, make-up work, and report cards",
+    "excerpt": "The academic policies cover parent-teacher conferences, homework expectations, work missed during absences, quarterly K–8 report cards in SchoolSpeak, and NWEA testing for grades 3–8.",
+    "keywords": ["conference", "homework", "make-up work", "makeup", "report card", "SchoolSpeak", "NWEA", "testing", "grades"],
+    "pageStart": 8,
+    "pageEnd": 9
+  },
+  {
+    "id": "field-trips",
+    "title": "Field trips and chaperones",
+    "excerpt": "Field trips are treated as the curriculum for the day. The policy covers permission forms, transportation and driver documentation, student behavior, chaperones, and younger siblings.",
+    "keywords": ["field trip", "class trip", "permission", "driver", "chaperone", "transportation", "siblings"],
+    "pageStart": 9
+  },
+  {
+    "id": "arrival-dismissal",
+    "title": "Arrival, dismissal, carline, and pickup",
+    "excerpt": "This section gives separate morning and dismissal procedures for preschool and kindergarten and for grades 1–8, including carline directions, late arrivals, authorized pickup, and driveway safety.",
+    "keywords": ["arrival", "dismissal", "drop off", "drop-off", "pickup", "pick up", "carline", "courtyard", "driveway", "late"],
+    "pageStart": 10
+  },
+  {
+    "id": "celebrations-recess-sports-security",
+    "title": "Birthdays, recess, sports, parking, and school security",
+    "excerpt": "Policies cover classroom birthday treats and invitations, birthday free dress, outdoor recess weather guidance, extracurricular sports, parking-lot conduct, locked-door procedures, and visitor check-in.",
+    "keywords": ["birthday", "treat", "invitation", "free dress", "recess", "weather", "sports", "parking", "security", "visitor", "door"],
+    "pageStart": 11
+  },
+  {
+    "id": "volunteers",
+    "title": "Volunteer requirements",
+    "excerpt": "Each family is asked to contribute at least 20 volunteer hours per school year. Volunteers working with students must meet diocesan child-protection and background-check requirements and register in the school office.",
+    "keywords": ["volunteer", "service hours", "20 hours", "Virtus", "Protecting God's Children", "ICHAT", "background check", "fingerprint"],
+    "pageStart": 12
+  },
+  {
+    "id": "uniform-dress-code",
+    "title": "Uniforms, dress code, free dress, and spirit wear",
+    "excerpt": "The handbook explains required uniform sources, general appearance rules, free-dress and spirit-wear expectations, accessories, shoes, seasonal options, and grade-specific K–8 uniform guidelines.",
+    "keywords": ["uniform", "dress code", "free dress", "spirit wear", "shoes", "socks", "hair", "earrings", "jewelry", "makeup", "nails", "shorts", "MAPU"],
+    "pageStart": 12,
+    "pageEnd": 14
+  },
+  {
+    "id": "health-allergies-medication",
+    "title": "Health, allergies, illness, immunizations, and medication",
+    "excerpt": "Families must notify the school about allergies and health needs. The section covers allergy action plans and EpiPens, illness and communicable disease, immunization records, and the forms and original containers required for medication at school.",
+    "keywords": ["health", "allergy", "allergies", "nut", "peanut", "EpiPen", "illness", "sick", "fever", "immunization", "medication", "medicine", "prescription", "cough drops"],
+    "pageStart": 15,
+    "pageEnd": 16
+  },
+  {
+    "id": "mental-health",
+    "title": "Student mental health and safety",
+    "excerpt": "The handbook asks families and staff to report concerning behavior, describes the school's support approach, and lists local and regional mental-health resources for families.",
+    "keywords": ["mental health", "emotional", "safety", "support", "counseling", "psychiatric", "crisis"],
+    "pageStart": 16,
+    "pageEnd": 17
+  },
+  {
+    "id": "safety-emergencies",
+    "title": "Safety, emergencies, weather, drills, and school closings",
+    "excerpt": "The safety section covers fire and tornado drills, lockdowns, school-closing notices, hazardous travel, the school crisis plan, asbestos notices, child-protection reporting, and the weapons policy.",
+    "keywords": ["safety", "emergency", "fire", "tornado", "drill", "lockdown", "closing", "snow day", "weather", "travel", "crisis", "asbestos", "child protection", "weapon"],
+    "pageStart": 17,
+    "pageEnd": 18
+  },
+  {
+    "id": "communication-concerns",
+    "title": "School communication and addressing concerns",
+    "excerpt": "The handbook identifies SchoolSpeak and Tuesday News Notes as primary communication channels, sets a weekday email-response expectation, and gives a step-by-step path for raising academic or behavior concerns.",
+    "keywords": ["communication", "SchoolSpeak", "News Notes", "newsletter", "email", "text", "cell phone", "conference", "concern", "complaint", "teacher", "principal"],
+    "pageStart": 19,
+    "pageEnd": 20
+  },
+  {
+    "id": "liturgy-lunch",
+    "title": "Weekly liturgy and lunch program",
+    "excerpt": "School Mass is held Thursdays at 8:20 a.m., with additional grade-level Masses noted in the handbook. The lunch section explains the Lansing Catholic catered program, FACTS balances, ordering, packed lunches, and classroom food rules.",
+    "keywords": ["Mass", "liturgy", "church", "Thursday", "lunch", "hot lunch", "menu", "FACTS", "packed lunch", "microwave", "food"],
+    "pageStart": 20,
+    "pageEnd": 21
+  },
+  {
+    "id": "discipline-general-rules",
+    "title": "Discipline, virtues, and general school rules",
+    "excerpt": "Discipline is presented as moral guidance grounded in Gospel values. These pages outline Education in Virtue, student responsibilities, personal-device rules, academic honesty, classroom expectations, playground rules, restorative practices, and possible consequences.",
+    "keywords": ["discipline", "virtue", "rules", "respect", "responsibility", "cell phone", "device", "AI", "artificial intelligence", "cheating", "plagiarism", "playground", "consequence", "restorative"],
+    "pageStart": 21,
+    "pageEnd": 24
+  },
+  {
+    "id": "conduct-bullying-harassment",
+    "title": "Physical conduct, discriminatory language, bullying, and harassment",
+    "excerpt": "The conduct policies define and address severe physical aggression, rough play, discriminatory or offensive language, bullying versus conflict, threats, cyberbullying, and sexual harassment, with grade-level consequence tables.",
+    "keywords": ["physical", "aggression", "rough play", "fighting", "discriminatory", "offensive language", "swearing", "bullying", "conflict", "threat", "cyberbullying", "harassment", "consequence"],
+    "pageStart": 24,
+    "pageEnd": 29
+  },
+  {
+    "id": "kids-corner",
+    "title": "Kids' Corner before- and after-school care",
+    "excerpt": "The childcare section covers program objectives, 7:20–7:50 a.m. and 3:25–6:00 p.m. hours, registration documents, sign-in and pickup, late pickup, before-care procedures, fees, and billing.",
+    "keywords": ["Kids Corner", "childcare", "before care", "after care", "after-school", "sign in", "pickup", "late", "fees", "billing", "Blackbaud"],
+    "pageStart": 30,
+    "pageEnd": 31
+  },
+  {
+    "id": "technology-copyright",
+    "title": "Technology policy and copyright",
+    "excerpt": "The handbook points families to a separate cellphone, Chromebook, and technology acceptable-use policy and summarizes U.S. copyright protections and fair-use considerations.",
+    "keywords": ["technology", "cellphone", "cell phone", "Chromebook", "acceptable use", "copyright", "fair use", "internet"],
+    "pageStart": 32
+  },
+  {
+    "id": "acknowledgment-signature",
+    "title": "Handbook acknowledgment and signature page",
+    "excerpt": "The final content page contains the diocesan requirement, parent initials and signature lines, student signatures for grades 4–8, and a list of handbook updates for 2025–26.",
+    "keywords": ["acknowledgment", "signature", "sign", "initial", "return", "diocesan requirement", "student signature"],
+    "pageStart": 33
   }
 ]

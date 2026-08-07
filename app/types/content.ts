@@ -85,9 +85,27 @@ export type HandbookSection = {
   title: string;
   excerpt: string;
   keywords: string[];
-  page?: number;
-  sourceUrl: string;
-  isDemo: boolean;
+  pageStart: number;
+  pageEnd?: number;
+};
+
+export type CalendarEvent = {
+  id: string;
+  date: string;
+  endDate?: string;
+  title: string;
+  time?: string;
+  details?: string;
+  category: "School day" | "No school" | "Family event" | "Faith" | "Academic";
+};
+
+export type StaffMember = {
+  id: string;
+  name: string;
+  group: "Leadership & office" | "Homeroom teachers" | "Specials" | "Support staff";
+  roles: string[];
+  email?: string;
+  phone?: string;
 };
 
 export type NewsletterSummary = {

@@ -6,16 +6,20 @@ import documentData from "../data/documents.json";
 import lunchData from "../data/lunch.json";
 import handbookData from "../data/handbook.json";
 import newsletterData from "../data/newsletters.json";
+import calendarData from "../data/calendar.json";
+import staffData from "../data/staff.json";
 import type {
+  CalendarEvent,
   ContentItem,
   HandbookSection,
   LunchDay,
   NewsletterSummary,
   SchoolDocument,
+  StaffMember,
 } from "../types/content";
 import { filterByGrades, formatGradeLabel } from "../lib/filtering";
 import { formatDate } from "../lib/format";
-import { sitePath } from "../lib/site-path";
+import { assetPath, sitePath } from "../lib/site-path";
 import { useGradeFilter } from "./GradeFilterProvider";
 import { ContentCard } from "./ContentCard";
 import { EmptyState, PageHeading, SectionHeading } from "./PageHeading";
@@ -25,6 +29,22 @@ const documents = documentData as SchoolDocument[];
 const lunchDays = lunchData as LunchDay[];
 const handbookSections = handbookData as HandbookSection[];
 const newsletters = newsletterData as NewsletterSummary[];
+const calendarEvents = calendarData as CalendarEvent[];
+const staffMembers = staffData as StaffMember[];
+
+const calendarCategories = ["All", "School day", "No school", "Family event", "Faith", "Academic"] as const;
+const staffGroups: StaffMember["group"][] = ["Leadership & office", "Homeroom teachers", "Specials", "Support staff"];
+
+function formatCalendarDate(value: string, options: Intl.DateTimeFormatOptions) {
+  return formatDate(`${value}T12:00:00`, options);
+}
+
+function formatCalendarRange(event: CalendarEvent) {
+  const start = formatCalendarDate(event.date, { month: "short", day: "numeric" });
+  if (!event.endDate) return start;
+  const end = formatCalendarDate(event.endDate, { month: "short", day: "numeric" });
+  return `${start}–${end}`;
+}
 
 function useVisibleItems(types?: ContentItem["contentType"][]) {
   const { selectedGrades } = useGradeFilter();
@@ -169,6 +189,137 @@ export function EventsPage() {
   );
 }
 
+export function CalendarPage() {
+  const [query, setQuery] = useState("");
+  const [category, setCategory] = useState<(typeof calendarCategories)[number]>("All");
+  const normalized = query.trim().toLowerCase();
+  const visible = calendarEvents.filter((event) => {
+    const matchesCategory = category === "All" || event.category === category;
+    const matchesQuery = !normalized || `${event.title} ${event.details ?? ""} ${event.time ?? ""} ${event.category}`.toLowerCase().includes(normalized);
+    return matchesCategory && matchesQuery;
+  });
+  const months = Array.from(new Set(visible.map((event) => event.date.slice(0, 7))));
+  const calendarPdf = assetPath("/documents/2026-27-academic-calendar.pdf");
+
+  return (
+    <>
+      <PageHeading
+        eyebrow="2026–27 school year"
+        title="Academic calendar"
+        description="Every date from the school-issued calendar, organized for quick scanning and backed by the original one-page PDF."
+        aside={<a className="button" href={calendarPdf} target="_blank" rel="noreferrer">Download calendar PDF ↗</a>}
+      />
+      <div className="source-banner" role="note">
+        <div><strong>School-issued calendar</strong><span>Updated July 29, 2026</span></div>
+        <p>The source notes that dates may change during the school year. Check school communications before making plans.</p>
+      </div>
+      <div className="calendar-toolbar">
+        <label className="search-box calendar-search">
+          <span className="search-box__icon" aria-hidden="true">⌕</span>
+          <span className="sr-only">Search calendar</span>
+          <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search breaks, conferences, concerts…" />
+        </label>
+        <label className="select-field">
+          <span>Show</span>
+          <select value={category} onChange={(event) => setCategory(event.target.value as (typeof calendarCategories)[number])}>
+            {calendarCategories.map((option) => <option key={option}>{option}</option>)}
+          </select>
+        </label>
+      </div>
+      <p className="result-count" aria-live="polite">Showing {visible.length} of {calendarEvents.length} calendar entries</p>
+      <div className="calendar-months">
+        {months.length ? months.map((month) => {
+          const events = visible.filter((event) => event.date.startsWith(month));
+          return (
+            <section className="calendar-month" key={month}>
+              <div className="calendar-month__heading">
+                <span>{formatCalendarDate(`${month}-01`, { year: "numeric" })}</span>
+                <h2>{formatCalendarDate(`${month}-01`, { month: "long" })}</h2>
+              </div>
+              <div className="calendar-month__events">
+                {events.map((event) => (
+                  <article className="calendar-entry" key={event.id}>
+                    <time dateTime={event.date}>
+                      <span>{formatCalendarDate(event.date, { weekday: "short" })}</span>
+                      <strong>{formatCalendarDate(event.date, { day: "numeric" })}</strong>
+                    </time>
+                    <div>
+                      <div className="badge-row"><span className={`badge calendar-category calendar-category--${event.category.toLowerCase().replaceAll(" ", "-")}`}>{event.category}</span>{event.endDate && <span className="date-range">{formatCalendarRange(event)}</span>}</div>
+                      <h3>{event.title}</h3>
+                      {(event.time || event.details) && <p>{[event.time, event.details].filter(Boolean).join(" · ")}</p>}
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+          );
+        }) : <EmptyState>No calendar entries match that search and filter.</EmptyState>}
+      </div>
+      <div className="source-footer">
+        <span>Source: St. Martha 2026–27 Academic Calendar</span>
+        <a className="source-link" href={calendarPdf} target="_blank" rel="noreferrer">Open the original PDF ↗</a>
+      </div>
+    </>
+  );
+}
+
+export function StaffPage() {
+  const [query, setQuery] = useState("");
+  const normalized = query.trim().toLowerCase();
+  const visible = staffMembers.filter((member) => `${member.name} ${member.group} ${member.roles.join(" ")}`.toLowerCase().includes(normalized));
+
+  return (
+    <>
+      <PageHeading
+        eyebrow="People who make the school go"
+        title="School staff"
+        description="Find teachers, school leadership, specialists, and support staff, with direct contact details where the school publishes them."
+        aside={<a className="button" href="https://st-martha.org/staff-school" target="_blank" rel="noreferrer">Official staff directory ↗</a>}
+      />
+      <div className="source-banner" role="note">
+        <div><strong>{staffMembers.length} staff members</strong><span>Verified August 7, 2026</span></div>
+        <p>Roles and contact details come from the official school directory. Use that directory as the authority for later changes.</p>
+      </div>
+      <label className="search-box staff-search">
+        <span className="search-box__icon" aria-hidden="true">⌕</span>
+        <span className="sr-only">Search school staff</span>
+        <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search a name, grade, or subject…" />
+      </label>
+      <div className="staff-directory" aria-live="polite">
+        {staffGroups.map((group) => {
+          const members = visible.filter((member) => member.group === group);
+          if (!members.length) return null;
+          return (
+            <section className="staff-section" key={group}>
+              <SectionHeading title={group} count={members.length} />
+              <div className="staff-grid">
+                {members.map((member) => (
+                  <article className="staff-card" key={member.id}>
+                    <div className="staff-card__monogram" aria-hidden="true">{member.name.split(" ").filter((part) => !part.includes(".")).map((part) => part[0]).slice(0, 2).join("")}</div>
+                    <div className="staff-card__body">
+                      <h3>{member.name}</h3>
+                      <p>{member.roles.join(" · ")}</p>
+                      {(member.email || member.phone) && <div className="staff-card__contact">
+                        {member.email && <a href={`mailto:${member.email}`}>Email</a>}
+                        {member.phone && <a href={`tel:+1${member.phone.replace(/\D/g, "")}`}>{member.phone}</a>}
+                      </div>}
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+          );
+        })}
+        {!visible.length && <EmptyState>No staff members match that search.</EmptyState>}
+      </div>
+      <div className="source-footer">
+        <span>Source: official St. Martha School staff directory</span>
+        <a className="source-link" href="https://st-martha.org/staff-school" target="_blank" rel="noreferrer">View official directory ↗</a>
+      </div>
+    </>
+  );
+}
+
 export function VolunteerPage() {
   const items = useVisibleItems(["volunteer", "signup"]);
   return (
@@ -226,7 +377,7 @@ export function DocumentsPage() {
           <article className="document-row" key={document.id}>
             <div className="file-mark" aria-hidden="true">{document.fileType === "PDF" ? "PDF" : "LINK"}</div>
             <div className="document-row__body"><span className="eyebrow">{document.category}</span><h2>{document.title}</h2><p>{document.description}</p><div className="tag-list">{document.gradeTags.map((grade) => <span key={grade}>{formatGradeLabel(grade)}</span>)}{document.schoolYear && <span>{document.schoolYear}</span>}<span>Verified {formatDate(document.lastVerifiedAt)}</span></div></div>
-            <a className="button button--small" href={document.sourceUrl} target="_blank" rel="noreferrer">Open source ↗</a>
+            <a className="button button--small" href={document.sourceUrl.startsWith("/") ? assetPath(document.sourceUrl) : document.sourceUrl} target="_blank" rel="noreferrer">Open source ↗</a>
           </article>
         ))}
       </div>
@@ -235,26 +386,39 @@ export function DocumentsPage() {
 }
 
 export function HandbookPage() {
-  const [query, setQuery] = useState("uniform");
+  const [query, setQuery] = useState("");
   const normalized = query.trim().toLowerCase();
-  const results = normalized ? handbookSections.filter((section) => `${section.title} ${section.excerpt} ${section.keywords.join(" ")}`.toLowerCase().includes(normalized)) : [];
+  const results = handbookSections.filter((section) => !normalized || `${section.title} ${section.excerpt} ${section.keywords.join(" ")}`.toLowerCase().includes(normalized));
+  const handbookPdf = assetPath("/documents/2025-26-st-martha-handbook.pdf");
   return (
     <>
-      <PageHeading eyebrow="Find the rule, not the PDF" title="Handbook search" description="Searchable, cited handbook answers will live here once the current source PDF is provided and reviewed." />
-      <DemoNotice>The handbook has not been supplied. Search results are interface examples only and must not be treated as school policy.</DemoNotice>
+      <PageHeading
+        eyebrow="Find the policy, not the page"
+        title="Handbook search"
+        description="Search parent-friendly summaries of the 2025–26 Parent and Student Handbook, then jump to the exact page in the original PDF."
+        aside={<a className="button" href={handbookPdf} target="_blank" rel="noreferrer">Download handbook PDF ↗</a>}
+      />
+      <div className="source-banner" role="note">
+        <div><strong>2025–26 handbook</strong><span>33 content pages</span></div>
+        <p>These summaries are for finding information quickly. The attached handbook PDF remains the authoritative wording.</p>
+      </div>
       <div className="handbook-search">
         <label><span className="sr-only">Search the handbook</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Try uniform, tardy, medication…" /></label>
-        <button type="button" className="button">Search</button>
+        {query ? <button type="button" className="button" onClick={() => setQuery("")}>Clear</button> : <span className="handbook-search__label">Search</span>}
       </div>
-      <div className="suggestion-row" aria-label="Suggested searches">{["uniform", "tardy", "medication", "cell phone"].map((term) => <button type="button" key={term} onClick={() => setQuery(term)}>{term}</button>)}</div>
+      <div className="suggestion-row" aria-label="Suggested searches">{["uniform", "tardy", "medication", "cell phone", "volunteer", "Kids' Corner"].map((term) => <button type="button" key={term} onClick={() => setQuery(term)}>{term}</button>)}</div>
       <div className="search-results" aria-live="polite">
-        <SectionHeading title={normalized ? `Results for “${query}”` : "Search results"} count={results.length} />
+        <SectionHeading title={normalized ? `Results for “${query}”` : "Handbook contents"} count={results.length} />
         {results.length ? results.map((section) => (
           <article className="handbook-result" key={section.id}>
-            <div><span className="badge badge--demo">Example only</span><h2>{section.title}</h2><p>{section.excerpt}</p><a className="source-link" href={section.sourceUrl} target="_blank" rel="noreferrer">Source placeholder: official school site ↗</a></div>
-            <span className="page-cite">Example page {section.page}</span>
+            <div><span className="badge badge--source">Handbook summary</span><h2>{section.title}</h2><p>{section.excerpt}</p><a className="source-link" href={`${handbookPdf}#page=${section.pageStart}`} target="_blank" rel="noreferrer">Read the original page ↗</a></div>
+            <span className="page-cite">{section.pageEnd ? `Pages ${section.pageStart}–${section.pageEnd}` : `Page ${section.pageStart}`}</span>
           </article>
-        )) : <EmptyState>No example sections match that search. Try one of the suggested terms.</EmptyState>}
+        )) : <EmptyState>No handbook sections match that search. Try a broader term or one of the suggestions.</EmptyState>}
+      </div>
+      <div className="source-footer">
+        <span>Source: St. Martha Parent and Student Handbook 2025–2026</span>
+        <a className="source-link" href={handbookPdf} target="_blank" rel="noreferrer">Open the complete PDF ↗</a>
       </div>
     </>
   );

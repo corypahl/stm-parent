@@ -6,6 +6,11 @@ export function sitePath(path: string): string {
   return `${publicBasePath}${normalized.replace(/\/$/, "")}.html`;
 }
 
+export function assetPath(path: string): string {
+  const normalized = path.startsWith("/") ? path : `/${path}`;
+  return `${publicBasePath}${normalized}`;
+}
+
 export function routePath(pathname: string): string {
   const withoutBase = publicBasePath && pathname.startsWith(publicBasePath)
     ? pathname.slice(publicBasePath.length)
