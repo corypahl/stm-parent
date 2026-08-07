@@ -1,0 +1,52 @@
+[
+  {
+    "date": "2026-08-10T16:00:00Z",
+    "mainEntree": "Sample: cheese pizza",
+    "alternateEntree": "Sample: sun butter sandwich",
+    "sides": ["Garden salad", "Fresh fruit"],
+    "notes": "Demonstration menu—not an official school menu.",
+    "gradeTags": ["all-school"],
+    "sourceUrl": "https://st-martha.org/school",
+    "isDemo": true
+  },
+  {
+    "date": "2026-08-11T16:00:00Z",
+    "mainEntree": "Sample: chicken tenders",
+    "alternateEntree": "Sample: yogurt meal",
+    "sides": ["Roasted potatoes", "Applesauce"],
+    "notes": "Demonstration menu—not an official school menu.",
+    "gradeTags": ["all-school"],
+    "sourceUrl": "https://st-martha.org/school",
+    "isDemo": true
+  },
+  {
+    "date": "2026-08-12T16:00:00Z",
+    "mainEntree": "Sample: pasta with marinara",
+    "alternateEntree": "Sample: cheese and crackers",
+    "sides": ["Green beans", "Orange wedges"],
+    "notes": "Demonstration menu—not an official school menu.",
+    "gradeTags": ["all-school"],
+    "sourceUrl": "https://st-martha.org/school",
+    "isDemo": true
+  },
+  {
+    "date": "2026-08-13T16:00:00Z",
+    "mainEntree": "Sample: turkey and cheese wrap",
+    "alternateEntree": "Sample: sun butter sandwich",
+    "sides": ["Cucumber coins", "Mixed berries"],
+    "notes": "Demonstration menu—not an official school menu.",
+    "gradeTags": ["all-school"],
+    "sourceUrl": "https://st-martha.org/school",
+    "isDemo": true
+  },
+  {
+    "date": "2026-08-14T16:00:00Z",
+    "mainEntree": "Sample: grilled cheese",
+    "alternateEntree": "Sample: yogurt meal",
+    "sides": ["Tomato soup", "Apple slices"],
+    "notes": "Demonstration menu—not an official school menu.",
+    "gradeTags": ["all-school"],
+    "sourceUrl": "https://st-martha.org/school",
+    "isDemo": true
+  }
+]

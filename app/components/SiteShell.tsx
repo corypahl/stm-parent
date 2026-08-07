@@ -1,0 +1,121 @@
+"use client";
+
+import { usePathname } from "next/navigation";
+import Link from "next/link";
+import { useState, type ReactNode } from "react";
+import { GradeFilter } from "./GradeFilter";
+import { GradeFilterProvider } from "./GradeFilterProvider";
+
+const navigation = [
+  { href: "/", label: "Home" },
+  { href: "/action", label: "Needs action" },
+  { href: "/events", label: "Events" },
+  { href: "/lunch", label: "Lunch" },
+  { href: "/volunteer", label: "Volunteer" },
+  { href: "/documents", label: "Documents" },
+  { href: "/handbook", label: "Handbook" },
+  { href: "/archive", label: "Archive" },
+];
+
+export function SiteShell({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  return (
+    <GradeFilterProvider>
+      <a className="skip-link" href="#main-content">
+        Skip to main content
+      </a>
+      <div className="preview-ribbon">
+        <span>Prototype</span>
+        Sample newsletter content is clearly marked. Always verify official school communications.
+      </div>
+      <header className="site-header">
+        <div className="site-header__top page-width">
+          <Link className="brand" href="/" aria-label="St. Martha Parent Companion home">
+            <span className="brand__mark" aria-hidden="true">
+              M
+            </span>
+            <span>
+              <span className="brand__school">St. Martha</span>
+              <span className="brand__name">Parent Companion</span>
+            </span>
+          </Link>
+          <div className="header-actions">
+            <a className="official-link" href="https://st-martha.org/school" target="_blank" rel="noreferrer">
+              Official school site <span aria-hidden="true">↗</span>
+            </a>
+            <button
+              type="button"
+              className="menu-button"
+              aria-expanded={menuOpen}
+              aria-controls="primary-navigation"
+              onClick={() => setMenuOpen((open) => !open)}
+            >
+              <span aria-hidden="true">{menuOpen ? "×" : "☰"}</span>
+              <span>{menuOpen ? "Close" : "Menu"}</span>
+            </button>
+          </div>
+        </div>
+        <nav
+          className={`primary-nav ${menuOpen ? "primary-nav--open" : ""}`}
+          id="primary-navigation"
+          aria-label="Primary navigation"
+        >
+          <div className="page-width primary-nav__inner">
+            {navigation.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className={pathname === item.href ? "active" : ""}
+                aria-current={pathname === item.href ? "page" : undefined}
+                onClick={() => setMenuOpen(false)}
+              >
+                {item.label}
+              </a>
+            ))}
+            <a
+              href="/admin"
+              className={`admin-link ${pathname === "/admin" ? "active" : ""}`}
+              aria-current={pathname === "/admin" ? "page" : undefined}
+              onClick={() => setMenuOpen(false)}
+            >
+              Admin preview
+            </a>
+          </div>
+        </nav>
+      </header>
+      <div className="filter-wrap">
+        <div className="page-width">
+          <GradeFilter />
+        </div>
+      </div>
+      <main id="main-content" className="page-width main-content">
+        {children}
+      </main>
+      <footer className="site-footer">
+        <div className="page-width footer-grid">
+          <div>
+            <p className="footer-title">St. Martha Parent Companion</p>
+            <p>
+              An unofficial, parent-created prototype for making weekly school information easier to find.
+            </p>
+          </div>
+          <div>
+            <p className="footer-title">Verify important details</p>
+            <p>
+              This resource is not operated or endorsed by St. Martha School. Refer to official school communications for authoritative information.
+            </p>
+          </div>
+          <div className="footer-links">
+            <a href="https://st-martha.org/school" target="_blank" rel="noreferrer">
+              Official school site ↗
+            </a>
+            <a href="tel:+15173493322">School: (517) 349-3322</a>
+            <span>1100 W. Grand River Ave., Okemos, MI</span>
+          </div>
+        </div>
+      </footer>
+    </GradeFilterProvider>
+  );
+}

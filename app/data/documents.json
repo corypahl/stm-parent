@@ -1,0 +1,58 @@
+[
+  {
+    "id": "doc-calendar-25-26",
+    "title": "2025–26 academic calendar",
+    "description": "The academic calendar currently linked from the official school calendar page.",
+    "category": "Calendar",
+    "sourceUrl": "https://st-martha.org/school-calendar",
+    "gradeTags": ["all-school"],
+    "schoolYear": "2025–26",
+    "fileType": "PDF",
+    "active": true,
+    "lastVerifiedAt": "2026-08-07"
+  },
+  {
+    "id": "doc-parent-involvement",
+    "title": "Parent involvement and PSO overview",
+    "description": "Official guidance on service opportunities, volunteer expectations, and the Parent Service Organization.",
+    "category": "Family resources",
+    "sourceUrl": "https://st-martha.org/parent-service-organizations",
+    "gradeTags": ["all-school"],
+    "fileType": "Web page",
+    "active": true,
+    "lastVerifiedAt": "2026-08-07"
+  },
+  {
+    "id": "doc-academics",
+    "title": "Academics overview",
+    "description": "Official overview of instruction, specialist classes, assessment, and educational approach.",
+    "category": "Academics",
+    "sourceUrl": "https://st-martha.org/academics",
+    "gradeTags": ["all-school"],
+    "fileType": "Web page",
+    "active": true,
+    "lastVerifiedAt": "2026-08-07"
+  },
+  {
+    "id": "doc-preschool",
+    "title": "Preschool information",
+    "description": "Program information and official resources for preschool families.",
+    "category": "Program information",
+    "sourceUrl": "https://st-martha.org/preschool",
+    "gradeTags": ["preschool"],
+    "fileType": "Web page",
+    "active": true,
+    "lastVerifiedAt": "2026-08-07"
+  },
+  {
+    "id": "doc-school-home",
+    "title": "St. Martha School official site",
+    "description": "The authoritative starting point for school contact details, enrollment, news, and official resources.",
+    "category": "Official source",
+    "sourceUrl": "https://st-martha.org/school",
+    "gradeTags": ["all-school"],
+    "fileType": "Web page",
+    "active": true,
+    "lastVerifiedAt": "2026-08-07"
+  }
+]

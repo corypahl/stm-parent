@@ -1,0 +1,38 @@
+[
+  {
+    "id": "handbook-uniform-example",
+    "title": "Uniforms and dress code (example result)",
+    "excerpt": "Example only: when the active handbook PDF is added, the matching handbook text and exact page citation will appear here.",
+    "keywords": ["uniform", "dress code", "shoes", "clothing"],
+    "page": 12,
+    "sourceUrl": "https://st-martha.org/school",
+    "isDemo": true
+  },
+  {
+    "id": "handbook-attendance-example",
+    "title": "Attendance, absence, and tardies (example result)",
+    "excerpt": "Example only: this prototype demonstrates keyword matching and citation placement; it does not state school policy.",
+    "keywords": ["absence", "absent", "tardy", "late", "attendance", "pickup"],
+    "page": 18,
+    "sourceUrl": "https://st-martha.org/school",
+    "isDemo": true
+  },
+  {
+    "id": "handbook-health-example",
+    "title": "Health and medication (example result)",
+    "excerpt": "Example only: verified medication procedures will be searchable after an administrator uploads and reviews the current handbook.",
+    "keywords": ["medication", "medicine", "health", "sick"],
+    "page": 24,
+    "sourceUrl": "https://st-martha.org/school",
+    "isDemo": true
+  },
+  {
+    "id": "handbook-technology-example",
+    "title": "Technology and cell phones (example result)",
+    "excerpt": "Example only: future results will quote a short matching excerpt from the source PDF and link to the cited page.",
+    "keywords": ["cell phone", "phone", "technology", "device"],
+    "page": 31,
+    "sourceUrl": "https://st-martha.org/school",
+    "isDemo": true
+  }
+]
