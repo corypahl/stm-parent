@@ -83,40 +83,12 @@ function CardGrid({ items }: { items: ContentItem[] }) {
 
 export function HomePage() {
   const visible = useVisibleItems();
-  const actions = visible.filter((item) => item.contentType === "action").slice(0, 3);
   const upcomingEvents = calendarEvents.slice(0, 3);
   const announcements = visible.filter((item) => item.contentType === "announcement").slice(0, 2);
-  const volunteers = visible.filter((item) => item.contentType === "volunteer").slice(0, 2);
 
   return (
     <>
-      <section className="home-hero">
-        <div className="home-hero__copy">
-          <span className="eyebrow eyebrow--light">News Notes · August 7, 2026</span>
-          <h1>Your school week, <em>made simpler.</em></h1>
-          <p>One calm place for the dates, forms, signups, and details buried across weekly communications.</p>
-          <div className="hero-actions">
-            <a className="button button--light" href={sitePath("/action")}>See what needs action <span aria-hidden="true">→</span></a>
-            <a className="button button--ghost-light" href="https://st-martha.org/school" target="_blank" rel="noreferrer">Official school site ↗</a>
-          </div>
-        </div>
-        <div className="home-hero__summary" aria-label="Weekly overview">
-          <span className="summary-date">At a glance</span>
-          <div className="summary-stat"><strong>{actions.length}</strong><span>items need action</span></div>
-          <div className="summary-stat"><strong>{upcomingEvents.length}</strong><span>upcoming events</span></div>
-          <div className="summary-stat"><strong>{volunteers.length}</strong><span>ways to help</span></div>
-          <span className="summary-note">Action items use your selected grades</span>
-        </div>
-      </section>
-
-      <DemoNotice />
-
-      <section className="home-section">
-        <SectionHeading eyebrow="Start here" title="Needs your attention" count={actions.length} link={{ href: "/action", label: "View all" }} />
-        <CardGrid items={actions} />
-      </section>
-
-      <section className="split-layout home-section">
+      <section className="home-section home-section--first">
         <div>
           <SectionHeading eyebrow="Coming up" title="On the calendar" count={upcomingEvents.length} link={{ href: "/calendar", label: "Full calendar" }} />
           <div className="calendar-preview">
@@ -136,19 +108,6 @@ export function HomePage() {
           </div>
           <p className="preview-source">Source: St. Martha 2026–27 Academic Calendar</p>
         </div>
-        <aside className="week-card">
-          <div className="week-card__header">
-            <span className="eyebrow">At a glance</span>
-            <h2>School day</h2>
-          </div>
-          <dl className="hours-list">
-            <div><dt>Office</dt><dd>7:45 a.m.–3:45 p.m.</dd></div>
-            <div><dt>School</dt><dd>8:00 a.m.–3:25 p.m.</dd></div>
-            <div><dt>Preschool AM</dt><dd>8:00–11:30 a.m.</dd></div>
-            <div><dt>Preschool full day</dt><dd>8:00 a.m.–3:20 p.m.</dd></div>
-          </dl>
-          <a className="source-link source-link--light" href="https://st-martha.org/school" target="_blank" rel="noreferrer">Source: official school hours ↗</a>
-        </aside>
       </section>
 
       <section className="home-section">

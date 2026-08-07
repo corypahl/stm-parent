@@ -13,8 +13,9 @@ test("exports the finished parent companion home", async () => {
   const html = await readRoute();
   assert.match(html, /St\. Martha School/);
   assert.match(html, /Unofficial Parent Site/);
-  assert.match(html, /Your school week/);
-  assert.match(html, /Needs your attention/);
+  assert.match(html, /Coming up/);
+  assert.match(html, /On the calendar/);
+  assert.doesNotMatch(html, /home-hero|Needs your attention|At a glance|Weekly overview|official school hours/);
   assert.match(html, /Source: St\. Martha 2026–27 Academic Calendar/);
   assert.doesNotMatch(html, /Sample: back-to-school family night/);
   assert.match(html, /All-school notices are always included/);
