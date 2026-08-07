@@ -8,13 +8,11 @@ import { GradeFilterProvider } from "./GradeFilterProvider";
 
 const navigation = [
   { href: "/", label: "Home" },
-  { href: "/action", label: "Needs action" },
-  { href: "/calendar", label: "Calendar" },
-  { href: "/staff", label: "Staff" },
+  { href: "/calendar", label: "Events" },
   { href: "/lunch", label: "Lunch" },
   { href: "/volunteer", label: "Volunteer" },
-  { href: "/documents", label: "Documents" },
   { href: "/handbook", label: "Handbook" },
+  { href: "/staff", label: "Contacts" },
   { href: "/archive", label: "Archive" },
 ];
 
@@ -34,13 +32,13 @@ export function SiteShell({ children }: { children: ReactNode }) {
       </div>
       <header className="site-header">
         <div className="site-header__top page-width">
-          <a className="brand" href={sitePath("/")} aria-label="St. Martha Parent Companion home">
+          <a className="brand" href={sitePath("/")} aria-label="St. Martha School unofficial parent site home">
             <span className="brand__mark" aria-hidden="true">
               M
             </span>
             <span>
-              <span className="brand__school">St. Martha</span>
-              <span className="brand__name">Parent Companion</span>
+              <span className="brand__school">St. Martha School</span>
+              <span className="brand__name">Unofficial Parent Site</span>
             </span>
           </a>
           <div className="header-actions">
@@ -76,14 +74,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
                 {item.label}
               </a>
             ))}
-            <a
-              href={sitePath("/admin")}
-              className={`admin-link ${activePath === "/admin" ? "active" : ""}`}
-              aria-current={activePath === "/admin" ? "page" : undefined}
-              onClick={() => setMenuOpen(false)}
-            >
-              Admin preview
-            </a>
           </div>
         </nav>
       </header>
@@ -98,7 +88,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
       <footer className="site-footer">
         <div className="page-width footer-grid">
           <div>
-            <p className="footer-title">St. Martha Parent Companion</p>
+            <p className="footer-title">St. Martha School · Unofficial Parent Site</p>
             <p>
               An unofficial, parent-created prototype for making weekly school information easier to find.
             </p>

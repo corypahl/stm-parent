@@ -1,14 +1,14 @@
 export const gradeOptions = [
   { value: "preschool", label: "Preschool", shortLabel: "Pre-K" },
   { value: "kindergarten", label: "Kindergarten", shortLabel: "K" },
-  { value: "grade-1", label: "Grade 1", shortLabel: "1" },
-  { value: "grade-2", label: "Grade 2", shortLabel: "2" },
-  { value: "grade-3", label: "Grade 3", shortLabel: "3" },
-  { value: "grade-4", label: "Grade 4", shortLabel: "4" },
-  { value: "grade-5", label: "Grade 5", shortLabel: "5" },
-  { value: "grade-6", label: "Grade 6", shortLabel: "6" },
-  { value: "grade-7", label: "Grade 7", shortLabel: "7" },
-  { value: "grade-8", label: "Grade 8", shortLabel: "8" },
+  { value: "grade-1", label: "Grade 1", shortLabel: "1st" },
+  { value: "grade-2", label: "Grade 2", shortLabel: "2nd" },
+  { value: "grade-3", label: "Grade 3", shortLabel: "3rd" },
+  { value: "grade-4", label: "Grade 4", shortLabel: "4th" },
+  { value: "grade-5", label: "Grade 5", shortLabel: "5th" },
+  { value: "grade-6", label: "Grade 6", shortLabel: "6th" },
+  { value: "grade-7", label: "Grade 7", shortLabel: "7th" },
+  { value: "grade-8", label: "Grade 8", shortLabel: "8th" },
 ] as const;
 
 export type ConfiguredGradeTag = (typeof gradeOptions)[number]["value"];

@@ -11,12 +11,16 @@ async function readRoute(pathname = "") {
 
 test("exports the finished parent companion home", async () => {
   const html = await readRoute();
-  assert.match(html, /St\. Martha Parent Companion/);
+  assert.match(html, /St\. Martha School/);
+  assert.match(html, /Unofficial Parent Site/);
   assert.match(html, /Your school week/);
   assert.match(html, /Needs your attention/);
   assert.match(html, /Student Walk Through/);
   assert.doesNotMatch(html, /Sample: back-to-school family night/);
   assert.match(html, /All-school notices are always included/);
+  assert.match(html, /Grade Filter/);
+  assert.match(html, />Pre-K<\/button>/);
+  assert.match(html, />1st<\/button>/);
   assert.match(html, /unofficial, parent-created/i);
   assert.match(html, /Source:/);
   assert.match(html, /og\.png/);
@@ -28,7 +32,7 @@ test("exports every requested route", async () => {
     ["action", "Needs action"],
     ["events", "Academic calendar"],
     ["calendar", "Academic calendar"],
-    ["staff", "School staff"],
+    ["staff", "Contacts"],
     ["lunch", "Lunch menu"],
     ["volunteer", "Volunteer"],
     ["documents", "Documents &amp; links"],

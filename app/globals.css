@@ -64,11 +64,10 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .eyebrow--light { color: #f8dce4; }
 .text-button { border: 0; background: none; padding: 0; color: var(--burgundy); font-size: 12px; font-weight: 800; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .grade-filter__chips { display: flex; gap: 7px; overflow-x: auto; padding: 2px 3px 5px; margin-inline: -3px; scrollbar-width: thin; }
-.grade-chip { flex: 0 0 auto; min-height: 34px; padding: 5px 12px; border: 1px solid #d8cec4; border-radius: 999px; background: rgba(255,255,255,.7); color: #5d544f; font-size: 11px; font-weight: 750; cursor: pointer; transition: .15s ease; }
+.grade-chip { flex: 0 0 auto; min-width: 44px; min-height: 34px; padding: 5px 12px; border: 1px solid #d8cec4; border-radius: 999px; background: rgba(255,255,255,.7); color: #5d544f; font-size: 11px; font-weight: 750; cursor: pointer; transition: .15s ease; }
 .grade-chip:hover { border-color: var(--burgundy); color: var(--burgundy); }
 .grade-chip--selected { border-color: var(--burgundy); background: var(--burgundy); color: white; box-shadow: 0 3px 10px rgba(113,27,52,.2); }
 .grade-chip--selected:hover { color: white; }
-.grade-chip__short { display: none; }
 .grade-filter__note { margin: 3px 0 0; color: #857a72; font-size: 10px; }
 
 .home-hero { position: relative; display: grid; grid-template-columns: minmax(0,1.6fr) minmax(270px,.65fr); overflow: hidden; border-radius: 22px; background: var(--burgundy); color: white; box-shadow: var(--shadow); }
@@ -329,11 +328,7 @@ button.button:disabled, .admin-table button:disabled { cursor: not-allowed; opac
   .primary-nav .admin-link { margin: 0; border-left: 0; border-top: 1px solid rgba(255,255,255,.14); grid-column: 1/-1; }
   .grade-filter__heading > div { display: block; }
   .grade-filter__heading p { margin-top: 2px; }
-  .grade-chip { width: 34px; min-width: 34px; padding-inline: 7px; }
-  .grade-chip:first-child { width: auto; padding-inline: 12px; }
-  .grade-chip__long { display: none; }
-  .grade-chip__short { display: inline; }
-  .grade-chip:first-child .grade-chip__long { display: inline; }
+  .grade-chip { min-width: 42px; padding-inline: 9px; }
   .home-hero { grid-template-columns: 1fr; border-radius: 16px; }
   .home-hero__copy { padding: 42px 26px 30px; }
   .home-hero h1 { font-size: 43px; }

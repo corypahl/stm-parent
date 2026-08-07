@@ -12,7 +12,7 @@ export function GradeFilter() {
       <div className="grade-filter__heading">
         <div>
           <span className="eyebrow" id="grade-filter-title">
-            My family
+            Grade Filter
           </span>
           <p>
             {showingAll
@@ -33,7 +33,7 @@ export function GradeFilter() {
           aria-pressed={showingAll}
           onClick={clearGrades}
         >
-          All school
+          All
         </button>
         {gradeOptions.map((grade) => {
           const selected = selectedGrades.includes(grade.value);
@@ -47,10 +47,7 @@ export function GradeFilter() {
               title={grade.label}
               onClick={() => toggleGrade(grade.value)}
             >
-              <span className="grade-chip__long">{grade.label}</span>
-              <span className="grade-chip__short" aria-hidden="true">
-                {grade.shortLabel}
-              </span>
+              {grade.shortLabel}
             </button>
           );
         })}

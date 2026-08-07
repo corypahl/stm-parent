@@ -11,19 +11,19 @@ const imageUrl = "https://corypahl.github.io/stm-parent/og.png";
 export const metadata: Metadata = {
   metadataBase: new URL("https://corypahl.github.io/stm-parent/"),
   title: {
-    default: "St. Martha Parent Companion",
-    template: "%s · St. Martha Parent Companion",
+    default: "St. Martha School · Unofficial Parent Site",
+    template: "%s · St. Martha School Unofficial Parent Site",
   },
   description,
   openGraph: {
-    title: "St. Martha Parent Companion",
+    title: "St. Martha School · Unofficial Parent Site",
     description,
     type: "website",
-    images: [{ url: imageUrl, width: 1536, height: 1024, alt: "St. Martha Parent Companion — Your school week, made simpler." }],
+    images: [{ url: imageUrl, width: 1536, height: 1024, alt: "St. Martha School Unofficial Parent Site — Your school week, made simpler." }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "St. Martha Parent Companion",
+    title: "St. Martha School · Unofficial Parent Site",
     description,
     images: [imageUrl],
   },
