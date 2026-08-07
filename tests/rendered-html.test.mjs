@@ -41,3 +41,15 @@ test("exports every requested route", async () => {
 test("includes the GitHub Pages no-Jekyll marker", async () => {
   await access(new URL(".nojekyll", outputRoot));
 });
+
+test("places the referenced stylesheet at the deployed artifact path", async () => {
+  const html = await readRoute();
+  const stylesheet = html.match(/<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"/i)?.[1];
+  assert.ok(stylesheet, "exported HTML must reference a stylesheet");
+
+  const deploymentPrefix = "/stm-parent/";
+  assert.ok(stylesheet.startsWith(deploymentPrefix), "stylesheet URL must include the Pages base path");
+
+  const artifactPath = stylesheet.slice(deploymentPrefix.length);
+  await access(new URL(artifactPath, outputRoot));
+});

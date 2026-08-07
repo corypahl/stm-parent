@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "vinext dev",
-    "build": "vinext build",
+    "build": "vinext build && node scripts/prepare-pages.mjs",
     "start": "vite preview --outDir dist/client",
     "test": "npm run test:unit && npm run build && node --test tests/rendered-html.test.mjs",
     "test:unit": "tsx --test tests/filtering.test.ts",
