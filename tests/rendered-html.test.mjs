@@ -14,6 +14,8 @@ test("exports the finished parent companion home", async () => {
   assert.match(html, /St\. Martha Parent Companion/);
   assert.match(html, /Your school week/);
   assert.match(html, /Needs your attention/);
+  assert.match(html, /Student Walk Through/);
+  assert.doesNotMatch(html, /Sample: back-to-school family night/);
   assert.match(html, /All-school notices are always included/);
   assert.match(html, /unofficial, parent-created/i);
   assert.match(html, /Source:/);
@@ -24,7 +26,7 @@ test("exports the finished parent companion home", async () => {
 test("exports every requested route", async () => {
   const routes = [
     ["action", "Needs action"],
-    ["events", "Events"],
+    ["events", "Academic calendar"],
     ["calendar", "Academic calendar"],
     ["staff", "School staff"],
     ["lunch", "Lunch menu"],

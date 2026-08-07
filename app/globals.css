@@ -149,6 +149,9 @@ button.button:disabled, .admin-table button:disabled { cursor: not-allowed; opac
 
 .split-layout { display: grid; grid-template-columns: minmax(0,1.7fr) minmax(290px,.7fr); gap: 24px; align-items: start; }
 .stack-list { display: grid; gap: 12px; }
+.calendar-preview { display: grid; gap: 10px; }
+.calendar-preview .calendar-entry { min-height: 112px; }
+.preview-source { margin: 10px 0 0; color: var(--muted); font-size: 9px; }
 .week-card { overflow: hidden; padding: 28px; border-radius: 16px; background: var(--burgundy-dark); color: white; box-shadow: var(--shadow); }
 .week-card__header { padding-bottom: 17px; border-bottom: 1px solid rgba(255,255,255,.15); }
 .week-card__header .eyebrow { color: #eca8bb; }

@@ -82,7 +82,7 @@ function CardGrid({ items }: { items: ContentItem[] }) {
 export function HomePage() {
   const visible = useVisibleItems();
   const actions = visible.filter((item) => item.contentType === "action").slice(0, 3);
-  const events = visible.filter((item) => item.contentType === "event").slice(0, 3);
+  const upcomingEvents = calendarEvents.slice(0, 3);
   const announcements = visible.filter((item) => item.contentType === "announcement").slice(0, 2);
   const volunteers = visible.filter((item) => item.contentType === "volunteer").slice(0, 2);
 
@@ -99,11 +99,11 @@ export function HomePage() {
           </div>
         </div>
         <div className="home-hero__summary" aria-label="Weekly overview">
-          <span className="summary-date">This week</span>
+          <span className="summary-date">At a glance</span>
           <div className="summary-stat"><strong>{actions.length}</strong><span>items need action</span></div>
-          <div className="summary-stat"><strong>{events.length}</strong><span>upcoming events</span></div>
+          <div className="summary-stat"><strong>{upcomingEvents.length}</strong><span>upcoming events</span></div>
           <div className="summary-stat"><strong>{volunteers.length}</strong><span>ways to help</span></div>
-          <span className="summary-note">Filtered for your selected grades</span>
+          <span className="summary-note">Action items use your selected grades</span>
         </div>
       </section>
 
@@ -116,10 +116,23 @@ export function HomePage() {
 
       <section className="split-layout home-section">
         <div>
-          <SectionHeading eyebrow="Coming up" title="On the calendar" count={events.length} link={{ href: "/events", label: "All events" }} />
-          <div className="stack-list">
-            {events.map((item) => <ContentCard key={item.id} item={item} compact />)}
+          <SectionHeading eyebrow="Coming up" title="On the calendar" count={upcomingEvents.length} link={{ href: "/calendar", label: "Full calendar" }} />
+          <div className="calendar-preview">
+            {upcomingEvents.map((event) => (
+              <article className="calendar-entry" key={event.id}>
+                <time dateTime={event.date}>
+                  <span>{formatCalendarDate(event.date, { month: "short" })}</span>
+                  <strong>{formatCalendarDate(event.date, { day: "numeric" })}</strong>
+                </time>
+                <div>
+                  <div className="badge-row"><span className={`badge calendar-category calendar-category--${event.category.toLowerCase().replaceAll(" ", "-")}`}>{event.category}</span>{event.endDate && <span className="date-range">{formatCalendarRange(event)}</span>}</div>
+                  <h3>{event.title}</h3>
+                  {(event.time || event.details) && <p>{[event.time, event.details].filter(Boolean).join(" · ")}</p>}
+                </div>
+              </article>
+            ))}
           </div>
+          <p className="preview-source">Source: St. Martha 2026–27 Academic Calendar</p>
         </div>
         <aside className="week-card">
           <div className="week-card__header">
@@ -171,22 +184,7 @@ export function ActionPage() {
 }
 
 export function EventsPage() {
-  const items = useVisibleItems(["event"])
-    .sort((a, b) => (a.startAt ?? "9999").localeCompare(b.startAt ?? "9999"));
-  return (
-    <>
-      <PageHeading eyebrow="Dates in one place" title="Events" description="A clean timeline of school, classroom, faith, and family events for the grades you care about." aside={<a className="button" href="https://st-martha.org/school-calendar" target="_blank" rel="noreferrer">Official calendar ↗</a>} />
-      <DemoNotice />
-      <div className="timeline">
-        {items.length ? items.map((item) => (
-          <div className="timeline__row" key={item.id}>
-            <div className="date-tile" aria-hidden="true"><span>{formatDate(item.startAt, { month: "short" })}</span><strong>{formatDate(item.startAt, { day: "numeric" })}</strong></div>
-            <ContentCard item={item} compact />
-          </div>
-        )) : <EmptyState>No events match the selected grades.</EmptyState>}
-      </div>
-    </>
-  );
+  return <CalendarPage />;
 }
 
 export function CalendarPage() {
