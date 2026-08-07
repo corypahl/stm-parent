@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <style>
+      :root { --burgundy:#711b34; --burgundy-dark:#4d1023; --cream:#f7f3ec; --paper:#fff; --ink:#261d20; --muted:#75666b; --line:#dfd4d7; --green:#226445; --amber:#9a5a09; }
+      * { box-sizing:border-box; }
+      body { margin:0; background:var(--cream); color:var(--ink); font:14px/1.45 Arial, sans-serif; }
+      button, input, select, textarea { font:inherit; }
+      header { position:sticky; top:0; z-index:4; display:flex; justify-content:space-between; gap:24px; align-items:center; padding:18px 24px; background:var(--burgundy); color:white; box-shadow:0 3px 16px #33101d33; }
+      header h1 { margin:0 0 3px; font:700 24px/1.1 Georgia, serif; }
+      header p { margin:0; color:#f0dfe5; font-size:12px; }
+      .stats { display:flex; gap:8px; }
+      .stat { min-width:76px; padding:8px 10px; border:1px solid #ffffff33; border-radius:8px; text-align:center; }
+      .stat strong, .stat span { display:block; }
+      .stat strong { font-size:18px; }
+      .stat span { color:#f0dfe5; font-size:10px; text-transform:uppercase; letter-spacing:.05em; }
+      main { padding:20px 24px 32px; }
+      .toolbar { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:16px; }
+      .toolbar p { margin:0; color:var(--muted); font-size:12px; }
+      .filters { display:flex; gap:6px; }
+      .filters button { padding:7px 11px; border:1px solid var(--line); border-radius:999px; background:white; color:var(--muted); cursor:pointer; }
+      .filters button.active { border-color:var(--burgundy); background:var(--burgundy); color:white; }
+      .issue { margin:0 0 26px; }
+      .issue-heading { display:flex; justify-content:space-between; align-items:end; gap:16px; margin-bottom:10px; }
+      .issue-heading h2 { margin:0; font:700 21px/1.15 Georgia, serif; }
+      .issue-heading p { margin:3px 0 0; color:var(--muted); font-size:12px; }
+      .issue-heading a { color:var(--burgundy); font-weight:700; }
+      .cards { display:grid; gap:12px; }
+      .card { overflow:hidden; border:1px solid var(--line); border-radius:12px; background:var(--paper); box-shadow:0 3px 12px #351a2308; }
+      .card-top { display:grid; grid-template-columns:42px minmax(0,1fr) auto; gap:12px; align-items:center; padding:14px 16px; border-bottom:1px solid var(--line); }
+      .order { display:grid; place-items:center; width:34px; height:34px; border-radius:50%; background:#f0e1e6; color:var(--burgundy); font-weight:800; }
+      .card-top h3 { margin:0; font-size:15px; }
+      .card-top small { display:block; margin-top:2px; color:var(--muted); }
+      .status { padding:5px 8px; border-radius:999px; background:#fff0d9; color:var(--amber); font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; }
+      .status--Approved { background:#dff3e8; color:var(--green); }
+      .status--Rejected { background:#eee8ea; color:var(--muted); }
+      form { padding:16px; }
+      .grid { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:12px; }
+      label, fieldset { grid-column:span 4; min-width:0; margin:0; }
+      label.wide, fieldset.wide { grid-column:1/-1; }
+      label.half { grid-column:span 6; }
+      label span, legend { display:block; margin-bottom:5px; color:var(--muted); font-size:10px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; }
+      input, select, textarea { width:100%; border:1px solid var(--line); border-radius:7px; background:white; color:var(--ink); padding:8px 9px; }
+      textarea { min-height:82px; resize:vertical; }
+      input:focus, select:focus, textarea:focus { outline:2px solid #b86883; outline-offset:1px; }
+      fieldset { padding:0; border:0; }
+      .grades { display:flex; flex-wrap:wrap; gap:6px; }
+      .grades label { display:inline-flex; align-items:center; gap:5px; padding:6px 8px; border:1px solid var(--line); border-radius:999px; color:var(--ink); font-size:11px; }
+      .grades input { width:auto; margin:0; }
+      .form-footer { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:14px; padding-top:14px; border-top:1px solid var(--line); }
+      .form-footer p { margin:0; color:var(--muted); font-size:11px; }
+      .actions { display:flex; gap:8px; align-items:center; }
+      .actions select { width:auto; min-width:120px; }
+      .save { padding:8px 14px; border:0; border-radius:7px; background:var(--burgundy); color:white; font-weight:800; cursor:pointer; }
+      .save:hover { background:var(--burgundy-dark); }
+      .save:disabled { opacity:.55; cursor:wait; }
+      .empty { padding:50px 20px; border:1px dashed var(--line); border-radius:12px; background:white; text-align:center; color:var(--muted); }
+      .message { position:fixed; right:20px; bottom:18px; z-index:8; max-width:420px; padding:11px 14px; border-radius:8px; background:var(--ink); color:white; box-shadow:0 5px 20px #0003; }
+      .message.error { background:#8f2330; }
+      .hidden { display:none !important; }
+      @media (max-width:800px) { header { position:static; align-items:flex-start; flex-direction:column; } .toolbar { align-items:flex-start; flex-direction:column; } label, label.half, fieldset { grid-column:1/-1; } .card-top { grid-template-columns:38px minmax(0,1fr); } .card-top .status { grid-column:2; justify-self:start; } .form-footer { align-items:flex-start; flex-direction:column; } }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div>
+        <h1>Newsletter section review</h1>
+        <p>Unreviewed sections stay private. Approved sections enter the public site feed.</p>
+      </div>
+      <div class="stats" id="stats" aria-live="polite"></div>
+    </header>
+    <main>
+      <div class="toolbar">
+        <p>Verify the public text, select grades, add categories, then change the status to Approved and save.</p>
+        <div class="filters" id="filters" aria-label="Filter sections">
+          <button type="button" class="active" data-filter="Unreviewed">Unreviewed</button>
+          <button type="button" data-filter="Approved">Approved</button>
+          <button type="button" data-filter="Rejected">Rejected</button>
+          <button type="button" data-filter="All">All</button>
+        </div>
+      </div>
+      <div id="content"><div class="empty">Loading newsletter sections…</div></div>
+    </main>
+    <div id="message" class="message hidden" role="status"></div>
+    <script>
+      const gradeLabels = {
+        "all-school":"All school", preschool:"Pre-K", kindergarten:"K", "grade-1":"1st", "grade-2":"2nd", "grade-3":"3rd",
+        "grade-4":"4th", "grade-5":"5th", "grade-6":"6th", "grade-7":"7th", "grade-8":"8th"
+      };
+      let data = { items: [], contentTypes: [], gradeTags: [] };
+      let activeFilter = "Unreviewed";
+
+      document.getElementById("filters").addEventListener("click", (event) => {
+        const button = event.target.closest("button[data-filter]");
+        if (!button) return;
+        activeFilter = button.dataset.filter;
+        document.querySelectorAll("#filters button").forEach((item) => item.classList.toggle("active", item === button));
+        render();
+      });
+
+      google.script.run.withSuccessHandler((result) => { data = result; render(); }).withFailureHandler(showError).getSectionAdminData();
+
+      function escapeHtml(value) {
+        return String(value ?? "").replace(/[&<>"]/g, (character) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" })[character]);
+      }
+
+      function render() {
+        renderStats();
+        const visible = data.items.filter((item) => activeFilter === "All" || item.status === activeFilter);
+        if (!visible.length) {
+          document.getElementById("content").innerHTML = `<div class="empty">${data.items.length ? `No ${escapeHtml(activeFilter.toLowerCase())} sections.` : "No sections have been imported yet. Use Parent Site → Import newsletter sections from the spreadsheet menu."}</div>`;
+          return;
+        }
+        const issues = new Map();
+        visible.forEach((item) => {
+          if (!issues.has(item.newsletterId)) issues.set(item.newsletterId, []);
+          issues.get(item.newsletterId).push(item);
+        });
+        document.getElementById("content").innerHTML = [...issues.values()].map((items) => issueHtml(items)).join("");
+        document.querySelectorAll("form[data-id]").forEach((form) => form.addEventListener("submit", saveForm));
+      }
+
+      function renderStats() {
+        const values = ["Unreviewed", "Approved", "Rejected"];
+        document.getElementById("stats").innerHTML = values.map((status) => `<div class="stat"><strong>${data.items.filter((item) => item.status === status).length}</strong><span>${status}</span></div>`).join("");
+      }
+
+      function issueHtml(items) {
+        const issue = items[0];
+        return `<section class="issue">
+          <div class="issue-heading"><div><h2>${escapeHtml(issue.newsletterTitle)}</h2><p>${escapeHtml(issue.newsletterDate || "Date needs review")} · ${items.length} section${items.length === 1 ? "" : "s"} shown</p></div><a href="${escapeHtml(issue.newsletterUrl)}" target="_blank" rel="noreferrer">Open original ↗</a></div>
+          <div class="cards">${items.map(cardHtml).join("")}</div>
+        </section>`;
+      }
+
+      function cardHtml(item) {
+        const checkedGrades = new Set(item.grades);
+        return `<article class="card">
+          <div class="card-top"><span class="order">${item.order}</span><div><h3>${escapeHtml(item.title)}</h3><small>Section ${item.order}</small></div><span class="status status--${escapeHtml(item.status)}">${escapeHtml(item.status)}</span></div>
+          <form data-id="${escapeHtml(item.id)}">
+            <div class="grid">
+              <label class="wide"><span>Public title</span><input name="title" value="${escapeHtml(item.title)}" maxlength="180" required></label>
+              <label class="wide"><span>Public summary</span><textarea name="summary" maxlength="2000">${escapeHtml(item.summary)}</textarea></label>
+              <label><span>Newsletter date</span><input name="newsletterDate" type="date" value="${escapeHtml(item.newsletterDate)}" required></label>
+              <label><span>Content type</span><select name="contentType">${data.contentTypes.map((type) => `<option${type === item.contentType ? " selected" : ""}>${escapeHtml(type)}</option>`).join("")}</select></label>
+              <label><span>Categories</span><input name="categories" value="${escapeHtml(item.categories.join(", "))}" placeholder="Lunch, event, reminder"></label>
+              <fieldset class="wide"><legend>Grades</legend><div class="grades">${data.gradeTags.map((grade) => `<label><input type="checkbox" name="grades" value="${grade}"${checkedGrades.has(grade) ? " checked" : ""}> ${gradeLabels[grade] || grade}</label>`).join("")}</div></fieldset>
+              <label><span>Starts</span><input name="start" type="datetime-local" value="${escapeHtml(item.start)}"></label>
+              <label><span>Ends</span><input name="end" type="datetime-local" value="${escapeHtml(item.end)}"></label>
+              <label><span>Deadline</span><input name="deadline" type="datetime-local" value="${escapeHtml(item.deadline)}"></label>
+              <label class="half"><span>Location</span><input name="location" value="${escapeHtml(item.location)}"></label>
+              <label class="half"><span>Action URL</span><input name="actionUrl" type="url" value="${escapeHtml(item.actionUrl)}" placeholder="https://…"></label>
+              <label><span>All-day event</span><select name="allDay"><option value="true"${item.allDay ? " selected" : ""}>Yes</option><option value="false"${!item.allDay ? " selected" : ""}>No</option></select></label>
+            </div>
+            <div class="form-footer"><p>Approved changes reach the site on its next scheduled update, usually within 30 minutes.</p><div class="actions"><select name="status"><option${item.status === "Unreviewed" ? " selected" : ""}>Unreviewed</option><option${item.status === "Approved" ? " selected" : ""}>Approved</option><option${item.status === "Rejected" ? " selected" : ""}>Rejected</option></select><button class="save" type="submit">Save section</button></div></div>
+          </form>
+        </article>`;
+      }
+
+      function saveForm(event) {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const values = new FormData(form);
+        const button = form.querySelector("button[type=submit]");
+        button.disabled = true;
+        button.textContent = "Saving…";
+        const record = {
+          id: form.dataset.id,
+          title: values.get("title"), summary: values.get("summary"), newsletterDate: values.get("newsletterDate"),
+          contentType: values.get("contentType"), categories: values.get("categories"), grades: values.getAll("grades"),
+          start: values.get("start"), end: values.get("end"), deadline: values.get("deadline"), location: values.get("location"),
+          actionUrl: values.get("actionUrl"), allDay: values.get("allDay") === "true", status: values.get("status")
+        };
+        google.script.run
+          .withSuccessHandler((result) => { data = result; render(); showMessage(record.status === "Approved" ? "Section approved for publication." : "Section saved."); })
+          .withFailureHandler((error) => { button.disabled = false; button.textContent = "Save section"; showError(error); })
+          .saveSectionAdmin(record);
+      }
+
+      function showMessage(text, isError = false) {
+        const element = document.getElementById("message");
+        element.textContent = text;
+        element.className = `message${isError ? " error" : ""}`;
+        window.setTimeout(() => element.classList.add("hidden"), 4000);
+      }
+      function showError(error) { showMessage(error && error.message ? error.message : String(error), true); }
+    </script>
+  </body>
+</html>

@@ -1,8 +1,8 @@
 # St. Martha Parent Companion
 
-An unofficial, parent-created prototype that turns school communications into structured, grade-aware pages for action items, events, lunch, volunteering, documents, handbook search, and archives.
+An unofficial, parent-created site that turns reviewed school communications into structured, grade-aware pages for events, lunch, volunteering, handbook search, contacts, and newsletter archives.
 
-The prototype uses sample JSON data and public facts linked to the [official St. Martha School website](https://st-martha.org/school). It is not operated or endorsed by the school.
+The site combines reviewed Google Sheet content with public facts linked to the [official St. Martha School website](https://st-martha.org/school). It is not operated or endorsed by the school.
 
 Live site: [https://corypahl.github.io/stm-parent/](https://corypahl.github.io/stm-parent/)
 
@@ -40,14 +40,16 @@ Every push to `main` runs `.github/workflows/pages.yml`. The workflow tests, lin
 
 ## What is included
 
-- Nine requested routes, including an admin workflow preview
+- Public routes for Home, Events, Lunch, Volunteer, Handbook, Contacts, and Archive
 - Persistent multi-select grade filters
 - All-school visibility rules
 - Reusable content cards and source links
 - Responsive navigation and accessible form controls
-- Mock newsletter, lunch, document, and handbook data
-- Unit coverage for grade filtering
+- Private Google Sheet admin for section-level newsletter review and approval
+- Automatic Smore section extraction based on horizontal separators
+- Scheduled synchronization of approved content and Google Calendar events
+- Unit coverage for filtering, newsletter extraction, calendar synchronization, and static publishing
 
 ## Explicitly deferred
 
-Authentication, email ingestion, Smore retrieval, AI extraction, AWS infrastructure, and parent accounts are intentionally not part of this first version. See `docs/architecture.md` for the future capability boundaries.
+A separate application backend, public-site authentication, model-assisted extraction, AWS infrastructure, parent accounts, and a live lunch feed remain deferred. See `docs/architecture.md` for the current capability boundaries.

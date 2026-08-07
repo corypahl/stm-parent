@@ -2,6 +2,7 @@ import { writeFile } from "node:fs/promises";
 
 const feedUrl = process.env.GOOGLE_CONTENT_FEED_URL?.trim();
 const outputUrl = new URL("../app/data/google-content.json", import.meta.url);
+const newsletterOutputUrl = new URL("../app/data/google-newsletters.json", import.meta.url);
 
 if (!feedUrl) {
   console.log("Google content sync skipped: GOOGLE_CONTENT_FEED_URL is not configured.");
@@ -32,7 +33,7 @@ const items = payload.items.map((item, index) => {
     ...(item.location ? { location: item.location } : {}),
     ...(item.actionUrl ? { actionUrl: item.actionUrl, actionLabel: item.actionLabel || "Open link" } : {}),
     sourceUrl: item.sourceUrl || "https://st-martha.org/school",
-    sourceLabel: "Reviewed school email",
+    sourceLabel: item.sourceLabel || "Reviewed school email",
     ...(item.sourceNewsletterId ? { sourceNewsletterId: item.sourceNewsletterId } : {}),
     ...(item.newsletterDate ? { newsletterDate: item.newsletterDate } : {}),
     status: "published",
@@ -45,5 +46,22 @@ const items = payload.items.map((item, index) => {
   };
 });
 
+const newsletters = (Array.isArray(payload.newsletters) ? payload.newsletters : []).map((newsletter, index) => {
+  if (!newsletter.title || !newsletter.newsletterDate || !newsletter.sourceUrl) {
+    throw new Error(`Google newsletter ${index + 1} is missing a title, newsletter date, or source URL.`);
+  }
+  return {
+    id: String(newsletter.id || `google-newsletter-${index + 1}`).replace(/[^a-zA-Z0-9_-]/g, "-"),
+    title: String(newsletter.title).trim(),
+    newsletterDate: newsletter.newsletterDate,
+    sourceUrl: newsletter.sourceUrl,
+    itemCount: Number(newsletter.itemCount) || 0,
+    grades: Array.isArray(newsletter.grades) ? newsletter.grades : ["all-school"],
+    status: newsletter.status === "archived" ? "archived" : "published",
+    isDemo: false,
+  };
+});
+
 await writeFile(outputUrl, `${JSON.stringify(items, null, 2)}\n`, "utf8");
-console.log(`Synced ${items.length} approved email item(s) from Google.`);
+await writeFile(newsletterOutputUrl, `${JSON.stringify(newsletters, null, 2)}\n`, "utf8");
+console.log(`Synced ${items.length} approved item(s) and ${newsletters.length} newsletter issue(s) from Google.`);

@@ -3,10 +3,10 @@
 import { useMemo, useState } from "react";
 import contentData from "../data/content.json";
 import googleContentData from "../data/google-content.json";
+import googleNewsletterData from "../data/google-newsletters.json";
 import documentData from "../data/documents.json";
 import lunchData from "../data/lunch.json";
 import handbookData from "../data/handbook.json";
-import newsletterData from "../data/newsletters.json";
 import calendarData from "../data/calendar.json";
 import staffData from "../data/staff.json";
 import type {
@@ -31,7 +31,7 @@ const contentItems = [...(googleContentData as ContentItem[]), ...(contentData a
 const documents = documentData as SchoolDocument[];
 const lunchDays = lunchData as LunchDay[];
 const handbookSections = handbookData as HandbookSection[];
-const newsletters = newsletterData as NewsletterSummary[];
+const newsletters = (googleNewsletterData as NewsletterSummary[]).sort((a, b) => b.newsletterDate.localeCompare(a.newsletterDate));
 const calendarEvents = calendarData as CalendarEvent[];
 const staffMembers = staffData as StaffMember[];
 
@@ -85,7 +85,10 @@ function CardGrid({ items }: { items: ContentItem[] }) {
 export function HomePage() {
   const visible = useVisibleItems();
   const upcomingEvents = calendarEvents.slice(0, 3);
-  const announcements = visible.filter((item) => item.contentType === "announcement").slice(0, 2);
+  const latestNewsletterDate = getLatestNewsletterDate(contentItems);
+  const updates = latestNewsletterDate
+    ? visible.filter((item) => item.newsletterDate === latestNewsletterDate)
+    : [];
 
   return (
     <>
@@ -112,10 +115,10 @@ export function HomePage() {
       </section>
 
       <section className="home-section">
-        <SectionHeading title="School updates" />
-        <div className="card-grid card-grid--two">
-          {announcements.map((item) => <ContentCard key={item.id} item={item} />)}
-        </div>
+        <SectionHeading title="School updates" count={updates.length} />
+        {updates.length
+          ? <div className="card-grid card-grid--two">{updates.map((item) => <ContentCard key={item.id} item={item} />)}</div>
+          : <EmptyState>No newsletter sections have been approved yet.</EmptyState>}
       </section>
     </>
   );
@@ -389,45 +392,34 @@ export function HandbookPage() {
 
 export function ArchivePage() {
   const [query, setQuery] = useState("");
-  const filtered = newsletters.filter((newsletter) => newsletter.title.toLowerCase().includes(query.toLowerCase()));
+  const previousNewsletters = newsletters.slice(1);
+  const filtered = previousNewsletters.filter((newsletter) => newsletter.title.toLowerCase().includes(query.toLowerCase()));
   return (
     <>
-      <PageHeading eyebrow="Past weeks, still findable" title="Newsletter archive" description="Every reviewed newsletter will keep its source, extracted items, dates, and grade coverage in a searchable record." />
-      <DemoNotice>The newsletter records below are samples for validating the archive experience.</DemoNotice>
+      <PageHeading eyebrow="Past weeks, still findable" title="Newsletter archive" description="Open previously published school newsletters from their original source." />
       <label className="search-box"><span className="search-box__icon" aria-hidden="true">⌕</span><span className="sr-only">Search newsletter archive</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search the archive…" /></label>
       <div className="archive-list">
         {filtered.map((newsletter) => (
           <article className="archive-row" key={newsletter.id}>
             <time dateTime={newsletter.newsletterDate}><strong>{formatDate(newsletter.newsletterDate, { day: "2-digit" })}</strong><span>{formatDate(newsletter.newsletterDate, { month: "short", year: "numeric" })}</span></time>
-            <div><div className="badge-row"><span className="badge badge--demo">Sample</span><span className="badge">{newsletter.status}</span></div><h2>{newsletter.title}</h2><p>{newsletter.itemCount} structured items · {newsletter.grades.length} grade groups</p></div>
+            <div><div className="badge-row"><span className="badge">Archived</span></div><h2>{newsletter.title}</h2><p>{newsletter.itemCount} published sections · {newsletter.grades.length} grade groups</p></div>
             <a className="button button--small" href={newsletter.sourceUrl} target="_blank" rel="noreferrer">Original source ↗</a>
           </article>
         ))}
+        {!filtered.length && <EmptyState>{query ? "No previous newsletters match that search." : "Previous newsletters will appear here after a newer issue is published."}</EmptyState>}
       </div>
     </>
   );
 }
 
 export function AdminPage() {
-  const queue = [
-    { title: "Sample News Notes — August 7", status: "Ready for review", items: 10, review: 3, confidence: "86%" },
-    { title: "Sample News Notes — July 31", status: "Published", items: 7, review: 0, confidence: "93%" },
-  ];
   return (
     <>
-      <PageHeading eyebrow="Workflow preview" title="Admin review" description="A non-functional preview of the human review queue. Authentication and newsletter ingestion are intentionally outside this first build." aside={<span className="badge badge--secure">Auth required in MVP</span>} />
-      <div className="notice"><span className="notice__icon" aria-hidden="true">!</span><div><strong>No data is being imported yet</strong><p>This screen validates the editorial workflow only. It does not accept emails, scrape newsletters, publish content, or store personal data.</p></div></div>
-      <div className="admin-stats"><div><span>Imports</span><strong>2</strong><small>sample records</small></div><div><span>Needs review</span><strong>3</strong><small>sample items</small></div><div><span>Published</span><strong>7</strong><small>sample items</small></div></div>
-      <section className="admin-section">
-        <SectionHeading eyebrow="Import queue" title="Newsletter sources" />
-        <div className="admin-table" role="table" aria-label="Sample import queue">
-          <div className="admin-table__header" role="row"><span>Source</span><span>Status</span><span>Items</span><span>Review</span><span>Confidence</span><span /></div>
-          {queue.map((item) => <div className="admin-table__row" role="row" key={item.title}><div><strong>{item.title}</strong><small>Official school site · sample</small></div><span><i className={`dot ${item.review ? "dot--soon" : "dot--open"}`} /> {item.status}</span><span>{item.items}</span><span>{item.review}</span><span>{item.confidence}</span><button type="button" disabled>Review</button></div>)}
-        </div>
-      </section>
+      <PageHeading eyebrow="Private workflow" title="Admin review" description="Newsletter review happens inside the private Google Sheet so unreviewed school communications never enter the public website." aside={<span className="badge badge--secure">Google account required</span>} />
+      <div className="notice"><span className="notice__icon" aria-hidden="true">✓</span><div><strong>Open the private section admin from Google Sheets</strong><p>Sign in as stm.parent.updates@gmail.com, open the review spreadsheet, then choose Parent Site → Open section admin.</p></div></div>
       <section className="workflow">
-        <SectionHeading eyebrow="Future boundary" title="Planned ingestion flow" />
-        <ol><li><span>1</span><div><strong>Receive</strong><p>Store the forwarded source safely.</p></div></li><li><span>2</span><div><strong>Extract</strong><p>Create structured draft items.</p></div></li><li><span>3</span><div><strong>Review</strong><p>Correct dates, links, and grades.</p></div></li><li><span>4</span><div><strong>Publish</strong><p>Send approved content to families.</p></div></li></ol>
+        <SectionHeading eyebrow="Protected publishing" title="How newsletter review works" />
+        <ol><li><span>1</span><div><strong>Import</strong><p>Each horizontal-bar section becomes an unreviewed private record.</p></div></li><li><span>2</span><div><strong>Edit</strong><p>Verify the title and summary, then add grades, categories, dates, and links.</p></div></li><li><span>3</span><div><strong>Approve</strong><p>Only explicitly approved section fields enter the public feed.</p></div></li><li><span>4</span><div><strong>Publish</strong><p>The next scheduled site update places sections on Home, Volunteer, Events, or Archive.</p></div></li></ol>
       </section>
     </>
   );

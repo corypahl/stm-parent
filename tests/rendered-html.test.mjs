@@ -16,6 +16,7 @@ test("exports the finished parent companion home", async () => {
   assert.match(html, /Coming up/);
   assert.match(html, /On the calendar/);
   assert.match(html, /School updates/);
+  assert.match(html, /No newsletter sections have been approved yet/);
   assert.doesNotMatch(html, /home-hero|Needs your attention|At a glance|Weekly overview|official school hours/);
   assert.doesNotMatch(html, /Good to know|Parent service organization|Explore opportunities|cta-panel/);
   assert.match(html, /Source: St\. Martha 2026–27 Academic Calendar/);
@@ -56,6 +57,15 @@ test("exports every requested route", async () => {
   assert.match(volunteerHtml, /Current SignUpGenius and Google Forms opportunities from the latest school newsletter/);
   assert.match(volunteerHtml, /No volunteer signups were included in the latest newsletter for the selected grades/);
   assert.doesNotMatch(volunteerHtml, /About parent involvement|20 hours|10 hours|per family|Prototype content/);
+
+  const archiveHtml = await readRoute("archive");
+  assert.match(archiveHtml, /Previous newsletters will appear here after a newer issue is published/);
+  assert.doesNotMatch(archiveHtml, /Sample News Notes|Prototype content/);
+
+  const adminHtml = await readRoute("admin");
+  assert.match(adminHtml, /Open the private section admin from Google Sheets/);
+  assert.match(adminHtml, /Parent Site.*Open section admin/);
+  assert.doesNotMatch(adminHtml, /non-functional preview|No data is being imported yet|Sample News Notes/);
 });
 
 test("publishes the source handbook and calendar PDFs", async () => {

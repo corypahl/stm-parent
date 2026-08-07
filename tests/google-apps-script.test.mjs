@@ -4,6 +4,7 @@ import test from "node:test";
 import vm from "node:vm";
 
 const source = await readFile(new URL("../automation/google-apps-script/Code.gs", import.meta.url), "utf8");
+const adminSource = await readFile(new URL("../automation/google-apps-script/Admin.html", import.meta.url), "utf8");
 const context = vm.createContext({ console });
 vm.runInContext(`${source}\nthis.__testHelpers = {
   PUBLIC_FEED_VERSION,
@@ -11,6 +12,9 @@ vm.runInContext(`${source}\nthis.__testHelpers = {
   categoryTagsFor_,
   cleanBody_,
   inferContentType_,
+  isVolunteerSignupUrl_,
+  newsletterDateFrom_,
+  parseSmoreNewsletterHtml_,
   preferredUrl_,
   publicSummary_,
 };`, context);
@@ -66,6 +70,49 @@ test("falls back to a normal public link when no newsletter is present", () => {
 });
 
 test("publishes a visible feed version so empty deployments can be verified", () => {
-  assert.equal(helpers.PUBLIC_FEED_VERSION, 2);
+  assert.equal(helpers.PUBLIC_FEED_VERSION, 3);
   assert.match(source, /JSON\.stringify\(\{ version: PUBLIC_FEED_VERSION,/);
+  assert.match(source, /items, newsletters/);
+});
+
+test("splits structured Smore content into individually reviewable sections", () => {
+  const blocks = [];
+  for (let index = 1; index <= 14; index += 1) {
+    blocks.push({ _t: "misc.separator", _id: `separator-${index}` });
+    blocks.push({
+      _t: "text.paragraph",
+      title: `Section ${index} title`,
+      content: [{ c: [`Section ${index} summary`], t: "p" }],
+    });
+    if (index === 6) {
+      blocks.push({ _t: "button", text: "Volunteer", cta: { url: "https://www.signupgenius.com/go/example" } });
+    }
+  }
+  const content = { header: { title: "SUMMER NOTES", subtitle: "07.28.26" }, blocks };
+  const html = `<script>newsletter:{js_content:${JSON.stringify(JSON.stringify(content))}}</script>`;
+  const newsletter = helpers.parseSmoreNewsletterHtml_(html, "https://app.smore.com/n/zk12p", "Fallback title");
+
+  assert.equal(newsletter.id, "smore-zk12p");
+  assert.equal(newsletter.title, "SUMMER NOTES");
+  assert.equal(newsletter.date, "2026-07-28");
+  assert.equal(newsletter.sections.length, 14);
+  assert.equal(newsletter.sections[0].title, "Section 1 title");
+  assert.match(newsletter.sections[0].summary, /Section 1 summary/);
+  assert.equal(newsletter.sections[5].actionUrl, "https://www.signupgenius.com/go/example");
+});
+
+test("recognizes newsletter dates and supported volunteer form URLs", () => {
+  assert.equal(helpers.newsletterDateFrom_("07.28.26"), "2026-07-28");
+  assert.equal(helpers.newsletterDateFrom_("not a date"), "");
+  assert.equal(helpers.isVolunteerSignupUrl_("https://forms.gle/example"), true);
+  assert.equal(helpers.isVolunteerSignupUrl_("https://docs.google.com/forms/d/e/example/viewform"), true);
+  assert.equal(helpers.isVolunteerSignupUrl_("https://docs.google.com/document/d/example"), false);
+});
+
+test("ships a private section editor with explicit approval controls", () => {
+  assert.match(adminSource, /Newsletter section review/);
+  assert.match(adminSource, /Unreviewed sections stay private/);
+  assert.match(adminSource, /Approved/);
+  assert.match(adminSource, /Select at least one grade|name="grades"/);
+  assert.match(source, /String\(valueFrom_\(row, SECTION_HEADERS, "Status"\)\) === "Approved"/);
 });
