@@ -21,7 +21,7 @@ import type {
 import { filterByGrades, formatGradeLabel } from "../lib/filtering";
 import { formatDate } from "../lib/format";
 import { googleCalendar } from "../lib/google-calendar";
-import { assetPath, sitePath } from "../lib/site-path";
+import { assetPath } from "../lib/site-path";
 import { useGradeFilter } from "./GradeFilterProvider";
 import { ContentCard } from "./ContentCard";
 import { EmptyState, PageHeading, SectionHeading } from "./PageHeading";
@@ -111,20 +111,9 @@ export function HomePage() {
       </section>
 
       <section className="home-section">
-        <SectionHeading eyebrow="Good to know" title="School updates" />
+        <SectionHeading title="School updates" />
         <div className="card-grid card-grid--two">
           {announcements.map((item) => <ContentCard key={item.id} item={item} />)}
-        </div>
-      </section>
-
-      <section className="home-section">
-        <div className="cta-panel">
-          <div>
-            <span className="eyebrow eyebrow--light">Parent service organization</span>
-            <h2>There’s a way for every family to help.</h2>
-            <p>The official parent involvement page describes opportunities in classrooms, the lunchroom, events, athletics, and behind the scenes.</p>
-          </div>
-          <a className="button button--light" href={sitePath("/volunteer")}>Explore opportunities <span aria-hidden="true">→</span></a>
         </div>
       </section>
     </>
