@@ -4,6 +4,8 @@ An unofficial, parent-created prototype that turns school communications into st
 
 The prototype uses sample JSON data and public facts linked to the [official St. Martha School website](https://st-martha.org/school). It is not operated or endorsed by the school.
 
+Live site: [https://corypahl.github.io/stm-parent/](https://corypahl.github.io/stm-parent/)
+
 ## Local development
 
 Requirements: Node.js 22.13 or newer.
@@ -15,6 +17,13 @@ npm run dev
 
 Open `http://localhost:3000`.
 
+To preview the generated static site instead:
+
+```bash
+npm run build
+npm run start
+```
+
 ## Validation
 
 ```bash
@@ -22,6 +31,12 @@ npm run test:unit
 npm run build
 npm run lint
 ```
+
+## Codex and deployment workflow
+
+This is a Codex-first repository. Codex works directly on `main`, creates one intentional commit for each completed change, and pushes that commit to `origin/main` before finishing.
+
+Every push to `main` runs `.github/workflows/pages.yml`. The workflow tests, lints, creates a static export, and deploys `dist/client` to GitHub Pages. Request-time server features are intentionally unavailable while GitHub Pages is the deployment target.
 
 ## What is included
 

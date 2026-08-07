@@ -1,8 +1,8 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import Link from "next/link";
 import { useState, type ReactNode } from "react";
+import { routePath, sitePath } from "../lib/site-path";
 import { GradeFilter } from "./GradeFilter";
 import { GradeFilterProvider } from "./GradeFilterProvider";
 
@@ -19,6 +19,7 @@ const navigation = [
 
 export function SiteShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const activePath = routePath(pathname);
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -32,7 +33,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
       </div>
       <header className="site-header">
         <div className="site-header__top page-width">
-          <Link className="brand" href="/" aria-label="St. Martha Parent Companion home">
+          <a className="brand" href={sitePath("/")} aria-label="St. Martha Parent Companion home">
             <span className="brand__mark" aria-hidden="true">
               M
             </span>
@@ -40,7 +41,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
               <span className="brand__school">St. Martha</span>
               <span className="brand__name">Parent Companion</span>
             </span>
-          </Link>
+          </a>
           <div className="header-actions">
             <a className="official-link" href="https://st-martha.org/school" target="_blank" rel="noreferrer">
               Official school site <span aria-hidden="true">↗</span>
@@ -66,18 +67,18 @@ export function SiteShell({ children }: { children: ReactNode }) {
             {navigation.map((item) => (
               <a
                 key={item.href}
-                href={item.href}
-                className={pathname === item.href ? "active" : ""}
-                aria-current={pathname === item.href ? "page" : undefined}
+                href={sitePath(item.href)}
+                className={activePath === item.href ? "active" : ""}
+                aria-current={activePath === item.href ? "page" : undefined}
                 onClick={() => setMenuOpen(false)}
               >
                 {item.label}
               </a>
             ))}
             <a
-              href="/admin"
-              className={`admin-link ${pathname === "/admin" ? "active" : ""}`}
-              aria-current={pathname === "/admin" ? "page" : undefined}
+              href={sitePath("/admin")}
+              className={`admin-link ${activePath === "/admin" ? "active" : ""}`}
+              aria-current={activePath === "/admin" ? "page" : undefined}
               onClick={() => setMenuOpen(false)}
             >
               Admin preview

@@ -15,6 +15,7 @@ import type {
 } from "../types/content";
 import { filterByGrades, formatGradeLabel } from "../lib/filtering";
 import { formatDate } from "../lib/format";
+import { sitePath } from "../lib/site-path";
 import { useGradeFilter } from "./GradeFilterProvider";
 import { ContentCard } from "./ContentCard";
 import { EmptyState, PageHeading, SectionHeading } from "./PageHeading";
@@ -73,7 +74,7 @@ export function HomePage() {
           <h1>Your school week, <em>made simpler.</em></h1>
           <p>One calm place for the dates, forms, signups, and details buried across weekly communications.</p>
           <div className="hero-actions">
-            <a className="button button--light" href="/action">See what needs action <span aria-hidden="true">→</span></a>
+            <a className="button button--light" href={sitePath("/action")}>See what needs action <span aria-hidden="true">→</span></a>
             <a className="button button--ghost-light" href="https://st-martha.org/school" target="_blank" rel="noreferrer">Official school site ↗</a>
           </div>
         </div>
@@ -129,7 +130,7 @@ export function HomePage() {
             <h2>There’s a way for every family to help.</h2>
             <p>The official parent involvement page describes opportunities in classrooms, the lunchroom, events, athletics, and behind the scenes.</p>
           </div>
-          <a className="button button--light" href="/volunteer">Explore opportunities <span aria-hidden="true">→</span></a>
+          <a className="button button--light" href={sitePath("/volunteer")}>Explore opportunities <span aria-hidden="true">→</span></a>
         </div>
       </section>
     </>

@@ -1,24 +1,16 @@
 import assert from "node:assert/strict";
+import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 
-async function render(pathname = "/") {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}-${pathname}`);
-  const { default: worker } = await import(workerUrl.href);
+const outputRoot = new URL("../dist/client/", import.meta.url);
 
-  return worker.fetch(
-    new Request(`http://localhost${pathname}`, { headers: { accept: "text/html" } }),
-    { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
-    { waitUntil() {}, passThroughOnException() {} },
-  );
+async function readRoute(pathname = "") {
+  const path = pathname ? `${pathname}.html` : "index.html";
+  return readFile(new URL(path, outputRoot), "utf8");
 }
 
-test("server-renders the finished parent companion home", async () => {
-  const response = await render();
-  assert.equal(response.status, 200);
-  assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
-
-  const html = await response.text();
+test("exports the finished parent companion home", async () => {
+  const html = await readRoute();
   assert.match(html, /St\. Martha Parent Companion/);
   assert.match(html, /Your school week/);
   assert.match(html, /Needs your attention/);
@@ -29,21 +21,23 @@ test("server-renders the finished parent companion home", async () => {
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|Your site is taking shape/i);
 });
 
-test("all requested routes render", async () => {
+test("exports every requested route", async () => {
   const routes = [
-    ["/action", "Needs action"],
-    ["/events", "Events"],
-    ["/lunch", "Lunch menu"],
-    ["/volunteer", "Volunteer"],
-    ["/documents", "Documents &amp; links"],
-    ["/handbook", "Handbook search"],
-    ["/archive", "Newsletter archive"],
-    ["/admin", "Admin review"],
+    ["action", "Needs action"],
+    ["events", "Events"],
+    ["lunch", "Lunch menu"],
+    ["volunteer", "Volunteer"],
+    ["documents", "Documents &amp; links"],
+    ["handbook", "Handbook search"],
+    ["archive", "Newsletter archive"],
+    ["admin", "Admin review"],
   ];
 
   for (const [pathname, heading] of routes) {
-    const response = await render(pathname);
-    assert.equal(response.status, 200, pathname);
-    assert.match(await response.text(), new RegExp(heading, "i"), pathname);
+    assert.match(await readRoute(pathname), new RegExp(heading, "i"), pathname);
   }
+});
+
+test("includes the GitHub Pages no-Jekyll marker", async () => {
+  await access(new URL(".nojekyll", outputRoot));
 });

@@ -44,4 +44,4 @@ The shared `ContentItem` model follows the product specification: content type, 
 2. Build the responsive shell, mobile navigation, and persistent grade selector.
 3. Implement the nine requested routes using reusable cards and page primitives.
 4. Add unit tests and project documentation.
-5. Validate the production build and deploy the static prototype.
+5. Validate the static export and deploy it from `main` through GitHub Pages.

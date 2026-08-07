@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { sitePath } from "../lib/site-path";
 
 export function PageHeading({
   eyebrow,
@@ -42,7 +43,7 @@ export function SectionHeading({
           {title} {count !== undefined && <span className="count">{count}</span>}
         </h2>
       </div>
-      {link && <a href={link.href}>{link.label} <span aria-hidden="true">→</span></a>}
+      {link && <a href={sitePath(link.href)}>{link.label} <span aria-hidden="true">→</span></a>}
     </div>
   );
 }

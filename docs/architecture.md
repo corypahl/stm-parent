@@ -2,12 +2,17 @@
 
 This first version is intentionally a single vinext application. Mock JSON is imported at build time and the grade preference is the only browser-stored state.
 
+## Hosting
+
+The application uses vinext static export and is deployed from `main` by GitHub Actions to GitHub Pages. The repository name is configured as the production base path during GitHub Actions builds. All routes must remain statically renderable while this hosting model is active.
+
 ## Current boundaries
 
 - `app/types/content.ts` is the contract that future APIs and ingestion jobs should return.
 - `app/lib/filtering.ts` is independent of React and can be reused in API or test code.
 - Each imported item retains a public source URL; raw email content is not part of the public model.
 - The admin route is a visual workflow preview and has no mutations.
+- `.github/workflows/pages.yml` is the canonical production deployment path.
 
 ## Deferred capabilities
 
