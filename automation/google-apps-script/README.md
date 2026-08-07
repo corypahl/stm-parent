@@ -17,10 +17,16 @@ This Apps Script belongs to `stm.parent.updates@gmail.com`. It keeps complete fo
 
 - Every incoming message begins with status `Review`.
 - Edit the public title and summary, remove student names or private information, add dates and location where applicable, and confirm grade tags.
+- HTML-only and incorrectly labeled HTML messages are converted into readable plain text for review.
+- Smore newsletter links are preferred over tracking pixels and receive a `Read newsletter` action with a `Newsletter` category.
 - Choose `Approved` to publish the safe fields to the site.
 - Approved rows with content type `event` and a start date are added to Google Calendar.
 - Choose `Remove` to delete an event previously created by the automation.
 - The `Private Email Body`, sender, and original subject are never returned by the public feed.
+
+## Update an existing deployment
+
+After replacing `Code.gs`, open **Deploy → Manage deployments**, edit the existing web-app deployment, choose **New version**, and deploy. The `/exec` URL remains the same. Version 2 of this script returns `"version":2` in the public JSON response so an empty feed can still be verified.
 
 ## Seed the 2026–27 calendar
 

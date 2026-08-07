@@ -1,5 +1,6 @@
 const QUEUE_SHEET = "Review Queue";
 const CALENDAR_ID = "stm.parent.updates@gmail.com";
+const PUBLIC_FEED_VERSION = 2;
 const HEADERS = [
   "Message ID",
   "Received At",
@@ -75,7 +76,9 @@ function processInbox() {
     let addedFromThread = false;
     for (const message of thread.getMessages()) {
       if (existingIds.has(message.getId())) continue;
-      const body = cleanBody_(message.getPlainBody());
+      const plainBody = message.getPlainBody();
+      const htmlBody = message.getBody();
+      const body = cleanBody_(plainBody || htmlBody);
       const subject = cleanSubject_(message.getSubject());
       rows.push([
         message.getId(),
@@ -91,7 +94,7 @@ function processInbox() {
         true,
         "",
         "all-school",
-        firstUrl_(body),
+        preferredUrl_(plainBody, htmlBody),
         "Review",
         "",
         "",
@@ -166,26 +169,30 @@ function doGet() {
   const rows = sheet.getLastRow() < 2 ? [] : sheet.getRange(2, 1, sheet.getLastRow() - 1, HEADERS.length).getValues();
   const items = rows
     .filter((row) => String(value_(row, "Status")) === "Approved")
-    .map((row) => ({
-      id: String(value_(row, "Message ID")),
-      title: String(value_(row, "Title")).trim(),
-      summary: String(value_(row, "Public Summary")).trim(),
-      contentType: String(value_(row, "Content Type") || "announcement"),
-      gradeTags: String(value_(row, "Grades") || "all-school").split(",").map((value) => value.trim()).filter(Boolean),
-      categoryTags: ["Forwarded school email"],
-      startAt: isoValue_(value_(row, "Start")),
-      endAt: isoValue_(value_(row, "End")),
-      location: String(value_(row, "Location") || ""),
-      actionUrl: String(value_(row, "Action URL") || ""),
-      sourceUrl: "https://st-martha.org/school",
-      createdAt: isoValue_(value_(row, "Received At")),
-      updatedAt: isoValue_(value_(row, "Published At")) || new Date().toISOString(),
-      publishedAt: isoValue_(value_(row, "Published At")) || new Date().toISOString(),
-    }))
+    .map((row) => {
+      const actionUrl = String(value_(row, "Action URL") || "");
+      return {
+        id: String(value_(row, "Message ID")),
+        title: String(value_(row, "Title")).trim(),
+        summary: String(value_(row, "Public Summary")).trim(),
+        contentType: String(value_(row, "Content Type") || "announcement"),
+        gradeTags: String(value_(row, "Grades") || "all-school").split(",").map((value) => value.trim()).filter(Boolean),
+        categoryTags: categoryTagsFor_(actionUrl),
+        startAt: isoValue_(value_(row, "Start")),
+        endAt: isoValue_(value_(row, "End")),
+        location: String(value_(row, "Location") || ""),
+        actionUrl,
+        actionLabel: actionLabelFor_(actionUrl),
+        sourceUrl: "https://st-martha.org/school",
+        createdAt: isoValue_(value_(row, "Received At")),
+        updatedAt: isoValue_(value_(row, "Published At")) || new Date().toISOString(),
+        publishedAt: isoValue_(value_(row, "Published At")) || new Date().toISOString(),
+      };
+    })
     .filter((item) => item.title);
 
   return ContentService
-    .createTextOutput(JSON.stringify({ updatedAt: new Date().toISOString(), items }))
+    .createTextOutput(JSON.stringify({ version: PUBLIC_FEED_VERSION, updatedAt: new Date().toISOString(), items }))
     .setMimeType(ContentService.MimeType.JSON);
 }
 
@@ -226,21 +233,25 @@ function cleanSubject_(subject) {
 }
 
 function cleanBody_(body) {
-  return String(body || "")
+  const source = String(body || "").replace(/\r/g, "");
+  const text = /<\/?[a-z][\s\S]*?>/i.test(source) ? htmlToText_(source) : decodeHtmlEntities_(source);
+  return text
     .replace(/\r/g, "")
     .replace(/[ \t]+\n/g, "\n")
     .replace(/\n{3,}/g, "\n\n")
+    .replace(/[ \t]{2,}/g, " ")
     .trim()
     .slice(0, 30000);
 }
 
 function publicSummary_(body) {
-  const lines = body.split("\n").map((line) => line.trim()).filter((line) => line && !/^(from|sent|to|subject):/i.test(line));
+  const lines = cleanBody_(body).split("\n").map((line) => line.trim()).filter((line) => line && !/^(from|sent|to|subject):/i.test(line));
   return lines.join(" ").replace(/\s+/g, " ").slice(0, 700);
 }
 
 function inferContentType_(subject, body) {
   const text = `${subject} ${body}`.toLowerCase();
+  if (/newsletter|(?:summer|weekly|school) notes|smore\.com/.test(text)) return "announcement";
   if (/sign[ -]?up|volunteer|help needed/.test(text)) return "volunteer";
   if (/permission|form|registration/.test(text)) return "form";
   if (/deadline|due (by|on)|last day to/.test(text)) return "deadline";
@@ -248,9 +259,91 @@ function inferContentType_(subject, body) {
   return "announcement";
 }
 
-function firstUrl_(body) {
-  const match = body.match(/https?:\/\/[^\s<>]+/i);
-  return match ? match[0].replace(/[),.;]+$/, "") : "";
+function htmlToText_(html) {
+  return decodeHtmlEntities_(String(html || "")
+    .replace(/<!--[\s\S]*?-->/g, " ")
+    .replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi, " ")
+    .replace(/<br\s*\/?\s*>/gi, "\n")
+    .replace(/<li\b[^>]*>/gi, "• ")
+    .replace(/<\/(?:p|div|li|h[1-6]|tr|section|article)>/gi, "\n")
+    .replace(/<img\b[^>]*>/gi, " ")
+    .replace(/<[^>]+>/g, " "));
+}
+
+function decodeHtmlEntities_(value) {
+  const named = {
+    amp: "&",
+    apos: "'",
+    gt: ">",
+    hellip: "…",
+    ldquo: "“",
+    lsquo: "‘",
+    lt: "<",
+    mdash: "—",
+    nbsp: " ",
+    ndash: "–",
+    quot: '"',
+    rdquo: "”",
+    rsquo: "’",
+  };
+  return String(value || "").replace(/&(#x[\da-f]+|#\d+|[a-z][\da-z]+);/gi, (match, entity) => {
+    const lower = entity.toLowerCase();
+    if (Object.prototype.hasOwnProperty.call(named, lower)) return named[lower];
+    if (lower[0] !== "#") return match;
+    const hexadecimal = lower.slice(0, 2) === "#x";
+    const codePoint = Number.parseInt(lower.slice(hexadecimal ? 2 : 1), hexadecimal ? 16 : 10);
+    if (!Number.isFinite(codePoint) || codePoint < 0 || codePoint > 0x10ffff) return match;
+    try {
+      return String.fromCodePoint(codePoint);
+    } catch (error) {
+      return match;
+    }
+  });
+}
+
+function preferredUrl_() {
+  const source = Array.prototype.slice.call(arguments).filter(Boolean).join("\n");
+  const matches = source.match(/https?:\/\/[^\s<>"']+/gi) || [];
+  const candidates = [];
+  matches.forEach((match) => {
+    const normalized = normalizeUrl_(match);
+    if (normalized && !isIgnoredUrl_(normalized) && candidates.indexOf(normalized) < 0) candidates.push(normalized);
+  });
+  return candidates.find(isSmoreUrl_) || candidates[0] || "";
+}
+
+function normalizeUrl_(value) {
+  let normalized = decodeHtmlEntities_(String(value || "")).replace(/[\])},.;!?]+$/, "");
+  const redirect = normalized.match(/[?&](?:url|u|target)=([^&]+)/i);
+  if (redirect) {
+    try {
+      const unwrapped = decodeURIComponent(redirect[1]);
+      if (/^https?:\/\//i.test(unwrapped)) normalized = unwrapped;
+    } catch (error) {
+      // Keep the original URL when a redirect parameter is malformed.
+    }
+  }
+  return normalized;
+}
+
+function isIgnoredUrl_(url) {
+  const lower = String(url || "").toLowerCase();
+  return /renweb\.com\/rmt\/eo\.ashx/.test(lower)
+    || /\/(?:unsubscribe|opt-?out|email-preferences|preferences)(?:[/?#]|$)/.test(lower)
+    || /[?&](?:unsubscribe|optout)=/.test(lower)
+    || /\.(?:gif|jpe?g|png|webp)(?:[?#]|$)/.test(lower);
+}
+
+function isSmoreUrl_(url) {
+  return /^https?:\/\/(?:[a-z0-9-]+\.)*smore\.com(?:[/:?#]|$)/i.test(String(url || ""));
+}
+
+function actionLabelFor_(url) {
+  return isSmoreUrl_(url) ? "Read newsletter" : "Open link";
+}
+
+function categoryTagsFor_(url) {
+  return [isSmoreUrl_(url) ? "Newsletter" : "Forwarded school email"];
 }
 
 function asDate_(value) {
