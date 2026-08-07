@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import contentData from "../data/content.json";
+import googleContentData from "../data/google-content.json";
 import documentData from "../data/documents.json";
 import lunchData from "../data/lunch.json";
 import handbookData from "../data/handbook.json";
@@ -19,12 +20,13 @@ import type {
 } from "../types/content";
 import { filterByGrades, formatGradeLabel } from "../lib/filtering";
 import { formatDate } from "../lib/format";
+import { googleCalendar } from "../lib/google-calendar";
 import { assetPath, sitePath } from "../lib/site-path";
 import { useGradeFilter } from "./GradeFilterProvider";
 import { ContentCard } from "./ContentCard";
 import { EmptyState, PageHeading, SectionHeading } from "./PageHeading";
 
-const contentItems = contentData as ContentItem[];
+const contentItems = [...(googleContentData as ContentItem[]), ...(contentData as ContentItem[])];
 const documents = documentData as SchoolDocument[];
 const lunchDays = lunchData as LunchDay[];
 const handbookSections = handbookData as HandbookSection[];
@@ -204,9 +206,20 @@ export function CalendarPage() {
       <PageHeading
         eyebrow="2026–27 school year"
         title="Academic calendar"
-        description="Every date from the school-issued calendar, organized for quick scanning and backed by the original one-page PDF."
+        description="Every date from the school-issued calendar, with a live Google Calendar that families can subscribe to for future updates."
         aside={<a className="button" href={calendarPdf} target="_blank" rel="noreferrer">Download calendar PDF ↗</a>}
       />
+      <section className="calendar-subscribe" aria-labelledby="calendar-subscribe-title">
+        <div>
+          <span className="eyebrow eyebrow--light">Stay up to date</span>
+          <h2 id="calendar-subscribe-title">Add school events to your calendar.</h2>
+          <p>Subscribe once and approved event updates will appear in your calendar automatically.</p>
+        </div>
+        <div className="calendar-subscribe__actions">
+          <a className="button button--light" href={googleCalendar.subscribeUrl} target="_blank" rel="noreferrer">Subscribe with Google ↗</a>
+          <a className="button button--ghost-light" href={googleCalendar.publicIcalUrl}>Apple or Outlook (.ics)</a>
+        </div>
+      </section>
       <div className="source-banner" role="note">
         <div><strong>School-issued calendar</strong><span>Updated July 29, 2026</span></div>
         <p>The source notes that dates may change during the school year. Check school communications before making plans.</p>

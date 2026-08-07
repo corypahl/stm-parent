@@ -215,6 +215,10 @@ button.button:disabled, .admin-table button:disabled { cursor: not-allowed; opac
 .source-footer { display: flex; justify-content: space-between; gap: 20px; margin-top: 34px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 10px; }
 
 .calendar-toolbar { display: flex; align-items: stretch; gap: 12px; margin-bottom: 9px; }
+.calendar-subscribe { display: flex; justify-content: space-between; align-items: center; gap: 36px; margin: -10px 0 28px; padding: 28px 30px; border-radius: 15px; background: linear-gradient(135deg, var(--burgundy), #8b2d4c); color: white; box-shadow: var(--shadow); }
+.calendar-subscribe h2 { margin: 5px 0 7px; font: 700 28px/1.1 var(--serif); }
+.calendar-subscribe p { max-width: 590px; margin: 0; color: #eddde2; font-size: 12px; }
+.calendar-subscribe__actions { display: flex; flex: 0 0 auto; flex-wrap: wrap; gap: 8px; }
 .calendar-search { flex: 1 1 560px; max-width: 700px; margin: 0; }
 .select-field { display: flex; align-items: center; gap: 9px; padding: 0 12px; border: 1px solid #d9d0c7; border-radius: 10px; background: white; }
 .select-field span { color: var(--muted); font-size: 9px; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
@@ -363,6 +367,9 @@ button.button:disabled, .admin-table button:disabled { cursor: not-allowed; opac
   .page-cite { display: inline-flex; margin-top: 15px; }
   .source-banner { grid-template-columns: 1fr; gap: 8px; }
   .calendar-toolbar { align-items: stretch; flex-direction: column; }
+  .calendar-subscribe { align-items: flex-start; flex-direction: column; gap: 20px; padding: 24px; }
+  .calendar-subscribe__actions { width: 100%; }
+  .calendar-subscribe__actions .button { flex: 1 1 210px; }
   .calendar-search { flex-basis: auto; max-width: none; }
   .select-field { justify-content: space-between; }
   .calendar-month { grid-template-columns: 1fr; gap: 14px; }

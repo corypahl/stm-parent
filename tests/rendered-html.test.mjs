@@ -15,7 +15,7 @@ test("exports the finished parent companion home", async () => {
   assert.match(html, /Unofficial Parent Site/);
   assert.match(html, /Your school week/);
   assert.match(html, /Needs your attention/);
-  assert.match(html, /Student Walk Through/);
+  assert.match(html, /Source: St\. Martha 2026–27 Academic Calendar/);
   assert.doesNotMatch(html, /Sample: back-to-school family night/);
   assert.match(html, /All-school notices are always included/);
   assert.match(html, /Grade Filter/);
@@ -44,11 +44,18 @@ test("exports every requested route", async () => {
   for (const [pathname, heading] of routes) {
     assert.match(await readRoute(pathname), new RegExp(heading, "i"), pathname);
   }
+
+  const calendarHtml = await readRoute("calendar");
+  assert.match(calendarHtml, /Subscribe with Google/);
+  assert.match(calendarHtml, /stm\.parent\.updates%40gmail\.com\/public\/basic\.ics/);
 });
 
 test("publishes the source handbook and calendar PDFs", async () => {
   await access(new URL("documents/2025-26-st-martha-handbook.pdf", outputRoot));
   await access(new URL("documents/2026-27-academic-calendar.pdf", outputRoot));
+  const calendarImport = await readFile(new URL("documents/st-martha-2026-27-calendar.ics", outputRoot), "utf8");
+  assert.match(calendarImport, /^BEGIN:VCALENDAR/);
+  assert.match(calendarImport, /BEGIN:VEVENT/);
 
   assert.match(await readRoute("handbook"), /33 content pages/i);
   assert.match(await readRoute("calendar"), /Updated July 29, 2026/i);

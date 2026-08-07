@@ -1,0 +1,459 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//St. Martha Unofficial Parent Site//Academic Calendar//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:St. Martha School Parent Events — Unofficial
+X-WR-TIMEZONE:America/Detroit
+BEGIN:VEVENT
+UID:2026-08-20-walkthrough@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20260820
+DTEND;VALUE=DATE:20260821
+SUMMARY:Student Walk Through
+DESCRIPTION:4:00–5:30 p.m.\nMeet the Miracles\, 5:30–7:00 p.m.\nSourc
+ e: St. Martha 2026–27 Academic Calendar
+CATEGORIES:Family event
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-08-24-first-day@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20260824
+DTEND;VALUE=DATE:20260825
+SUMMARY:First day of school
+DESCRIPTION:Half day for kindergarten through grade 8.\nSource: St. Marth
+ a 2026–27 Academic Calendar
+CATEGORIES:School day
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-08-25-first-full-day@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20260825
+DTEND;VALUE=DATE:20260826
+SUMMARY:First full day of school
+DESCRIPTION:Grades 1–8.\nSource: St. Martha 2026–27 Academic Calendar
+CATEGORIES:School day
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-08-25-kindergarten@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20260825
+DTEND;VALUE=DATE:20260827
+SUMMARY:Kindergarten half days
+DESCRIPTION:Source: St. Martha 2026–27 Academic Calendar
+CATEGORIES:School day
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-09-04-labor-day@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20260904
+DTEND;VALUE=DATE:20260908
+SUMMARY:No school — Labor Day
+DESCRIPTION:Source: St. Martha 2026–27 Academic Calendar
+CATEGORIES:No school
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-09-08-resume@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20260908
+DTEND;VALUE=DATE:20260909
+SUMMARY:School resumes
+DESCRIPTION:Kindergarten through grade 8.\nSource: St. Martha 2026–27 A
+ cademic Calendar
+CATEGORIES:School day
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-09-09-preschool@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20260909
+DTEND;VALUE=DATE:20260910
+SUMMARY:First day of preschool
+DESCRIPTION:Source: St. Martha 2026–27 Academic Calendar
+CATEGORIES:School day
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-09-10-curriculum-night@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20260910
+DTEND;VALUE=DATE:20260911
+SUMMARY:Curriculum Night
+DESCRIPTION:6:00 p.m.\nSource: St. Martha 2026–27 Academic Calendar
+CATEGORIES:Family event
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-09-24-grandparents@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20260924
+DTEND;VALUE=DATE:20260925
+SUMMARY:Grandparents/VIP Day
+DESCRIPTION:Source: St. Martha 2026–27 Academic Calendar
+CATEGORIES:Family event
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-09-25-cougar-commotion@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20260925
+DTEND;VALUE=DATE:20260926
+SUMMARY:Cougar Commotion
+DESCRIPTION:At Lansing Catholic High School for grades 4–8.\nSource: St
+ . Martha 2026–27 Academic Calendar
+CATEGORIES:Family event
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-13-protect-young-eyes@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20261013
+DTEND;VALUE=DATE:20261014
+SUMMARY:Protect Young Eyes Parent Night
+DESCRIPTION:6:30–8:00 p.m.\nDigital discernment presentation.\nSource:
+  St. Martha 2026–27 Academic Calendar
+CATEGORIES:Family event
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-15-staff-pd@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20261015
+DTEND;VALUE=DATE:20261017
+SUMMARY:No school — Staff PD
+DESCRIPTION:Source: St. Martha 2026–27 Academic Calendar
+CATEGORIES:No school
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-23-fundraiser@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20261023
+DTEND;VALUE=DATE:20261024
+SUMMARY:St. Martha Celebrates fundraiser
+DESCRIPTION:Source: St. Martha 2026–27 Academic Calendar
+CATEGORIES:Family event
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-27-quarter@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20261027
+DTEND;VALUE=DATE:20261028
+SUMMARY:End of 1st quarter
+DESCRIPTION:Source: St. Martha 2026–27 Academic Calendar
+CATEGORIES:Academic
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-10-30-trunk-or-treat@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20261030
+DTEND;VALUE=DATE:20261031
+SUMMARY:Halloween Trunk or Treat
+DESCRIPTION:Report cards posted.\nSource: St. Martha 2026–27 Academic C
+ alendar
+CATEGORIES:Family event
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-12-conferences@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20261112
+DTEND;VALUE=DATE:20261113
+SUMMARY:Parent/Teacher Conferences
+DESCRIPTION:Half day with 11:30 a.m. dismissal.\nSource: St. Martha 2026
+ –27 Academic Calendar
+CATEGORIES:Academic
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-13-conferences@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20261113
+DTEND;VALUE=DATE:20261114
+SUMMARY:No school — Parent/Teacher Conferences
+DESCRIPTION:Source: St. Martha 2026–27 Academic Calendar
+CATEGORIES:No school
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-25-thanksgiving@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20261125
+DTEND;VALUE=DATE:20261128
+SUMMARY:No school — Thanksgiving Break
+DESCRIPTION:Source: St. Martha 2026–27 Academic Calendar
+CATEGORIES:No school
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-17-christmas-program@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20261217
+DTEND;VALUE=DATE:20261218
+SUMMARY:PreK–8th Grade Christmas Program
+DESCRIPTION:6:30 p.m.\nSource: St. Martha 2026–27 Academic Calendar
+CATEGORIES:Family event
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-12-21-christmas-break@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20261221
+DTEND;VALUE=DATE:20270104
+SUMMARY:Christmas Break
+DESCRIPTION:Source: St. Martha 2026–27 Academic Calendar
+CATEGORIES:No school
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-04-back@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20270104
+DTEND;VALUE=DATE:20270105
+SUMMARY:Back to school
+DESCRIPTION:Source: St. Martha 2026–27 Academic Calendar
+CATEGORIES:School day
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-15-quarter@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20270115
+DTEND;VALUE=DATE:20270116
+SUMMARY:End of 2nd quarter
+DESCRIPTION:Source: St. Martha 2026–27 Academic Calendar
+CATEGORIES:Academic
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-18-mlk@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20270118
+DTEND;VALUE=DATE:20270119
+SUMMARY:No school — MLK Day / Staff PD
+DESCRIPTION:Source: St. Martha 2026–27 Academic Calendar
+CATEGORIES:No school
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-21-report-cards@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20270121
+DTEND;VALUE=DATE:20270122
+SUMMARY:Report cards posted
+DESCRIPTION:Source: St. Martha 2026–27 Academic Calendar
+CATEGORIES:Academic
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-01-31-csw-mass@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20270131
+DTEND;VALUE=DATE:20270201
+SUMMARY:Catholic Schools Week Mass
+DESCRIPTION:10:00 a.m.\nSource: St. Martha 2026–27 Academic Calendar
+CATEGORIES:Faith
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-02-01-csw@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20270201
+DTEND;VALUE=DATE:20270206
+SUMMARY:Catholic Schools Week
+DESCRIPTION:Source: St. Martha 2026–27 Academic Calendar
+CATEGORIES:Faith
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-02-10-conferences@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20270210
+DTEND;VALUE=DATE:20270211
+SUMMARY:Full school day and afternoon conferences
+DESCRIPTION:3:25 p.m. dismissal.\nSource: St. Martha 2026–27 Academic C
+ alendar
+CATEGORIES:Academic
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-02-11-conferences@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20270211
+DTEND;VALUE=DATE:20270212
+SUMMARY:Parent/Teacher Conferences
+DESCRIPTION:Half day with 11:30 a.m. dismissal.\nSource: St. Martha 2026
+ –27 Academic Calendar
+CATEGORIES:Academic
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-02-12-presidents-weekend@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20270212
+DTEND;VALUE=DATE:20270216
+SUMMARY:No school — Presidents' Weekend
+DESCRIPTION:Source: St. Martha 2026–27 Academic Calendar
+CATEGORIES:No school
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-03-01-book-fair@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20270301
+DTEND;VALUE=DATE:20270306
+SUMMARY:Ignatius Book Fair
+DESCRIPTION:Source: St. Martha 2026–27 Academic Calendar
+CATEGORIES:Family event
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-03-04-literacy-night@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20270304
+DTEND;VALUE=DATE:20270305
+SUMMARY:Family Literacy Night
+DESCRIPTION:Source: St. Martha 2026–27 Academic Calendar
+CATEGORIES:Family event
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-03-23-quarter@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20270323
+DTEND;VALUE=DATE:20270324
+SUMMARY:End of 3rd quarter
+DESCRIPTION:Source: St. Martha 2026–27 Academic Calendar
+CATEGORIES:Academic
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-03-25-holy-thursday@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20270325
+DTEND;VALUE=DATE:20270326
+SUMMARY:Half day — Holy Thursday
+DESCRIPTION:Report cards posted.\nSource: St. Martha 2026–27 Academic C
+ alendar
+CATEGORIES:Faith
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-03-26-good-friday@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20270326
+DTEND;VALUE=DATE:20270327
+SUMMARY:No school — Good Friday
+DESCRIPTION:Source: St. Martha 2026–27 Academic Calendar
+CATEGORIES:No school
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-03-29-spring-break@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20270329
+DTEND;VALUE=DATE:20270403
+SUMMARY:Spring Break
+DESCRIPTION:Source: St. Martha 2026–27 Academic Calendar
+CATEGORIES:No school
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-04-05-back@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20270405
+DTEND;VALUE=DATE:20270406
+SUMMARY:Back to school
+DESCRIPTION:Source: St. Martha 2026–27 Academic Calendar
+CATEGORIES:School day
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-05-02-first-communion@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20270502
+DTEND;VALUE=DATE:20270503
+SUMMARY:First Communion
+DESCRIPTION:Source: St. Martha 2026–27 Academic Calendar
+CATEGORIES:Faith
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-05-06-communion-brunch@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20270506
+DTEND;VALUE=DATE:20270507
+SUMMARY:First Communion Brunch
+DESCRIPTION:Source: St. Martha 2026–27 Academic Calendar
+CATEGORIES:Faith
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-05-13-spring-concert@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20270513
+DTEND;VALUE=DATE:20270514
+SUMMARY:Spring Concert
+DESCRIPTION:2:00 p.m.\nSource: St. Martha 2026–27 Academic Calendar
+CATEGORIES:Family event
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-05-28-memorial@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20270528
+DTEND;VALUE=DATE:20270601
+SUMMARY:No school — Memorial Weekend
+DESCRIPTION:Source: St. Martha 2026–27 Academic Calendar
+CATEGORIES:No school
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-06-03-graduation@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20270603
+DTEND;VALUE=DATE:20270604
+SUMMARY:8th Grade Graduation Mass
+DESCRIPTION:8:30 a.m.\nSource: St. Martha 2026–27 Academic Calendar
+CATEGORIES:Faith
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-06-04-quarter@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20270604
+DTEND;VALUE=DATE:20270605
+SUMMARY:End of 4th quarter
+DESCRIPTION:Source: St. Martha 2026–27 Academic Calendar
+CATEGORIES:Academic
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-06-08-fun-day@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20270608
+DTEND;VALUE=DATE:20270609
+SUMMARY:Fun Day
+DESCRIPTION:Source: St. Martha 2026–27 Academic Calendar
+CATEGORIES:Family event
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+BEGIN:VEVENT
+UID:2027-06-09-last-day@stm-parent
+DTSTAMP:20260807T000000Z
+DTSTART;VALUE=DATE:20270609
+DTEND;VALUE=DATE:20270610
+SUMMARY:Last day of school
+DESCRIPTION:Half day with 11:30 a.m. dismissal\, Step Up Ceremony\, and r
+ eport cards posted.\nSource: St. Martha 2026–27 Academic Calendar
+CATEGORIES:School day
+URL:https://corypahl.github.io/stm-parent/calendar.html
+END:VEVENT
+END:VCALENDAR

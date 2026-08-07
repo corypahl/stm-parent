@@ -7,10 +7,12 @@
   },
   "scripts": {
     "dev": "vinext dev",
-    "build": "vinext build && node scripts/prepare-pages.mjs",
+    "build": "npm run calendar:generate && vinext build && node scripts/prepare-pages.mjs",
+    "calendar:generate": "node scripts/generate-calendar-ics.mjs",
+    "sync:google": "node scripts/sync-google-content.mjs && node scripts/sync-google-calendar.mjs",
     "start": "vite preview --outDir dist/client",
     "test": "npm run test:unit && npm run build && node --test tests/rendered-html.test.mjs",
-    "test:unit": "tsx --test tests/filtering.test.ts",
+    "test:unit": "tsx --test tests/filtering.test.ts && node --test tests/google-calendar-sync.test.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next"
   },
   "dependencies": {
