@@ -45,6 +45,7 @@ export type ContentItem = {
   sourceUrl: string;
   sourceLabel: string;
   sourceNewsletterId?: string;
+  newsletterDate?: string;
   status: "draft" | "review" | "published" | "archived" | "closed";
   actionStatus?: "open" | "closing_soon" | "due_today" | "closed" | "unknown";
   extractionConfidence?: number;

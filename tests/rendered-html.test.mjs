@@ -51,6 +51,11 @@ test("exports every requested route", async () => {
   const calendarHtml = await readRoute("calendar");
   assert.match(calendarHtml, /Subscribe with Google/);
   assert.match(calendarHtml, /stm\.parent\.updates%40gmail\.com\/public\/basic\.ics/);
+
+  const volunteerHtml = await readRoute("volunteer");
+  assert.match(volunteerHtml, /Current SignUpGenius and Google Forms opportunities from the latest school newsletter/);
+  assert.match(volunteerHtml, /No volunteer signups were included in the latest newsletter for the selected grades/);
+  assert.doesNotMatch(volunteerHtml, /About parent involvement|20 hours|10 hours|per family|Prototype content/);
 });
 
 test("publishes the source handbook and calendar PDFs", async () => {

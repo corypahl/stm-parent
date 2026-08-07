@@ -145,12 +145,6 @@ button.button:disabled, .admin-table button:disabled { cursor: not-allowed; opac
 .date-tile span { font-size: 10px; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
 .date-tile strong { margin-top: 2px; font: 700 25px/1 var(--serif); }
 .timeline .content-card { display: grid; grid-template-columns: minmax(0,1fr); }
-.fact-strip { display: grid; grid-template-columns: 160px 200px 1fr; gap: 20px; align-items: center; margin-bottom: 25px; padding: 18px 22px; border-radius: 12px; background: var(--burgundy-soft); color: var(--burgundy); }
-.fact-strip > div { padding-right: 20px; border-right: 1px solid #dbc5cd; }
-.fact-strip strong, .fact-strip span { display: block; }
-.fact-strip strong { font: 700 25px/1 var(--serif); }
-.fact-strip span { margin-top: 4px; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; }
-.fact-strip p { margin: 0; color: #6e5961; font-size: 11px; }
 
 .segmented { display: inline-flex; gap: 3px; margin-bottom: 24px; padding: 4px; border: 1px solid var(--line); border-radius: 10px; background: #efe9e2; }
 .segmented button { min-width: 90px; padding: 8px 14px; border: 0; border-radius: 7px; background: transparent; color: var(--muted); font-size: 11px; font-weight: 800; cursor: pointer; }
@@ -312,9 +306,6 @@ button.button:disabled, .admin-table button:disabled { cursor: not-allowed; opac
   .card-grid, .card-grid--two { grid-template-columns: 1fr; }
   .content-card { padding: 20px; }
   .content-card__footer { align-items: flex-start; flex-direction: column; }
-  .fact-strip { grid-template-columns: 1fr 1fr; }
-  .fact-strip p { grid-column: 1/-1; }
-  .fact-strip > div:nth-child(2) { border-right: 0; }
   .lunch-grid { grid-template-columns: 1fr; }
   .lunch-card--featured { grid-column: auto; }
   .document-row { grid-template-columns: 42px minmax(0,1fr); align-items: start; }
@@ -353,9 +344,6 @@ button.button:disabled, .admin-table button:disabled { cursor: not-allowed; opac
   .handbook-search .button { width: 100%; }
   .handbook-search__label { display: none; }
   .source-footer { align-items: flex-start; flex-direction: column; }
-  .fact-strip { grid-template-columns: 1fr; }
-  .fact-strip p { grid-column: auto; }
-  .fact-strip > div { border-right: 0; border-bottom: 1px solid #dbc5cd; padding-bottom: 14px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -21,6 +21,7 @@ import type {
 import { filterByGrades, formatGradeLabel } from "../lib/filtering";
 import { formatDate } from "../lib/format";
 import { googleCalendar } from "../lib/google-calendar";
+import { getLatestNewsletterDate, isVolunteerSignupUrl } from "../lib/newsletters";
 import { assetPath } from "../lib/site-path";
 import { useGradeFilter } from "./GradeFilterProvider";
 import { ContentCard } from "./ContentCard";
@@ -280,17 +281,20 @@ export function StaffPage() {
 }
 
 export function VolunteerPage() {
-  const items = useVisibleItems(["volunteer", "signup"]);
+  const visibleItems = useVisibleItems();
+  const latestNewsletterDate = getLatestNewsletterDate(contentItems);
+  const items = latestNewsletterDate
+    ? visibleItems.filter(
+      (item) => item.newsletterDate === latestNewsletterDate && isVolunteerSignupUrl(item.actionUrl),
+    )
+    : [];
+
   return (
     <>
-      <PageHeading eyebrow="Lend a hand" title="Volunteer" description="Find current ways to support students and staff, with the deadline and original signup source close at hand." aside={<a className="button" href="https://st-martha.org/parent-service-organizations" target="_blank" rel="noreferrer">About parent involvement ↗</a>} />
-      <div className="fact-strip">
-        <div><strong>20 hours</strong><span>per family</span></div>
-        <div><strong>10 hours</strong><span>preschool-only or single-parent families</span></div>
-        <p>These expectations are stated on the official parent involvement page. Confirm any updates with the school.</p>
-      </div>
-      <DemoNotice />
-      <CardGrid items={items} />
+      <PageHeading eyebrow="Ways to help" title="Volunteer" description="Current SignUpGenius and Google Forms opportunities from the latest school newsletter." />
+      {items.length > 0
+        ? <CardGrid items={items} />
+        : <EmptyState>No volunteer signups were included in the latest newsletter for the selected grades.</EmptyState>}
     </>
   );
 }

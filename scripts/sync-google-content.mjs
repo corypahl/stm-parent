@@ -33,6 +33,8 @@ const items = payload.items.map((item, index) => {
     ...(item.actionUrl ? { actionUrl: item.actionUrl, actionLabel: item.actionLabel || "Open link" } : {}),
     sourceUrl: item.sourceUrl || "https://st-martha.org/school",
     sourceLabel: "Reviewed school email",
+    ...(item.sourceNewsletterId ? { sourceNewsletterId: item.sourceNewsletterId } : {}),
+    ...(item.newsletterDate ? { newsletterDate: item.newsletterDate } : {}),
     status: "published",
     actionStatus: item.actionStatus || "unknown",
     needsReview: false,
