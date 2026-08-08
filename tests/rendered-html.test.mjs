@@ -40,7 +40,7 @@ test("exports every requested route", async () => {
     ["lunch", "Lunch menu"],
     ["volunteer", "Volunteer"],
     ["documents", "Documents &amp; links"],
-    ["handbook", "Handbook search"],
+    ["handbook", "Parent &amp; student handbook"],
     ["archive", "Newsletter archive"],
     ["admin", "Admin review"],
   ];
@@ -75,7 +75,13 @@ test("publishes the source handbook and calendar PDFs", async () => {
   assert.match(calendarImport, /^BEGIN:VCALENDAR/);
   assert.match(calendarImport, /BEGIN:VEVENT/);
 
-  assert.match(await readRoute("handbook"), /33 content pages/i);
+  const handbookHtml = await readRoute("handbook");
+  assert.match(handbookHtml, /33 content pages/i);
+  assert.match(handbookHtml, /22 sections/i);
+  assert.match(handbookHtml, /All students are expected to attend school regularly/i);
+  assert.match(handbookHtml, /Food Allergies, Intolerances, and Nut Restrictions/i);
+  assert.match(handbookHtml, /The complete handbook wording is reproduced below/i);
+  assert.doesNotMatch(handbookHtml, /Handbook summary|parent-friendly summaries/i);
   assert.match(await readRoute("calendar"), /Updated July 29, 2026/i);
   assert.match(await readRoute("staff"), /Verified August 7, 2026/i);
 });

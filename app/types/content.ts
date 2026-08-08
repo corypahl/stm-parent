@@ -84,10 +84,10 @@ export type LunchDay = {
 export type HandbookSection = {
   id: string;
   title: string;
-  excerpt: string;
-  keywords: string[];
+  content: string;
+  subheadings: string[];
   pageStart: number;
-  pageEnd?: number;
+  pageEnd: number;
 };
 
 export type CalendarEvent = {

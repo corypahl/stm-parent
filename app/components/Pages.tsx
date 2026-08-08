@@ -353,40 +353,132 @@ export function DocumentsPage() {
 
 export function HandbookPage() {
   const [query, setQuery] = useState("");
-  const normalized = query.trim().toLowerCase();
-  const results = handbookSections.filter((section) => !normalized || `${section.title} ${section.excerpt} ${section.keywords.join(" ")}`.toLowerCase().includes(normalized));
+  const normalized = query.trim().toLowerCase().replace(/\s+/g, " ");
+  const results = handbookSections.filter((section) => !normalized || `${section.title} ${section.content}`.toLowerCase().replace(/\s+/g, " ").includes(normalized));
   const handbookPdf = assetPath("/documents/2025-26-st-martha-handbook.pdf");
   return (
     <>
       <PageHeading
-        eyebrow="Find the policy, not the page"
-        title="Handbook search"
-        description="Search parent-friendly summaries of the 2025–26 Parent and Student Handbook, then jump to the exact page in the original PDF."
+        eyebrow="Search every policy"
+        title="Parent & student handbook"
+        description="Search and read the complete 2025–26 handbook directly on this page, organized into clear sections for phones and computers."
         aside={<a className="button" href={handbookPdf} target="_blank" rel="noreferrer">Download handbook PDF ↗</a>}
       />
       <div className="source-banner" role="note">
-        <div><strong>2025–26 handbook</strong><span>33 content pages</span></div>
-        <p>These summaries are for finding information quickly. The attached handbook PDF remains the authoritative wording.</p>
+        <div><strong>2025–26 handbook</strong><span>33 content pages · 22 sections</span></div>
+        <p>The complete handbook wording is reproduced below for convenient reading. The school-issued PDF remains the source document.</p>
       </div>
       <div className="handbook-search">
-        <label><span className="sr-only">Search the handbook</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Try uniform, tardy, medication…" /></label>
+        <label><span className="sr-only">Search the handbook</span><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Try uniform, tardy, medication…" aria-controls="handbook-sections" /></label>
         {query ? <button type="button" className="button" onClick={() => setQuery("")}>Clear</button> : <span className="handbook-search__label">Search</span>}
       </div>
       <div className="suggestion-row" aria-label="Suggested searches">{["uniform", "tardy", "medication", "cell phone", "volunteer", "Kids' Corner"].map((term) => <button type="button" key={term} onClick={() => setQuery(term)}>{term}</button>)}</div>
-      <div className="search-results" aria-live="polite">
-        <SectionHeading title={normalized ? `Results for “${query}”` : "Handbook contents"} count={results.length} />
-        {results.length ? results.map((section) => (
-          <article className="handbook-result" key={section.id}>
-            <div><span className="badge badge--source">Handbook summary</span><h2>{section.title}</h2><p>{section.excerpt}</p><a className="source-link" href={`${handbookPdf}#page=${section.pageStart}`} target="_blank" rel="noreferrer">Read the original page ↗</a></div>
-            <span className="page-cite">{section.pageEnd ? `Pages ${section.pageStart}–${section.pageEnd}` : `Page ${section.pageStart}`}</span>
-          </article>
-        )) : <EmptyState>No handbook sections match that search. Try a broader term or one of the suggestions.</EmptyState>}
+      <div className="handbook-reader" aria-live="polite">
+        <aside className="handbook-contents" aria-label={normalized ? "Matching handbook sections" : "Handbook contents"}>
+          <span className="eyebrow">{normalized ? "Search results" : "On this page"}</span>
+          <h2>{normalized ? `${results.length} matching ${results.length === 1 ? "section" : "sections"}` : "Handbook contents"}</h2>
+          {results.length > 0 && <nav><ol>{results.map((section) => <li key={section.id}><a href={`#handbook-${section.id}`}>{section.title}<span>{formatHandbookPages(section.pageStart, section.pageEnd)}</span></a></li>)}</ol></nav>}
+        </aside>
+        <div className="handbook-sections" id="handbook-sections">
+          {results.length ? results.map((section) => (
+            <article className="handbook-section" id={`handbook-${section.id}`} key={section.id}>
+              <header className="handbook-section__header">
+                <div><span className="eyebrow">Handbook section</span><h2>{section.title}</h2></div>
+                <span className="page-cite">{formatHandbookPages(section.pageStart, section.pageEnd)}</span>
+              </header>
+              <HandbookSectionContent section={section} query={normalized} />
+            </article>
+          )) : <EmptyState>No handbook sections match that search. Try a broader term or one of the suggestions.</EmptyState>}
+        </div>
       </div>
       <div className="source-footer">
         <span>Source: St. Martha Parent and Student Handbook 2025–2026</span>
         <a className="source-link" href={handbookPdf} target="_blank" rel="noreferrer">Open the complete PDF ↗</a>
       </div>
     </>
+  );
+}
+
+type HandbookBlock =
+  | { type: "heading"; text: string }
+  | { type: "paragraph"; text: string }
+  | { type: "list"; ordered: boolean; items: string[] };
+
+function formatHandbookPages(pageStart: number, pageEnd: number) {
+  return pageEnd > pageStart ? `Pages ${pageStart}–${pageEnd}` : `Page ${pageStart}`;
+}
+
+function parseHandbookContent(section: HandbookSection): HandbookBlock[] {
+  const headings = new Set(section.subheadings);
+  const blocks: HandbookBlock[] = [];
+  let paragraph: string[] = [];
+  let list: Extract<HandbookBlock, { type: "list" }> | undefined;
+
+  const flushParagraph = () => {
+    if (paragraph.length) blocks.push({ type: "paragraph", text: paragraph.join(" ") });
+    paragraph = [];
+  };
+  const flushList = () => {
+    if (list?.items.length) blocks.push(list);
+    list = undefined;
+  };
+
+  for (const rawLine of section.content.split(/\r?\n/)) {
+    const line = rawLine.trim();
+    if (!line) {
+      flushParagraph();
+      flushList();
+      continue;
+    }
+    if (headings.has(line)) {
+      flushParagraph();
+      flushList();
+      blocks.push({ type: "heading", text: line });
+      continue;
+    }
+    const listMatch = line.match(/^([•*]|\d+\.)\s*(.+)$/);
+    if (listMatch) {
+      flushParagraph();
+      const ordered = /^\d/.test(listMatch[1]);
+      if (!list || list.ordered !== ordered) {
+        flushList();
+        list = { type: "list", ordered, items: [] };
+      }
+      list.items.push(listMatch[2]);
+      continue;
+    }
+    if (list?.items.length) {
+      list.items[list.items.length - 1] += ` ${line}`;
+      continue;
+    }
+    paragraph.push(line);
+  }
+  flushParagraph();
+  flushList();
+  return blocks;
+}
+
+function HighlightedText({ text, query }: { text: string; query: string }) {
+  if (!query) return <>{text}</>;
+  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const parts = text.split(new RegExp(`(${escaped})`, "gi"));
+  return <>{parts.map((part, index) => part.toLowerCase() === query ? <mark key={`${part}-${index}`}>{part}</mark> : part)}</>;
+}
+
+function HandbookSectionContent({ section, query }: { section: HandbookSection; query: string }) {
+  const blocks = parseHandbookContent(section);
+  if (section.id === "staff-roster") {
+    return <pre className="handbook-section__pre"><HighlightedText text={section.content} query={query} /></pre>;
+  }
+  return (
+    <div className="handbook-section__body">
+      {blocks.map((block, index) => {
+        if (block.type === "heading") return <h3 key={`${block.text}-${index}`}><HighlightedText text={block.text} query={query} /></h3>;
+        if (block.type === "paragraph") return <p key={`${block.text.slice(0, 30)}-${index}`}><HighlightedText text={block.text} query={query} /></p>;
+        const List = block.ordered ? "ol" : "ul";
+        return <List key={`list-${index}`}>{block.items.map((item, itemIndex) => <li key={`${item.slice(0, 30)}-${itemIndex}`}><HighlightedText text={item} query={query} /></li>)}</List>;
+      })}
+    </div>
   );
 }
 
