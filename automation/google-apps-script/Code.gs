@@ -71,6 +71,7 @@ function setupParentSite() {
   let sheet = spreadsheet.getSheetByName(QUEUE_SHEET);
   if (!sheet) sheet = spreadsheet.insertSheet(QUEUE_SHEET);
   if (sheet.getLastRow() === 0) sheet.appendRow(HEADERS);
+  compactDataRows_(sheet, HEADERS);
   sheet.setFrozenRows(1);
   sheet.getRange(1, 1, 1, HEADERS.length).setFontWeight("bold").setBackground("#711b34").setFontColor("white");
   sheet.setColumnWidth(column_("Private Email Body"), 440);
@@ -82,7 +83,7 @@ function setupParentSite() {
   sheet.getRange(2, column_("Status"), Math.max(sheet.getMaxRows() - 1, 1), 1).setDataValidation(
     SpreadsheetApp.newDataValidation().requireValueInList(["Review", "Approved", "Rejected", "Remove"], true).build(),
   );
-  sheet.getRange(2, column_("All Day"), Math.max(sheet.getMaxRows() - 1, 1), 1).insertCheckboxes();
+  applyCheckboxValidation_(sheet, HEADERS);
 
   setupSectionSheet_(spreadsheet);
 
@@ -95,12 +96,14 @@ function setupParentSite() {
 
 function processInbox() {
   const sheet = queueSheet_();
+  compactDataRows_(sheet, HEADERS);
   const existingIds = new Set(
     sheet.getLastRow() < 2
       ? []
       : sheet.getRange(2, column_("Message ID"), sheet.getLastRow() - 1, 1).getValues().flat().map(String),
   );
   const rows = [];
+  const threadsToLabel = [];
   const processedLabel = GmailApp.getUserLabelByName("ParentSiteProcessed") || GmailApp.createLabel("ParentSiteProcessed");
 
   for (const thread of GmailApp.search("in:inbox newer_than:90d", 0, 100)) {
@@ -134,15 +137,23 @@ function processInbox() {
       existingIds.add(message.getId());
       addedFromThread = true;
     }
-    if (addedFromThread) thread.addLabel(processedLabel);
+    if (addedFromThread) threadsToLabel.push(thread);
   }
 
   if (rows.length) {
-    sheet.getRange(sheet.getLastRow() + 1, 1, rows.length, HEADERS.length).setValues(rows);
-    sheet.getRange(sheet.getLastRow() - rows.length + 1, column_("All Day"), rows.length, 1).insertCheckboxes().setValue(true);
+    const firstRow = sheet.getLastRow() + 1;
+    sheet.getRange(firstRow, 1, rows.length, HEADERS.length).setValues(rows);
+    sheet.getRange(firstRow, column_("All Day"), rows.length, 1)
+      .setDataValidation(SpreadsheetApp.newDataValidation().requireCheckbox().build())
+      .setValue(true);
+    SpreadsheetApp.flush();
+    threadsToLabel.forEach((thread) => thread.addLabel(processedLabel));
     importPendingNewsletters();
+    console.log(`Added ${rows.length} new message(s) to ${sheet.getParent().getUrl()} starting at row ${firstRow}.`);
+    return rows.length;
   }
-  console.log(`Added ${rows.length} new message(s) to the review queue.`);
+  console.log("Added 0 new message(s) to the review queue.");
+  return 0;
 }
 
 function publishApproved() {
@@ -252,6 +263,7 @@ function setupSectionSheet_(spreadsheet) {
   let sheet = spreadsheet.getSheetByName(SECTION_SHEET);
   if (!sheet) sheet = spreadsheet.insertSheet(SECTION_SHEET);
   if (sheet.getLastRow() === 0) sheet.appendRow(SECTION_HEADERS);
+  compactDataRows_(sheet, SECTION_HEADERS);
   sheet.setFrozenRows(1);
   sheet.getRange(1, 1, 1, SECTION_HEADERS.length).setFontWeight("bold").setBackground("#711b34").setFontColor("white");
   sheet.setColumnWidth(columnFrom_(SECTION_HEADERS, "Public Summary"), 420);
@@ -264,13 +276,33 @@ function setupSectionSheet_(spreadsheet) {
   sheet.getRange(2, columnFrom_(SECTION_HEADERS, "Status"), Math.max(sheet.getMaxRows() - 1, 1), 1).setDataValidation(
     SpreadsheetApp.newDataValidation().requireValueInList(["Unreviewed", "Approved", "Rejected"], true).build(),
   );
-  sheet.getRange(2, columnFrom_(SECTION_HEADERS, "All Day"), Math.max(sheet.getMaxRows() - 1, 1), 1).insertCheckboxes();
+  applyCheckboxValidation_(sheet, SECTION_HEADERS);
   return sheet;
+}
+
+function compactDataRows_(sheet, headers) {
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) return 0;
+  const range = sheet.getRange(2, 1, lastRow - 1, headers.length);
+  const populatedRows = range.getValues().filter((row) => String(row[0] || "").trim());
+  range.clearContent();
+  if (populatedRows.length) {
+    sheet.getRange(2, 1, populatedRows.length, headers.length).setValues(populatedRows);
+  }
+  return populatedRows.length;
+}
+
+function applyCheckboxValidation_(sheet, headers) {
+  sheet
+    .getRange(2, columnFrom_(headers, "All Day"), Math.max(sheet.getMaxRows() - 1, 1), 1)
+    .setDataValidation(SpreadsheetApp.newDataValidation().requireCheckbox().build());
 }
 
 function importPendingNewsletters() {
   const queue = queueSheet_();
   const sectionSheet = sectionSheet_();
+  compactDataRows_(queue, HEADERS);
+  compactDataRows_(sectionSheet, SECTION_HEADERS);
   if (queue.getLastRow() < 2) return 0;
   const range = queue.getRange(2, 1, queue.getLastRow() - 1, HEADERS.length);
   const rows = range.getValues();
@@ -340,8 +372,11 @@ function importNewsletterSections_(sheet, existingIds, source) {
     "",
     "Add grade and category tags, verify the public text and links, then approve.",
   ]);
-  sheet.getRange(sheet.getLastRow() + 1, 1, rows.length, SECTION_HEADERS.length).setValues(rows);
-  sheet.getRange(sheet.getLastRow() - rows.length + 1, columnFrom_(SECTION_HEADERS, "All Day"), rows.length, 1).insertCheckboxes().setValue(true);
+  const firstRow = sheet.getLastRow() + 1;
+  sheet.getRange(firstRow, 1, rows.length, SECTION_HEADERS.length).setValues(rows);
+  sheet.getRange(firstRow, columnFrom_(SECTION_HEADERS, "All Day"), rows.length, 1)
+    .setDataValidation(SpreadsheetApp.newDataValidation().requireCheckbox().build())
+    .setValue(true);
   newSections.forEach((section) => existingIds.add(section.id));
   return rows.length;
 }

@@ -32,6 +32,8 @@ For a newsletter forwarded before this version was installed, choose **Parent Si
 
 After replacing `Code.gs`, adding or updating `Admin.html`, and running `setupParentSite`, open **Deploy → Manage deployments**, edit the existing web-app deployment, choose **New version**, and deploy. The `/exec` URL remains the same. Version 3 returns approved section records and issue-level newsletter summaries while keeping unreviewed records private.
 
+Running `setupParentSite` also compacts managed records directly beneath their headers. This repairs rows created far down the sheet by versions that initialized every empty All Day checkbox with a `false` value.
+
 ## Seed the 2026–27 calendar
 
 Download `https://corypahl.github.io/stm-parent/documents/st-martha-2026-27-calendar.ics`. In Google Calendar, open **Settings → Import & export**, import the file, and select the `stm.parent.updates@gmail.com` calendar. Do this once only.

@@ -116,3 +116,12 @@ test("ships a private section editor with explicit approval controls", () => {
   assert.match(adminSource, /Select at least one grade|name="grades"/);
   assert.match(source, /String\(valueFrom_\(row, SECTION_HEADERS, "Status"\)\) === "Approved"/);
 });
+
+test("keeps empty spreadsheet rows empty and labels Gmail only after a successful write", () => {
+  const processInboxSource = source.slice(source.indexOf("function processInbox()"), source.indexOf("function publishApproved()"));
+
+  assert.match(source, /function compactDataRows_/);
+  assert.match(source, /requireCheckbox\(\)\.build\(\)/);
+  assert.doesNotMatch(source, /insertCheckboxes\(/);
+  assert.ok(processInboxSource.indexOf(".setValues(rows)") < processInboxSource.indexOf("threadsToLabel.forEach"));
+});
