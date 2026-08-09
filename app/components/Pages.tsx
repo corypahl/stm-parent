@@ -310,29 +310,52 @@ export function SignUpsPage() {
 }
 
 export function LunchPage() {
-  const [view, setView] = useState<"today" | "week" | "month">("week");
-  const shown = view === "today" ? lunchDays.slice(0, 1) : lunchDays;
+  const [view, setView] = useState<"today" | "week" | "month">("month");
+  const today = new Intl.DateTimeFormat("en-CA", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    timeZone: "America/Detroit",
+  }).formatToParts(new Date()).reduce((parts, part) => ({ ...parts, [part.type]: part.value }), {} as Record<string, string>);
+  const todayKey = `${today.year}-${today.month}-${today.day}`;
+  const weekStart = new Date(`${todayKey}T12:00:00Z`);
+  weekStart.setUTCDate(weekStart.getUTCDate() - ((weekStart.getUTCDay() + 6) % 7));
+  const weekEnd = new Date(weekStart);
+  weekEnd.setUTCDate(weekStart.getUTCDate() + 6);
+  const shown = lunchDays.filter((day) => {
+    const key = day.date.slice(0, 10);
+    if (view === "today") return key === todayKey;
+    if (view === "week") return key >= weekStart.toISOString().slice(0, 10) && key <= weekEnd.toISOString().slice(0, 10);
+    return true;
+  });
+  const menu = lunchDays[0];
+  const menuLabel = menu ? formatDate(menu.date, { month: "long", year: "numeric" }) : "Lunch menu";
   return (
     <>
-      <PageHeading eyebrow="What’s for lunch?" title="Lunch menu" description="A phone-friendly menu view designed to replace pinching and zooming on an image or PDF." aside={<a className="button" href="https://st-martha.org/school" target="_blank" rel="noreferrer">Check official source ↗</a>} />
-      <DemoNotice>Every entrée below is demonstration data. No current official lunch menu was supplied for this prototype.</DemoNotice>
+      <PageHeading eyebrow="What’s for lunch?" title="Lunch menu" description="A phone-friendly transcription of the school lunch calendar published in News Notes." aside={menu && <a className="button" href={menu.sourceImageUrl || menu.sourceUrl} target="_blank" rel="noreferrer">View original menu ↗</a>} />
+      {menu && <div className="source-banner lunch-source" role="note">
+        <div><strong>{menuLabel}</strong><span>{lunchDays.length} dated entries</span></div>
+        <p>Automatically transcribed from {menu.sourceNewsletterTitle || "News Notes"}. OCR wording may contain errors, and the source says the menu may change without notice. All meals come with milk.</p>
+      </div>}
       <div className="segmented" role="group" aria-label="Lunch menu view">
-        {(["today", "week", "month"] as const).map((option) => <button type="button" key={option} className={view === option ? "active" : ""} aria-pressed={view === option} onClick={() => setView(option)}>{option[0].toUpperCase() + option.slice(1)}</button>)}
+        {(["today", "week", "month"] as const).map((option) => <button type="button" key={option} className={view === option ? "active" : ""} aria-pressed={view === option} onClick={() => setView(option)}>{option === "week" ? "This week" : option === "month" ? "Full month" : "Today"}</button>)}
       </div>
-      {view === "month" && <p className="view-note">Month view will group all imported days. The prototype currently contains one sample week.</p>}
-      <div className="lunch-grid">
-        {shown.map((day, index) => (
-          <article className={`lunch-card ${index === 0 && view === "today" ? "lunch-card--featured" : ""}`} key={day.date}>
+      {shown.length ? <div className="lunch-grid">
+        {shown.map((day) => {
+          const unavailable = /^(?:No school|No hot lunch)$/i.test(day.mainEntree);
+          return <article className={`lunch-card ${unavailable ? "lunch-card--unavailable" : ""}`} key={day.date}>
             <div className="lunch-card__date"><span>{formatDate(day.date, { weekday: "long" })}</span><strong>{formatDate(day.date, { month: "short", day: "numeric" })}</strong></div>
-            <span className="badge badge--demo">Sample</span>
+            {unavailable && <span className="badge">Schedule change</span>}
             <h2>{day.mainEntree}</h2>
-            {day.alternateEntree && <p><strong>Alternate:</strong> {day.alternateEntree}</p>}
-            <p><strong>Sides:</strong> {day.sides.join(" · ")}</p>
-            <p className="muted">{day.notes}</p>
-            <a className="source-link" href={day.sourceUrl} target="_blank" rel="noreferrer">Source placeholder: official school site ↗</a>
+            {day.sides.length > 0 && <p><strong>Sides:</strong> {day.sides.join(" · ")}</p>}
+            {day.notes && <p className="muted">{day.notes}</p>}
           </article>
-        ))}
-      </div>
+        })}
+      </div> : <EmptyState>No {view === "today" ? "lunch entry for today" : "lunch entries for this week"} appear in the imported {menuLabel} menu. Choose Full month to browse it.</EmptyState>}
+      {menu && <div className="source-footer">
+        <span>Source: {menu.sourceNewsletterTitle || "St. Martha News Notes"}</span>
+        <a className="source-link" href={menu.sourceUrl} target="_blank" rel="noreferrer">Open source newsletter ↗</a>
+      </div>}
     </>
   );
 }

@@ -59,6 +59,15 @@ test("exports every requested route", async () => {
   assert.match(calendarHtml, /Subscribe with Google/);
   assert.match(calendarHtml, /stm\.parent\.updates%40gmail\.com\/public\/basic\.ics/);
 
+  const lunchHtml = await readRoute("lunch");
+  assert.match(lunchHtml, /May 2026/);
+  assert.match(lunchHtml, /21(?:<!-- -->)? dated entries/);
+  assert.match(lunchHtml, /Fish sticks/);
+  assert.match(lunchHtml, /Tacos with beef &amp; cheese/);
+  assert.match(lunchHtml, /No hot lunch/);
+  assert.match(lunchHtml, /https:\/\/app\.smore\.com\/n\/reb6y/);
+  assert.doesNotMatch(lunchHtml, /Sample:|demonstration data|Prototype content|Source placeholder/i);
+
   const signUpsHtml = await readRoute("sign-ups");
   assert.match(signUpsHtml, /<h1>Sign Ups<\/h1>/);
   assert.match(signUpsHtml, /extracted automatically from the latest school newsletter/);

@@ -73,11 +73,12 @@ export type SchoolDocument = {
 export type LunchDay = {
   date: string;
   mainEntree: string;
-  alternateEntree?: string;
   sides: string[];
   notes?: string;
   gradeTags: GradeTag[];
   sourceUrl: string;
+  sourceImageUrl?: string;
+  sourceNewsletterTitle?: string;
   isDemo: boolean;
 };
 

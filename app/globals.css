@@ -149,6 +149,9 @@ button.button:disabled, .admin-table button:disabled { cursor: not-allowed; opac
 .lunch-card p { font-size: 11px; }
 .lunch-card .muted { color: var(--muted); }
 .lunch-card--featured { grid-column: span 2; }
+.lunch-card--unavailable { background: #f4efea; }
+.lunch-card--unavailable .lunch-card__date { border-bottom-color: var(--burgundy); }
+.lunch-source { margin-top: -10px; }
 
 .search-box { display: flex; align-items: center; gap: 10px; max-width: 570px; margin-bottom: 28px; padding: 0 15px; border: 1px solid #d9d0c7; border-radius: 10px; background: white; }
 .search-box:focus-within { outline: 3px solid #1f6da8; outline-offset: 2px; }

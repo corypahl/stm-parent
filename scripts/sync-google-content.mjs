@@ -1,17 +1,25 @@
 import { readFile, writeFile } from "node:fs/promises";
-import { createWorker } from "tesseract.js";
+import { createWorker, PSM } from "tesseract.js";
 import engLanguage from "@tesseract.js-data/eng";
 import {
   newsletterWithText,
   normalizeOcrText,
   parseSmoreNewsletterHtml,
 } from "./lib/smore-newsletter.mjs";
+import {
+  findLatestLunchMenuCandidate,
+  imageDimensions,
+  lunchCellRectangles,
+  lunchDaysFromOcr,
+} from "./lib/lunch-menu.mjs";
 
 const feedUrl = process.env.GOOGLE_CONTENT_FEED_URL?.trim();
 const contentOutputUrl = new URL("../app/data/google-content.json", import.meta.url);
 const newsletterOutputUrl = new URL("../app/data/google-newsletters.json", import.meta.url);
 const latestNewsletterOutputUrl = new URL("../app/data/latest-newsletter.json", import.meta.url);
+const lunchOutputUrl = new URL("../app/data/lunch.json", import.meta.url);
 const existingNewsletters = JSON.parse(await readFile(newsletterOutputUrl, "utf8"));
+const existingLunchDays = JSON.parse(await readFile(lunchOutputUrl, "utf8"));
 
 let baseNewsletters = existingNewsletters.map(publicNewsletterFields_);
 
@@ -44,6 +52,15 @@ const parsedNewsletters = await Promise.all(baseNewsletters.map(async (newslette
 
 const imageUrls = [...new Set(parsedNewsletters.flatMap(({ parsed }) => parsed?.imageUrls || []))];
 const imageTextByUrl = await recognizeImages_(imageUrls);
+const lunchCandidate = findLatestLunchMenuCandidate(parsedNewsletters);
+const lunchDays = lunchCandidate
+  ? storedLunchMatchesCandidate_(existingLunchDays, lunchCandidate)
+    ? existingLunchDays
+    : await recognizeLunchMenu_(lunchCandidate).catch((error) => {
+      console.warn(`Lunch menu extraction skipped: ${error.message || error}`);
+      return existingLunchDays;
+    })
+  : existingLunchDays;
 const existingById = new Map(existingNewsletters.map((newsletter) => [newsletter.id, newsletter]));
 
 const newsletters = parsedNewsletters.map(({ newsletter, parsed }) => {
@@ -67,10 +84,11 @@ await Promise.all([
   writeFile(contentOutputUrl, "[]\n", "utf8"),
   writeFile(newsletterOutputUrl, `${JSON.stringify(newsletters, null, 2)}\n`, "utf8"),
   writeFile(latestNewsletterOutputUrl, `${JSON.stringify(latestNewsletter, null, 2)}\n`, "utf8"),
+  writeFile(lunchOutputUrl, `${JSON.stringify(lunchDays, null, 2)}\n`, "utf8"),
 ]);
 
 const signupCount = newsletters.reduce((total, newsletter) => total + newsletter.signups.length, 0);
-console.log(`Synced ${newsletters.length} inbox newsletter(s), ${imageTextByUrl.size} OCR image(s), and ${signupCount} signup link(s).`);
+console.log(`Synced ${newsletters.length} inbox newsletter(s), ${imageTextByUrl.size} OCR image(s), ${signupCount} signup link(s), and ${lunchDays.length} lunch day(s).`);
 
 async function recognizeImages_(urls) {
   const results = new Map();
@@ -103,6 +121,41 @@ async function recognizeImages_(urls) {
   }
 
   return results;
+}
+
+async function recognizeLunchMenu_(candidate) {
+  const response = await fetch(candidate.imageUrl, { redirect: "follow" });
+  if (!response.ok) throw new Error(`lunch menu image returned ${response.status}`);
+  const image = Buffer.from(await response.arrayBuffer());
+  if (image.length > 20 * 1024 * 1024) throw new Error("lunch menu image exceeds the 20 MB OCR limit");
+  const { width, height } = imageDimensions(image);
+  const worker = await createWorker("eng", 1, {
+    langPath: engLanguage.langPath,
+    gzip: engLanguage.gzip,
+    cacheMethod: "none",
+  });
+
+  try {
+    await worker.setParameters({
+      tessedit_pageseg_mode: PSM.SINGLE_BLOCK,
+      preserve_interword_spaces: "1",
+    });
+    const cellTextByDay = new Map();
+    for (const { day, rectangle } of lunchCellRectangles(width, height, candidate.year, candidate.month)) {
+      const { data } = await worker.recognize(image, { rectangle });
+      const text = normalizeOcrText(data.text);
+      if (text) cellTextByDay.set(day, text);
+    }
+    const days = lunchDaysFromOcr(cellTextByDay, candidate);
+    if (!days.length) throw new Error("no dated lunch entries were recognized");
+    return days;
+  } finally {
+    await worker.terminate();
+  }
+}
+
+function storedLunchMatchesCandidate_(days, candidate) {
+  return days.length > 0 && days.every((day) => day.sourceImageUrl === candidate.imageUrl);
 }
 
 function validateNewsletter_(newsletter, index) {

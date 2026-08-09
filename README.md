@@ -1,8 +1,8 @@
 # St. Martha Parent Companion
 
-An unofficial, parent-created site that turns reviewed school communications into structured, grade-aware pages for events, lunch, volunteering, handbook search, contacts, and newsletter archives.
+An unofficial, parent-created site that turns school communications into searchable newsletters and structured pages for events, lunch, signups, handbook search, and contacts.
 
-The site combines reviewed Google Sheet content with public facts linked to the [official St. Martha School website](https://st-martha.org/school). It is not operated or endorsed by the school.
+The site combines automated Gmail and Google Calendar feeds with public facts linked to the [official St. Martha School website](https://st-martha.org/school). It is not operated or endorsed by the school.
 
 Live site: [https://corypahl.github.io/stm-parent/](https://corypahl.github.io/stm-parent/)
 
@@ -40,16 +40,15 @@ Every push to `main` runs `.github/workflows/pages.yml`. The workflow tests, lin
 
 ## What is included
 
-- Public routes for Home, Events, Lunch, Volunteer, Handbook, Contacts, and Archive
-- Persistent multi-select grade filters
-- All-school visibility rules
-- Reusable content cards and source links
+- Public routes for Home, Events, Lunch, Sign Ups, Handbook, Contacts, and Newsletters
+- Automatic inbox-to-Smore newsletter publishing
+- Searchable native and OCR newsletter text
+- Cell-by-cell OCR of the newest lunch-menu calendar found across inbox newsletters
+- Automatic signup-form link extraction
 - Responsive navigation and accessible form controls
-- Private Google Sheet admin for section-level newsletter review and approval
-- Automatic Smore section extraction based on horizontal separators
-- Scheduled synchronization of approved content and Google Calendar events
-- Unit coverage for filtering, newsletter extraction, calendar synchronization, and static publishing
+- Scheduled synchronization of newsletters and Google Calendar events
+- Unit coverage for newsletter, lunch-menu, calendar, and static-publishing workflows
 
 ## Explicitly deferred
 
-A separate application backend, public-site authentication, model-assisted extraction, AWS infrastructure, parent accounts, and a live lunch feed remain deferred. See `docs/architecture.md` for the current capability boundaries.
+A separate application backend, public-site authentication, model-assisted extraction, AWS infrastructure, and parent accounts remain deferred. See `docs/architecture.md` for the current capability boundaries.
