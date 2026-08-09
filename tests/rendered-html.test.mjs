@@ -26,6 +26,9 @@ test("exports the finished parent companion home", async () => {
   assert.doesNotMatch(html, /Grade Filter|grade-chip|All-school notices are always included/);
   assert.match(html, />Sign Ups<\/a>/);
   assert.match(html, />Newsletters<\/a>/);
+  assert.match(html, /href="(?:\/stm-parent)?\/sign-ups\.html"[^>]*>Sign Ups<\/a>/);
+  assert.match(html, /href="(?:\/stm-parent)?\/newsletters\.html"[^>]*>Newsletters<\/a>/);
+  assert.doesNotMatch(html, /href="(?:\/stm-parent)?\/(?:volunteer|archive)\.html"/);
   assert.doesNotMatch(html, />Volunteer<\/a>|>Archive<\/a>/);
   assert.match(html, /unofficial, parent-created/i);
   assert.match(html, /Source:/);
@@ -40,9 +43,11 @@ test("exports every requested route", async () => {
     ["calendar", "Academic calendar"],
     ["staff", "Contacts"],
     ["lunch", "Lunch menu"],
+    ["sign-ups", "Sign Ups"],
     ["volunteer", "Sign Ups"],
     ["documents", "Documents &amp; links"],
     ["handbook", "Parent &amp; student handbook"],
+    ["newsletters", "Newsletters"],
     ["archive", "Newsletters"],
   ];
 
@@ -54,26 +59,26 @@ test("exports every requested route", async () => {
   assert.match(calendarHtml, /Subscribe with Google/);
   assert.match(calendarHtml, /stm\.parent\.updates%40gmail\.com\/public\/basic\.ics/);
 
-  const volunteerHtml = await readRoute("volunteer");
-  assert.match(volunteerHtml, /<h1>Sign Ups<\/h1>/);
-  assert.match(volunteerHtml, /extracted automatically from the latest school newsletter/);
-  assert.match(volunteerHtml, /Meet the Miracles RSVP &amp; Volunteer Sign UP/);
-  assert.match(volunteerHtml, /https:\/\/forms\.gle\/pHZuPKCD2GW1aNp66/);
-  assert.doesNotMatch(volunteerHtml, /No signup form links were found/);
-  assert.doesNotMatch(volunteerHtml, /About parent involvement|20 hours|10 hours|per family|Prototype content/);
+  const signUpsHtml = await readRoute("sign-ups");
+  assert.match(signUpsHtml, /<h1>Sign Ups<\/h1>/);
+  assert.match(signUpsHtml, /extracted automatically from the latest school newsletter/);
+  assert.match(signUpsHtml, /Meet the Miracles RSVP &amp; Volunteer Sign UP/);
+  assert.match(signUpsHtml, /https:\/\/forms\.gle\/pHZuPKCD2GW1aNp66/);
+  assert.doesNotMatch(signUpsHtml, /No signup form links were found/);
+  assert.doesNotMatch(signUpsHtml, /About parent involvement|20 hours|10 hours|per family|Prototype content/);
 
-  const archiveHtml = await readRoute("archive");
-  assert.match(archiveHtml, /<h1>Newsletters<\/h1>/);
-  assert.match(archiveHtml, /Browse every Smore newsletter in the school-updates inbox/);
-  assert.match(archiveHtml, /Summer Notes 7\/28\/26/);
-  assert.match(archiveHtml, /Open Smore/);
-  assert.match(archiveHtml, /Searchable text/);
-  assert.match(archiveHtml, /Text version/);
-  assert.match(archiveHtml, /Search newsletters/);
-  assert.match(archiveHtml, /https:\/\/secure\.smore\.com\/n\/zk12p\?embed=1/);
-  assert.doesNotMatch(archiveHtml, /Sample News Notes|Prototype content/);
+  const newslettersHtml = await readRoute("newsletters");
+  assert.match(newslettersHtml, /<h1>Newsletters<\/h1>/);
+  assert.match(newslettersHtml, /Browse every Smore newsletter in the school-updates inbox/);
+  assert.match(newslettersHtml, /Summer Notes 7\/28\/26/);
+  assert.match(newslettersHtml, /Open Smore/);
+  assert.match(newslettersHtml, /Searchable text/);
+  assert.match(newslettersHtml, /Text version/);
+  assert.match(newslettersHtml, /Search newsletters/);
+  assert.doesNotMatch(newslettersHtml, /<iframe\b/);
+  assert.doesNotMatch(newslettersHtml, /Sample News Notes|Prototype content/);
 
-  assert.doesNotMatch(archiveHtml, /\breview\b|\bapprove\b|grade tag/i);
+  assert.doesNotMatch(newslettersHtml, /\breview\b|\bapprove\b|grade tag/i);
 });
 
 test("stores searchable native and OCR newsletter text with extracted signup links", async () => {

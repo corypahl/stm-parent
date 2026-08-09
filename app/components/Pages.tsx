@@ -490,7 +490,7 @@ function HandbookSectionContent({ section, query }: { section: HandbookSection; 
 
 export function NewslettersPage() {
   const [query, setQuery] = useState("");
-  const [openNewsletterId, setOpenNewsletterId] = useState<string | null>(newsletters[0]?.id ?? null);
+  const [openNewsletterId, setOpenNewsletterId] = useState<string | null>(null);
   const [readerMode, setReaderMode] = useState<"original" | "text">("original");
   const normalized = query.trim().toLowerCase();
   const filtered = newsletters.filter((newsletter) => `${newsletter.title} ${newsletter.newsletterDate} ${newsletter.textContent}`.toLowerCase().includes(normalized));
