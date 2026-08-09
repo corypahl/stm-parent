@@ -249,11 +249,32 @@ button.button:disabled, .admin-table button:disabled { cursor: not-allowed; opac
 .archive-row time span { color: var(--muted); font-size: 9px; text-transform: uppercase; letter-spacing: .08em; }
 .archive-row h2 { margin: 7px 0 2px; color: var(--burgundy-dark); font: 700 21px/1.2 var(--serif); }
 .archive-row p { margin: 0; color: var(--muted); font-size: 11px; }
+.archive-row .archive-row__excerpt { max-width: 700px; margin-top: 9px; color: #514742; font-size: 12px; line-height: 1.55; }
+.archive-row__excerpt mark, .newsletter-text mark { padding: 1px 2px; border-radius: 3px; background: #ffe59a; color: inherit; }
 .archive-row__actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 7px; }
+.badge--text { background: #e5f2eb; color: var(--green); }
 .archive-newsletter__reader { overflow: hidden; margin-top: -1px; border: 1px solid var(--line); border-radius: 0 0 12px 12px; background: #f1ece7; }
 .archive-newsletter--open .archive-row { border-radius: 12px 12px 0 0; }
 .archive-newsletter__reader iframe { display: block; width: 100%; height: min(850px, 76vh); min-height: 600px; border: 0; }
 .archive-newsletter__reader p { margin: 0; padding: 10px 18px; border-top: 1px solid var(--line); background: var(--paper); color: var(--muted); font-size: 10px; text-align: center; }
+.newsletter-text { margin-top: -1px; padding: 28px; border: 1px solid var(--line); border-radius: 0 0 12px 12px; background: var(--paper); }
+.newsletter-text__intro { display: flex; justify-content: space-between; gap: 30px; padding-bottom: 22px; border-bottom: 1px solid var(--line); }
+.newsletter-text__intro h3 { margin: 5px 0 0; color: var(--burgundy); font: 700 28px/1.2 var(--serif); }
+.newsletter-text__intro > p { max-width: 390px; margin: 0; color: var(--muted); font-size: 11px; }
+.newsletter-text__sections { display: grid; gap: 28px; max-width: 820px; margin: 28px auto 6px; }
+.newsletter-text__sections section { padding-bottom: 26px; border-bottom: 1px solid var(--line); }
+.newsletter-text__sections section:last-child { padding-bottom: 0; border-bottom: 0; }
+.newsletter-text__sections h4 { margin: 0 0 12px; color: var(--burgundy-dark); font: 700 22px/1.25 var(--serif); }
+.newsletter-text__sections p { margin: 0 0 12px; color: #403732; font-size: 14px; line-height: 1.7; white-space: pre-line; }
+.signup-source { display: flex; align-items: baseline; gap: 9px; margin: -8px 0 25px; color: var(--muted); font-size: 12px; }
+.signup-source span { color: var(--orange); font-size: 9px; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+.signup-source strong { color: var(--burgundy); }
+.signup-source time::before { content: "·"; margin-right: 9px; }
+.signup-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
+.signup-card { display: flex; flex-direction: column; min-height: 220px; padding: 23px; border: 1px solid var(--line); border-radius: 13px; background: var(--paper); box-shadow: 0 8px 28px rgba(66,35,31,.06); }
+.signup-card h2 { margin: 8px 0 7px; color: var(--burgundy-dark); font: 700 23px/1.25 var(--serif); }
+.signup-card > p { margin: 0; color: var(--muted); font-size: 12px; }
+.signup-card__actions { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: auto; padding-top: 24px; }
 
 .empty-state { grid-column: 1 / -1; padding: 34px; border: 1px dashed #cfc3b8; border-radius: 12px; background: rgba(255,255,255,.45); color: var(--muted); text-align: center; font-size: 13px; }
 .admin-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 30px 0 50px; }
@@ -329,6 +350,12 @@ button.button:disabled, .admin-table button:disabled { cursor: not-allowed; opac
   .archive-row time { padding-right: 12px; }
   .archive-row__actions { grid-column: 2; justify-content: flex-start; }
   .archive-newsletter__reader iframe { height: 72vh; min-height: 540px; }
+  .newsletter-text { padding: 22px 18px; }
+  .newsletter-text__intro { display: block; }
+  .newsletter-text__intro > p { margin-top: 12px; }
+  .signup-grid { grid-template-columns: 1fr; }
+  .signup-source { align-items: flex-start; flex-direction: column; gap: 2px; }
+  .signup-source time::before { content: none; }
   .handbook-reader { grid-template-columns: 1fr; gap: 20px; }
   .handbook-contents { position: static; max-height: 290px; }
   .handbook-section { padding: 22px 19px; }

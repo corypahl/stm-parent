@@ -12,7 +12,7 @@
     "sync:google": "node scripts/sync-google-content.mjs && node scripts/sync-google-calendar.mjs",
     "start": "vite preview --outDir dist/client",
     "test": "npm run test:unit && npm run build && node --test tests/rendered-html.test.mjs",
-    "test:unit": "tsx --test tests/newsletters.test.ts && node --test tests/google-calendar-sync.test.mjs tests/google-apps-script.test.mjs",
+    "test:unit": "tsx --test tests/newsletters.test.ts && node --test tests/google-calendar-sync.test.mjs tests/google-apps-script.test.mjs tests/smore-newsletter-sync.test.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next"
   },
   "dependencies": {
@@ -22,6 +22,7 @@
   "devDependencies": {
     "@eslint/js": "9.39.4",
     "@next/eslint-plugin-next": "16.2.6",
+    "@tesseract.js-data/eng": "^1.0.0",
     "@types/node": "22.19.19",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
@@ -33,6 +34,7 @@
     "eslint-plugin-react-hooks": "7.1.1",
     "globals": "16.4.0",
     "react-server-dom-webpack": "19.2.6",
+    "tesseract.js": "^7.0.0",
     "tsx": "4.20.6",
     "typescript": "5.9.3",
     "typescript-eslint": "8.59.3",

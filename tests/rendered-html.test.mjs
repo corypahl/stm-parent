@@ -56,8 +56,10 @@ test("exports every requested route", async () => {
 
   const volunteerHtml = await readRoute("volunteer");
   assert.match(volunteerHtml, /<h1>Sign Ups<\/h1>/);
-  assert.match(volunteerHtml, /Current SignUpGenius and Google Forms opportunities from the latest school newsletter/);
-  assert.match(volunteerHtml, /No volunteer signups were included in the latest newsletter/);
+  assert.match(volunteerHtml, /extracted automatically from the latest school newsletter/);
+  assert.match(volunteerHtml, /Meet the Miracles RSVP &amp; Volunteer Sign UP/);
+  assert.match(volunteerHtml, /https:\/\/forms\.gle\/pHZuPKCD2GW1aNp66/);
+  assert.doesNotMatch(volunteerHtml, /No signup form links were found/);
   assert.doesNotMatch(volunteerHtml, /About parent involvement|20 hours|10 hours|per family|Prototype content/);
 
   const archiveHtml = await readRoute("archive");
@@ -65,10 +67,22 @@ test("exports every requested route", async () => {
   assert.match(archiveHtml, /Browse every Smore newsletter in the school-updates inbox/);
   assert.match(archiveHtml, /Summer Notes 7\/28\/26/);
   assert.match(archiveHtml, /Open Smore/);
+  assert.match(archiveHtml, /Searchable text/);
+  assert.match(archiveHtml, /Text version/);
+  assert.match(archiveHtml, /Search newsletters/);
   assert.match(archiveHtml, /https:\/\/secure\.smore\.com\/n\/zk12p\?embed=1/);
   assert.doesNotMatch(archiveHtml, /Sample News Notes|Prototype content/);
 
   assert.doesNotMatch(archiveHtml, /\breview\b|\bapprove\b|grade tag/i);
+});
+
+test("stores searchable native and OCR newsletter text with extracted signup links", async () => {
+  const newsletters = JSON.parse(await readFile(new URL("../app/data/google-newsletters.json", import.meta.url), "utf8"));
+  assert.equal(newsletters[0].textStatus, "available");
+  assert.ok(newsletters[0].ocrImageCount > 0);
+  assert.match(newsletters[0].textContent, /District Code Update/);
+  assert.match(newsletters[0].textContent, /Summer Office Hours/);
+  assert.equal(newsletters[0].signups[0].url, "https://forms.gle/pHZuPKCD2GW1aNp66");
 });
 
 test("publishes the source handbook and calendar PDFs", async () => {

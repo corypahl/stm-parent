@@ -114,6 +114,18 @@ export type NewsletterSummary = {
   title: string;
   newsletterDate: string;
   sourceUrl: string;
+  textContent: string;
+  textSections: Array<{
+    heading: string;
+    text: string;
+  }>;
+  signups: Array<{
+    id: string;
+    title: string;
+    url: string;
+  }>;
+  ocrImageCount: number;
+  textStatus: "available" | "unavailable";
 };
 
 export type LatestNewsletter = {

@@ -22,7 +22,7 @@ import type {
 } from "../types/content";
 import { formatDate, formatGradeLabel } from "../lib/format";
 import { googleCalendar } from "../lib/google-calendar";
-import { getLatestNewsletterDate, isVolunteerSignupUrl, smoreEmbedUrl } from "../lib/newsletters";
+import { smoreEmbedUrl } from "../lib/newsletters";
 import { assetPath } from "../lib/site-path";
 import { ContentCard } from "./ContentCard";
 import { EmptyState, PageHeading, SectionHeading } from "./PageHeading";
@@ -295,20 +295,16 @@ export function StaffPage() {
 }
 
 export function SignUpsPage() {
-  const availableItems = visibleItems();
-  const latestNewsletterDate = getLatestNewsletterDate(contentItems);
-  const items = latestNewsletterDate
-    ? availableItems.filter(
-      (item) => item.newsletterDate === latestNewsletterDate && isVolunteerSignupUrl(item.actionUrl),
-    )
-    : [];
+  const newsletter = newsletters[0];
+  const signups = newsletter?.signups ?? [];
 
   return (
     <>
-      <PageHeading eyebrow="Ways to help" title="Sign Ups" description="Current SignUpGenius and Google Forms opportunities from the latest school newsletter." />
-      {items.length > 0
-        ? <CardGrid items={items} />
-        : <EmptyState>No volunteer signups were included in the latest newsletter.</EmptyState>}
+      <PageHeading eyebrow="Forms and opportunities" title="Sign Ups" description="Signup, RSVP, registration, and volunteer forms extracted automatically from the latest school newsletter." />
+      {newsletter && <div className="signup-source"><span>From</span><strong>{newsletter.title}</strong><time dateTime={newsletter.newsletterDate}>{formatDate(`${newsletter.newsletterDate}T12:00:00`, { month: "long", day: "numeric", year: "numeric" })}</time></div>}
+      {signups.length > 0
+        ? <div className="signup-grid">{signups.map((signup) => <article className="signup-card" key={signup.id}><span className="eyebrow">Newsletter form</span><h2>{signup.title}</h2><p>Found automatically in {newsletter.title}.</p><div className="signup-card__actions"><a className="source-link" href={newsletter.sourceUrl} target="_blank" rel="noreferrer">Newsletter source ↗</a><a className="button button--small" href={signup.url} target="_blank" rel="noreferrer">Open form ↗</a></div></article>)}</div>
+        : <EmptyState>No signup form links were found in the latest newsletter.</EmptyState>}
     </>
   );
 }
@@ -495,8 +491,9 @@ function HandbookSectionContent({ section, query }: { section: HandbookSection; 
 export function NewslettersPage() {
   const [query, setQuery] = useState("");
   const [openNewsletterId, setOpenNewsletterId] = useState<string | null>(newsletters[0]?.id ?? null);
+  const [readerMode, setReaderMode] = useState<"original" | "text">("original");
   const normalized = query.trim().toLowerCase();
-  const filtered = newsletters.filter((newsletter) => `${newsletter.title} ${newsletter.newsletterDate}`.toLowerCase().includes(normalized));
+  const filtered = newsletters.filter((newsletter) => `${newsletter.title} ${newsletter.newsletterDate} ${newsletter.textContent}`.toLowerCase().includes(normalized));
   return (
     <>
       <PageHeading eyebrow="Every issue, still findable" title="Newsletters" description="Browse every Smore newsletter in the school-updates inbox, open the original page, or read an issue without leaving this site." aside={<div className="heading-stat"><strong>{newsletters.length}</strong><span>{newsletters.length === 1 ? "newsletter" : "newsletters"}</span></div>} />
@@ -505,19 +502,37 @@ export function NewslettersPage() {
         {filtered.map((newsletter) => {
           const embedUrl = smoreEmbedUrl(newsletter.sourceUrl);
           const isOpen = openNewsletterId === newsletter.id;
+          const searchText = newsletter.textContent.toLowerCase();
+          const matchIndex = normalized ? searchText.indexOf(normalized) : -1;
+          const excerpt = matchIndex >= 0
+            ? newsletter.textContent.slice(Math.max(0, matchIndex - 90), Math.min(newsletter.textContent.length, matchIndex + normalized.length + 150)).replace(/\s+/g, " ")
+            : "";
+          const openReader = (mode: "original" | "text") => {
+            if (isOpen && readerMode === mode) {
+              setOpenNewsletterId(null);
+              return;
+            }
+            setOpenNewsletterId(newsletter.id);
+            setReaderMode(mode);
+          };
           return (
             <article className={`archive-newsletter ${isOpen ? "archive-newsletter--open" : ""}`} key={newsletter.id}>
               <div className="archive-row">
                 <time dateTime={newsletter.newsletterDate}><strong>{formatDate(`${newsletter.newsletterDate}T12:00:00`, { day: "2-digit" })}</strong><span>{formatDate(`${newsletter.newsletterDate}T12:00:00`, { month: "short", year: "numeric" })}</span></time>
-                <div><div className="badge-row"><span className="badge">{newsletter.id === newsletters[0]?.id ? "Latest" : "Archived"}</span></div><h2>{newsletter.title}</h2><p>School newsletter · Smore</p></div>
+                <div><div className="badge-row"><span className="badge">{newsletter.id === newsletters[0]?.id ? "Latest" : "Archived"}</span>{newsletter.textStatus === "available" && <span className="badge badge--text">Searchable text</span>}</div><h2>{newsletter.title}</h2><p>School newsletter · Smore</p>{excerpt && <p className="archive-row__excerpt">…<HighlightedText text={excerpt} query={query} />…</p>}</div>
                 <div className="archive-row__actions">
-                  {embedUrl && <button type="button" className="button button--small" aria-expanded={isOpen} aria-controls={`archive-reader-${newsletter.id}`} onClick={() => setOpenNewsletterId(isOpen ? null : newsletter.id)}>{isOpen ? "Close reader" : "Read here"}</button>}
+                  {embedUrl && <button type="button" className={`button button--small ${isOpen && readerMode === "original" ? "" : "button--outline"}`} aria-expanded={isOpen && readerMode === "original"} aria-controls={`archive-reader-${newsletter.id}`} onClick={() => openReader("original")}>{isOpen && readerMode === "original" ? "Close original" : "Read original"}</button>}
+                  {newsletter.textStatus === "available" && <button type="button" className={`button button--small ${isOpen && readerMode === "text" ? "" : "button--outline"}`} aria-expanded={isOpen && readerMode === "text"} aria-controls={`archive-reader-${newsletter.id}`} onClick={() => openReader("text")}>{isOpen && readerMode === "text" ? "Close text" : "Text version"}</button>}
                   <a className="button button--small button--outline" href={newsletter.sourceUrl} target="_blank" rel="noreferrer">Open Smore ↗</a>
                 </div>
               </div>
-              {isOpen && embedUrl && <div className="archive-newsletter__reader" id={`archive-reader-${newsletter.id}`}>
+              {isOpen && readerMode === "original" && embedUrl && <div className="archive-newsletter__reader" id={`archive-reader-${newsletter.id}`}>
                 <iframe src={embedUrl} title={`${newsletter.title} embedded newsletter`} loading="lazy" referrerPolicy="strict-origin-when-cross-origin" />
                 <p>Embedded from Smore. Open the original above if this reader does not load on your device.</p>
+              </div>}
+              {isOpen && readerMode === "text" && newsletter.textStatus === "available" && <div className="newsletter-text" id={`archive-reader-${newsletter.id}`}>
+                <div className="newsletter-text__intro"><div><span className="eyebrow">Text-only edition</span><h3>{newsletter.title}</h3></div><p>Generated automatically from Smore text and {newsletter.ocrImageCount} newsletter image{newsletter.ocrImageCount === 1 ? "" : "s"}. OCR wording may contain errors.</p></div>
+                <div className="newsletter-text__sections">{newsletter.textSections.map((section, index) => <section key={`${newsletter.id}-text-${index + 1}`}><h4>{section.heading}</h4>{section.text.split(/\n{2,}/).map((paragraph, paragraphIndex) => <p key={`${newsletter.id}-text-${index + 1}-${paragraphIndex + 1}`}><HighlightedText text={paragraph} query={query} /></p>)}</section>)}</div>
               </div>}
             </article>
           );

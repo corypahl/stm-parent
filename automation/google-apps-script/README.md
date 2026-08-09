@@ -2,7 +2,7 @@
 
 This Apps Script belongs to `stm.parent.updates@gmail.com`. It reads the account's inbox whenever the public feed is requested and returns one record for every email containing a public Smore newsletter link.
 
-There is no spreadsheet import, section parsing, grade tagging, review, or approval step. The public feed contains only each newsletter's cleaned title, newsletter date, and Smore URL. It never returns the sender, email body, or other Gmail data.
+There is no spreadsheet import, grade tagging, review, or approval step. The public feed contains only each newsletter's cleaned title, newsletter date, and Smore URL. It never returns the sender, email body, or other Gmail data.
 
 ## Install or update
 
@@ -14,7 +14,9 @@ There is no spreadsheet import, section parsing, grade tagging, review, or appro
 
 Feed version 6 scans all inbox messages, ignores email without a Smore link, removes duplicate Smore issues, and sorts newsletters by the date in the email subject or linked newsletter text. When neither contains a date, the email's received date is used.
 
-The site's scheduled GitHub Pages deployment checks the feed every 30 minutes. Every newsletter currently in the inbox appears in Archive, and the newest issue by newsletter date appears on Home. Removing a newsletter email from the inbox removes it from the site at the next successful update.
+The site's scheduled GitHub Pages deployment checks the feed every 30 minutes. Every newsletter currently in the inbox appears under Newsletters, and the newest issue by newsletter date appears on Home. During that deployment, the site reads Smore's native text, applies local OCR to newsletter images, and indexes the combined text for search. It also detects linked signup, RSVP, registration, and volunteer forms and displays forms from the latest newsletter under Sign Ups. This processing uses no external OCR account or manual review.
+
+Removing a newsletter email from the inbox removes it from the site at the next successful update.
 
 The old `Review Queue` and `Newsletter Sections` sheets are no longer read. They can be retained as a backup or deleted manually after confirming the new feed works.
 
