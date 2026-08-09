@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { ArchivePage } from "../components/Pages";
+import { NewslettersPage } from "../components/Pages";
 
-export const metadata: Metadata = { title: "Newsletter Archive" };
+export const metadata: Metadata = { title: "Newsletters" };
 export const dynamic = "force-static";
-export default function Page() { return <ArchivePage />; }
+export default function Page() { return <NewslettersPage />; }

@@ -24,6 +24,9 @@ test("exports the finished parent companion home", async () => {
   assert.match(html, /Source: St\. Martha 2026–27 Academic Calendar/);
   assert.doesNotMatch(html, /Sample: back-to-school family night/);
   assert.doesNotMatch(html, /Grade Filter|grade-chip|All-school notices are always included/);
+  assert.match(html, />Sign Ups<\/a>/);
+  assert.match(html, />Newsletters<\/a>/);
+  assert.doesNotMatch(html, />Volunteer<\/a>|>Archive<\/a>/);
   assert.match(html, /unofficial, parent-created/i);
   assert.match(html, /Source:/);
   assert.match(html, /og\.png/);
@@ -37,10 +40,10 @@ test("exports every requested route", async () => {
     ["calendar", "Academic calendar"],
     ["staff", "Contacts"],
     ["lunch", "Lunch menu"],
-    ["volunteer", "Volunteer"],
+    ["volunteer", "Sign Ups"],
     ["documents", "Documents &amp; links"],
     ["handbook", "Parent &amp; student handbook"],
-    ["archive", "Newsletter archive"],
+    ["archive", "Newsletters"],
   ];
 
   for (const [pathname, heading] of routes) {
@@ -52,11 +55,13 @@ test("exports every requested route", async () => {
   assert.match(calendarHtml, /stm\.parent\.updates%40gmail\.com\/public\/basic\.ics/);
 
   const volunteerHtml = await readRoute("volunteer");
+  assert.match(volunteerHtml, /<h1>Sign Ups<\/h1>/);
   assert.match(volunteerHtml, /Current SignUpGenius and Google Forms opportunities from the latest school newsletter/);
   assert.match(volunteerHtml, /No volunteer signups were included in the latest newsletter/);
   assert.doesNotMatch(volunteerHtml, /About parent involvement|20 hours|10 hours|per family|Prototype content/);
 
   const archiveHtml = await readRoute("archive");
+  assert.match(archiveHtml, /<h1>Newsletters<\/h1>/);
   assert.match(archiveHtml, /Browse every Smore newsletter in the school-updates inbox/);
   assert.match(archiveHtml, /Summer Notes 7\/28\/26/);
   assert.match(archiveHtml, /Open Smore/);

@@ -294,7 +294,7 @@ export function StaffPage() {
   );
 }
 
-export function VolunteerPage() {
+export function SignUpsPage() {
   const availableItems = visibleItems();
   const latestNewsletterDate = getLatestNewsletterDate(contentItems);
   const items = latestNewsletterDate
@@ -305,7 +305,7 @@ export function VolunteerPage() {
 
   return (
     <>
-      <PageHeading eyebrow="Ways to help" title="Volunteer" description="Current SignUpGenius and Google Forms opportunities from the latest school newsletter." />
+      <PageHeading eyebrow="Ways to help" title="Sign Ups" description="Current SignUpGenius and Google Forms opportunities from the latest school newsletter." />
       {items.length > 0
         ? <CardGrid items={items} />
         : <EmptyState>No volunteer signups were included in the latest newsletter.</EmptyState>}
@@ -492,15 +492,15 @@ function HandbookSectionContent({ section, query }: { section: HandbookSection; 
   );
 }
 
-export function ArchivePage() {
+export function NewslettersPage() {
   const [query, setQuery] = useState("");
   const [openNewsletterId, setOpenNewsletterId] = useState<string | null>(newsletters[0]?.id ?? null);
   const normalized = query.trim().toLowerCase();
   const filtered = newsletters.filter((newsletter) => `${newsletter.title} ${newsletter.newsletterDate}`.toLowerCase().includes(normalized));
   return (
     <>
-      <PageHeading eyebrow="Every issue, still findable" title="Newsletter archive" description="Browse every Smore newsletter in the school-updates inbox, open the original page, or read an issue without leaving this site." aside={<div className="heading-stat"><strong>{newsletters.length}</strong><span>{newsletters.length === 1 ? "newsletter" : "newsletters"}</span></div>} />
-      <label className="search-box"><span className="search-box__icon" aria-hidden="true">⌕</span><span className="sr-only">Search newsletter archive</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search the archive…" /></label>
+      <PageHeading eyebrow="Every issue, still findable" title="Newsletters" description="Browse every Smore newsletter in the school-updates inbox, open the original page, or read an issue without leaving this site." aside={<div className="heading-stat"><strong>{newsletters.length}</strong><span>{newsletters.length === 1 ? "newsletter" : "newsletters"}</span></div>} />
+      <label className="search-box"><span className="search-box__icon" aria-hidden="true">⌕</span><span className="sr-only">Search newsletters</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search newsletters…" /></label>
       <div className="archive-list">
         {filtered.map((newsletter) => {
           const embedUrl = smoreEmbedUrl(newsletter.sourceUrl);

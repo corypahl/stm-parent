@@ -8,10 +8,10 @@ const navigation = [
   { href: "/", label: "Home" },
   { href: "/calendar", label: "Events" },
   { href: "/lunch", label: "Lunch" },
-  { href: "/volunteer", label: "Volunteer" },
+  { href: "/volunteer", label: "Sign Ups" },
   { href: "/handbook", label: "Handbook" },
   { href: "/staff", label: "Contacts" },
-  { href: "/archive", label: "Archive" },
+  { href: "/archive", label: "Newsletters" },
 ];
 
 export function SiteShell({ children }: { children: ReactNode }) {
