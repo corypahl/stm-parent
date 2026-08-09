@@ -1,6 +1,6 @@
 # Google email intake and newsletter publishing
 
-This Apps Script belongs to `stm.parent.updates@gmail.com`. It keeps complete forwarded messages and unreviewed newsletter sections in a private Google Sheet, exposes only approved public fields, and creates or updates approved events in the public Google Calendar.
+This Apps Script belongs to `stm.parent.updates@gmail.com`. It keeps complete forwarded messages and unreviewed newsletter sections in a private Google Sheet, exposes only approved public fields plus the newest public Smore newsletter link, and creates or updates approved events in the public Google Calendar.
 
 ## One-time installation
 
@@ -17,6 +17,7 @@ This Apps Script belongs to `stm.parent.updates@gmail.com`. It keeps complete fo
 ## Review workflow
 
 - Every incoming email begins with status `Review` in the private `Review Queue` sheet.
+- The newest forwarded Smore title, newsletter date, and public URL are exposed automatically for the homepage embed. The sender and private email body remain private, and no section approval is required for this embed.
 - Smore links are retrieved and split at their horizontal separators. Every section begins with status `Unreviewed` in the private `Newsletter Sections` sheet.
 - From the spreadsheet, choose **Parent Site → Open section admin** to review the extracted sections in the private editor.
 - Verify the public title and summary, remove names or private information, add grade and category tags, and confirm dates and links.
@@ -30,7 +31,7 @@ For a newsletter forwarded before this version was installed, choose **Parent Si
 
 ## Update an existing deployment
 
-After replacing `Code.gs`, adding or updating `Admin.html`, and running `setupParentSite`, open **Deploy → Manage deployments**, edit the existing web-app deployment, choose **New version**, and deploy. The `/exec` URL remains the same. Version 3 returns approved section records and issue-level newsletter summaries while keeping unreviewed records private.
+After replacing `Code.gs`, adding or updating `Admin.html`, and running `setupParentSite`, open **Deploy → Manage deployments**, edit the existing web-app deployment, choose **New version**, and deploy. The `/exec` URL remains the same. Version 4 returns the newest public Smore newsletter automatically, plus approved section records and issue-level newsletter summaries, while keeping unreviewed section text and private email fields private.
 
 Running `setupParentSite` also compacts managed records directly beneath their headers. This repairs rows created far down the sheet by versions that initialized every empty All Day checkbox with a `false` value.
 

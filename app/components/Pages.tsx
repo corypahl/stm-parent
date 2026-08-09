@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import contentData from "../data/content.json";
 import googleContentData from "../data/google-content.json";
 import googleNewsletterData from "../data/google-newsletters.json";
+import latestNewsletterData from "../data/latest-newsletter.json";
 import documentData from "../data/documents.json";
 import lunchData from "../data/lunch.json";
 import handbookData from "../data/handbook.json";
@@ -14,6 +15,7 @@ import type {
   ContentItem,
   HandbookSection,
   LunchDay,
+  LatestNewsletter,
   NewsletterSummary,
   SchoolDocument,
   StaffMember,
@@ -21,7 +23,7 @@ import type {
 import { filterByGrades, formatGradeLabel } from "../lib/filtering";
 import { formatDate } from "../lib/format";
 import { googleCalendar } from "../lib/google-calendar";
-import { getLatestNewsletterDate, isVolunteerSignupUrl } from "../lib/newsletters";
+import { getLatestNewsletterDate, isVolunteerSignupUrl, smoreEmbedUrl } from "../lib/newsletters";
 import { assetPath } from "../lib/site-path";
 import { useGradeFilter } from "./GradeFilterProvider";
 import { ContentCard } from "./ContentCard";
@@ -32,6 +34,7 @@ const documents = documentData as SchoolDocument[];
 const lunchDays = lunchData as LunchDay[];
 const handbookSections = handbookData as HandbookSection[];
 const newsletters = (googleNewsletterData as NewsletterSummary[]).sort((a, b) => b.newsletterDate.localeCompare(a.newsletterDate));
+const latestNewsletter = latestNewsletterData as LatestNewsletter | null;
 const calendarEvents = calendarData as CalendarEvent[];
 const staffMembers = staffData as StaffMember[];
 
@@ -83,12 +86,8 @@ function CardGrid({ items }: { items: ContentItem[] }) {
 }
 
 export function HomePage() {
-  const visible = useVisibleItems();
   const upcomingEvents = calendarEvents.slice(0, 3);
-  const latestNewsletterDate = getLatestNewsletterDate(contentItems);
-  const updates = latestNewsletterDate
-    ? visible.filter((item) => item.newsletterDate === latestNewsletterDate)
-    : [];
+  const embedUrl = latestNewsletter ? smoreEmbedUrl(latestNewsletter.sourceUrl) : undefined;
 
   return (
     <>
@@ -115,10 +114,28 @@ export function HomePage() {
       </section>
 
       <section className="home-section">
-        <SectionHeading title="School updates" count={updates.length} />
-        {updates.length
-          ? <div className="card-grid card-grid--two">{updates.map((item) => <ContentCard key={item.id} item={item} />)}</div>
-          : <EmptyState>No newsletter sections have been approved yet.</EmptyState>}
+        <SectionHeading eyebrow="School updates" title="Latest school newsletter" />
+        {latestNewsletter && embedUrl ? (
+          <article className="newsletter-embed">
+            <header className="newsletter-embed__header">
+              <div>
+                <span className="eyebrow">Latest issue</span>
+                <h2>{latestNewsletter.title}</h2>
+                <p>{formatDate(`${latestNewsletter.newsletterDate}T12:00:00`, { month: "long", day: "numeric", year: "numeric" })}</p>
+              </div>
+              <a className="button button--small" href={latestNewsletter.sourceUrl} target="_blank" rel="noreferrer">Open newsletter ↗</a>
+            </header>
+            <div className="newsletter-embed__frame">
+              <iframe
+                src={embedUrl}
+                title={`${latestNewsletter.title} embedded newsletter`}
+                loading="lazy"
+                referrerPolicy="strict-origin-when-cross-origin"
+              />
+            </div>
+            <p className="newsletter-embed__note">Embedded from Smore. Use the button above if the newsletter does not load on your device.</p>
+          </article>
+        ) : <EmptyState>The latest newsletter will appear here after a Smore link is received.</EmptyState>}
       </section>
     </>
   );

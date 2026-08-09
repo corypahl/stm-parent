@@ -119,3 +119,10 @@ export type NewsletterSummary = {
   status: "published" | "archived";
   isDemo: boolean;
 };
+
+export type LatestNewsletter = {
+  id: string;
+  title: string;
+  newsletterDate: string;
+  sourceUrl: string;
+};

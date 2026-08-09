@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { getLatestNewsletterDate, isVolunteerSignupUrl } from "../app/lib/newsletters";
+import { getLatestNewsletterDate, isVolunteerSignupUrl, smoreEmbedUrl } from "../app/lib/newsletters";
 import type { ContentItem } from "../app/types/content";
 
 test("recognizes SignUpGenius and Google Forms action links", () => {
@@ -20,4 +20,10 @@ test("uses the newsletter date instead of the import or publish date", () => {
   ] as ContentItem[];
 
   assert.equal(getLatestNewsletterDate(items), "2026-08-04");
+});
+
+test("creates the supported Smore iframe URL from a public newsletter link", () => {
+  assert.equal(smoreEmbedUrl("https://app.smore.com/n/zk12p"), "https://secure.smore.com/n/zk12p?embed=1");
+  assert.equal(smoreEmbedUrl("https://secure.smore.com/n/kzd0-embedding-your-smore-newsletter?ref=email"), "https://secure.smore.com/n/kzd0-embedding-your-smore-newsletter?embed=1");
+  assert.equal(smoreEmbedUrl("https://example.com/n/zk12p"), undefined);
 });

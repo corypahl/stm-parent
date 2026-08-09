@@ -1,7 +1,7 @@
 const QUEUE_SHEET = "Review Queue";
 const SECTION_SHEET = "Newsletter Sections";
 const CALENDAR_ID = "stm.parent.updates@gmail.com";
-const PUBLIC_FEED_VERSION = 3;
+const PUBLIC_FEED_VERSION = 4;
 const HEADERS = [
   "Message ID",
   "Received At",
@@ -215,6 +215,7 @@ function publishCalendarRows_(sheet, headers) {
 function doGet() {
   const sheet = queueSheet_();
   const rows = sheet.getLastRow() < 2 ? [] : sheet.getRange(2, 1, sheet.getLastRow() - 1, HEADERS.length).getValues();
+  const latestNewsletter = latestNewsletterFromRows_(rows);
   const emailItems = rows
     .filter((row) => String(value_(row, "Status")) === "Approved")
     .filter((row) => !isSmoreUrl_(String(value_(row, "Action URL") || "")))
@@ -247,8 +248,40 @@ function doGet() {
   const items = sectionItems.concat(emailItems);
 
   return ContentService
-    .createTextOutput(JSON.stringify({ version: PUBLIC_FEED_VERSION, updatedAt: new Date().toISOString(), items, newsletters }))
+    .createTextOutput(JSON.stringify({ version: PUBLIC_FEED_VERSION, updatedAt: new Date().toISOString(), latestNewsletter, items, newsletters }))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+function latestNewsletterFromRows_(rows) {
+  const newsletters = rows
+    .map((row) => {
+      const sourceUrl = normalizeUrl_(value_(row, "Action URL"));
+      if (!isSmoreUrl_(sourceUrl)) return null;
+      const shortCode = sourceUrl.match(/\/n\/([a-z0-9-]+)/i)?.[1]?.split("-")[0] || "newsletter";
+      const title = cleanText_(value_(row, "Title") || cleanSubject_(value_(row, "Subject")) || "School newsletter");
+      const newsletterDate = newsletterDateFrom_(title)
+        || newsletterDateFrom_(value_(row, "Subject"))
+        || dateOnlyValue_(value_(row, "Received At"));
+      return {
+        id: `smore-${shortCode}`,
+        title,
+        newsletterDate,
+        sourceUrl,
+        receivedAt: isoValue_(value_(row, "Received At")),
+      };
+    })
+    .filter(Boolean)
+    .filter((newsletter) => newsletter.newsletterDate)
+    .sort((a, b) => b.newsletterDate.localeCompare(a.newsletterDate) || b.receivedAt.localeCompare(a.receivedAt));
+
+  if (!newsletters.length) return null;
+  const latest = newsletters[0];
+  return {
+    id: latest.id,
+    title: latest.title,
+    newsletterDate: latest.newsletterDate,
+    sourceUrl: latest.sourceUrl,
+  };
 }
 
 function showSectionAdmin() {

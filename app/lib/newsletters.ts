@@ -24,3 +24,15 @@ export function getLatestNewsletterDate(items: ContentItem[]) {
     return !latest || item.newsletterDate > latest ? item.newsletterDate : latest;
   }, undefined);
 }
+
+export function smoreEmbedUrl(sourceUrl: string) {
+  try {
+    const url = new URL(sourceUrl);
+    const hostname = url.hostname.toLowerCase();
+    if (hostname !== "smore.com" && !hostname.endsWith(".smore.com")) return undefined;
+    if (!/^\/n\/[a-z0-9-]+\/?$/i.test(url.pathname)) return undefined;
+    return `https://secure.smore.com${url.pathname.replace(/\/$/, "")}?embed=1`;
+  } catch {
+    return undefined;
+  }
+}

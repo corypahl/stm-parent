@@ -207,6 +207,14 @@ button.button:disabled, .admin-table button:disabled { cursor: not-allowed; opac
 .calendar-category--faith { background: #eee7f7; color: #624184; }
 .calendar-category--academic { background: #e6eff8; color: #315f87; }
 
+.newsletter-embed { overflow: hidden; border: 1px solid var(--line); border-radius: 15px; background: var(--paper); box-shadow: var(--shadow); }
+.newsletter-embed__header { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 22px 24px; border-bottom: 1px solid var(--line); }
+.newsletter-embed__header h2 { margin: 5px 0 2px; color: var(--burgundy); font: 700 27px/1.15 var(--serif); }
+.newsletter-embed__header p { margin: 0; color: var(--muted); font-size: 11px; }
+.newsletter-embed__frame { height: min(900px, 78vh); min-height: 620px; background: #f1ece7; }
+.newsletter-embed__frame iframe { display: block; width: 100%; height: 100%; border: 0; }
+.newsletter-embed__note { margin: 0; padding: 10px 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 10px; text-align: center; }
+
 .staff-search { max-width: 700px; }
 .staff-directory { display: grid; gap: 50px; }
 .staff-section .section-heading { margin-bottom: 16px; }
@@ -343,6 +351,8 @@ button.button:disabled, .admin-table button:disabled { cursor: not-allowed; opac
   .select-field { justify-content: space-between; }
   .calendar-month { grid-template-columns: 1fr; gap: 14px; }
   .calendar-month__events, .staff-grid { grid-template-columns: 1fr; }
+  .newsletter-embed__header { align-items: flex-start; flex-direction: column; }
+  .newsletter-embed__frame { height: 72vh; min-height: 560px; }
   .staff-directory { gap: 38px; }
   .admin-stats { grid-template-columns: 1fr; }
   .admin-table { border: 0; background: transparent; }

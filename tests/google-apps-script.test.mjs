@@ -8,11 +8,13 @@ const adminSource = await readFile(new URL("../automation/google-apps-script/Adm
 const context = vm.createContext({ console });
 vm.runInContext(`${source}\nthis.__testHelpers = {
   PUBLIC_FEED_VERSION,
+  HEADERS,
   actionLabelFor_,
   categoryTagsFor_,
   cleanBody_,
   inferContentType_,
   isVolunteerSignupUrl_,
+  latestNewsletterFromRows_,
   newsletterDateFrom_,
   parseSmoreNewsletterHtml_,
   preferredUrl_,
@@ -70,9 +72,37 @@ test("falls back to a normal public link when no newsletter is present", () => {
 });
 
 test("publishes a visible feed version so empty deployments can be verified", () => {
-  assert.equal(helpers.PUBLIC_FEED_VERSION, 3);
+  assert.equal(helpers.PUBLIC_FEED_VERSION, 4);
   assert.match(source, /JSON\.stringify\(\{ version: PUBLIC_FEED_VERSION,/);
-  assert.match(source, /items, newsletters/);
+  assert.match(source, /latestNewsletter, items, newsletters/);
+});
+
+test("publishes the newest forwarded Smore link without exposing the private email body", () => {
+  const rowFrom = (values) => helpers.HEADERS.map((header) => values[header] ?? "");
+  const latest = helpers.latestNewsletterFromRows_([
+    rowFrom({
+      "Message ID": "older",
+      "Received At": "2026-08-07T20:00:00Z",
+      Title: "NEWS NOTES 06/02/26",
+      "Action URL": "https://app.smore.com/n/older",
+      "Private Email Body": "private older email",
+    }),
+    rowFrom({
+      "Message ID": "latest",
+      "Received At": "2026-08-01T20:00:00Z",
+      Title: "Summer Notes 7/28/26",
+      "Action URL": "https://app.smore.com/n/zk12p",
+      "Private Email Body": "private latest email",
+    }),
+  ]);
+
+  assert.deepEqual({ ...latest }, {
+    id: "smore-zk12p",
+    title: "Summer Notes 7/28/26",
+    newsletterDate: "2026-07-28",
+    sourceUrl: "https://app.smore.com/n/zk12p",
+  });
+  assert.doesNotMatch(JSON.stringify(latest), /private/i);
 });
 
 test("splits structured Smore content into individually reviewable sections", () => {

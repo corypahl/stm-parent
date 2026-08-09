@@ -3,6 +3,7 @@ import { writeFile } from "node:fs/promises";
 const feedUrl = process.env.GOOGLE_CONTENT_FEED_URL?.trim();
 const outputUrl = new URL("../app/data/google-content.json", import.meta.url);
 const newsletterOutputUrl = new URL("../app/data/google-newsletters.json", import.meta.url);
+const latestNewsletterOutputUrl = new URL("../app/data/latest-newsletter.json", import.meta.url);
 
 if (!feedUrl) {
   console.log("Google content sync skipped: GOOGLE_CONTENT_FEED_URL is not configured.");
@@ -62,6 +63,25 @@ const newsletters = (Array.isArray(payload.newsletters) ? payload.newsletters : 
   };
 });
 
+let latestNewsletterUpdated = false;
+if (Object.prototype.hasOwnProperty.call(payload, "latestNewsletter")) {
+  const newsletter = payload.latestNewsletter;
+  let latestNewsletter = null;
+  if (newsletter !== null) {
+    if (!newsletter || !newsletter.title || !newsletter.newsletterDate || !newsletter.sourceUrl) {
+      throw new Error("Google latest newsletter is missing a title, newsletter date, or source URL.");
+    }
+    latestNewsletter = {
+      id: String(newsletter.id || "google-latest-newsletter").replace(/[^a-zA-Z0-9_-]/g, "-"),
+      title: String(newsletter.title).trim(),
+      newsletterDate: newsletter.newsletterDate,
+      sourceUrl: newsletter.sourceUrl,
+    };
+  }
+  await writeFile(latestNewsletterOutputUrl, `${JSON.stringify(latestNewsletter, null, 2)}\n`, "utf8");
+  latestNewsletterUpdated = true;
+}
+
 await writeFile(outputUrl, `${JSON.stringify(items, null, 2)}\n`, "utf8");
 await writeFile(newsletterOutputUrl, `${JSON.stringify(newsletters, null, 2)}\n`, "utf8");
-console.log(`Synced ${items.length} approved item(s) and ${newsletters.length} newsletter issue(s) from Google.`);
+console.log(`Synced ${items.length} approved item(s), ${newsletters.length} newsletter issue(s), and ${latestNewsletterUpdated ? "the latest newsletter" : "no latest-newsletter change"} from Google.`);
