@@ -77,6 +77,8 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .button--ghost-light { border-color: rgba(255,255,255,.35); background: transparent; color: white; }
 .button--ghost-light:hover { background: rgba(255,255,255,.09); }
 .button--small { min-height: 36px; padding: 8px 12px; font-size: 11px; }
+.button--outline { background: transparent; color: var(--burgundy); }
+.button--outline:hover { background: var(--burgundy-soft); color: var(--burgundy-dark); }
 button.button:disabled, .admin-table button:disabled { cursor: not-allowed; opacity: .55; transform: none; }
 
 .notice { display: flex; align-items: flex-start; gap: 13px; margin: 22px 0 32px; padding: 15px 17px; border: 1px solid #d9cfc5; border-radius: 11px; background: white; color: #5a504a; }
@@ -260,6 +262,11 @@ button.button:disabled, .admin-table button:disabled { cursor: not-allowed; opac
 .archive-row time span { color: var(--muted); font-size: 9px; text-transform: uppercase; letter-spacing: .08em; }
 .archive-row h2 { margin: 7px 0 2px; color: var(--burgundy-dark); font: 700 21px/1.2 var(--serif); }
 .archive-row p { margin: 0; color: var(--muted); font-size: 11px; }
+.archive-row__actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 7px; }
+.archive-newsletter__reader { overflow: hidden; margin-top: -1px; border: 1px solid var(--line); border-radius: 0 0 12px 12px; background: #f1ece7; }
+.archive-newsletter--open .archive-row { border-radius: 12px 12px 0 0; }
+.archive-newsletter__reader iframe { display: block; width: 100%; height: min(850px, 76vh); min-height: 600px; border: 0; }
+.archive-newsletter__reader p { margin: 0; padding: 10px 18px; border-top: 1px solid var(--line); background: var(--paper); color: var(--muted); font-size: 10px; text-align: center; }
 
 .empty-state { grid-column: 1 / -1; padding: 34px; border: 1px dashed #cfc3b8; border-radius: 12px; background: rgba(255,255,255,.45); color: var(--muted); text-align: center; font-size: 13px; }
 .admin-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 30px 0 50px; }
@@ -337,6 +344,8 @@ button.button:disabled, .admin-table button:disabled { cursor: not-allowed; opac
   .archive-row { grid-template-columns: 62px 1fr; gap: 14px; }
   .archive-row .button { grid-column: 2; width: fit-content; }
   .archive-row time { padding-right: 12px; }
+  .archive-row__actions { grid-column: 2; justify-content: flex-start; }
+  .archive-newsletter__reader iframe { height: 72vh; min-height: 540px; }
   .handbook-reader { grid-template-columns: 1fr; gap: 20px; }
   .handbook-contents { position: static; max-height: 290px; }
   .handbook-section { padding: 22px 19px; }

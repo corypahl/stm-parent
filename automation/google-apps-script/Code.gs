@@ -1,7 +1,7 @@
 const QUEUE_SHEET = "Review Queue";
 const SECTION_SHEET = "Newsletter Sections";
 const CALENDAR_ID = "stm.parent.updates@gmail.com";
-const PUBLIC_FEED_VERSION = 4;
+const PUBLIC_FEED_VERSION = 5;
 const HEADERS = [
   "Message ID",
   "Received At",
@@ -215,6 +215,7 @@ function publishCalendarRows_(sheet, headers) {
 function doGet() {
   const sheet = queueSheet_();
   const rows = sheet.getLastRow() < 2 ? [] : sheet.getRange(2, 1, sheet.getLastRow() - 1, HEADERS.length).getValues();
+  const newsletters = newsletterArchiveFromRows_(rows);
   const latestNewsletter = latestNewsletterFromRows_(rows);
   const emailItems = rows
     .filter((row) => String(value_(row, "Status")) === "Approved")
@@ -244,7 +245,6 @@ function doGet() {
 
   const sectionRows = publicSectionRows_();
   const sectionItems = sectionRows.map(sectionItemFromRow_).filter((item) => item.title);
-  const newsletters = newsletterSummaries_(sectionRows);
   const items = sectionItems.concat(emailItems);
 
   return ContentService
@@ -253,27 +253,7 @@ function doGet() {
 }
 
 function latestNewsletterFromRows_(rows) {
-  const newsletters = rows
-    .map((row) => {
-      const sourceUrl = normalizeUrl_(value_(row, "Action URL"));
-      if (!isSmoreUrl_(sourceUrl)) return null;
-      const shortCode = sourceUrl.match(/\/n\/([a-z0-9-]+)/i)?.[1]?.split("-")[0] || "newsletter";
-      const title = cleanText_(value_(row, "Title") || cleanSubject_(value_(row, "Subject")) || "School newsletter");
-      const newsletterDate = newsletterDateFrom_(title)
-        || newsletterDateFrom_(value_(row, "Subject"))
-        || dateOnlyValue_(value_(row, "Received At"));
-      return {
-        id: `smore-${shortCode}`,
-        title,
-        newsletterDate,
-        sourceUrl,
-        receivedAt: isoValue_(value_(row, "Received At")),
-      };
-    })
-    .filter(Boolean)
-    .filter((newsletter) => newsletter.newsletterDate)
-    .sort((a, b) => b.newsletterDate.localeCompare(a.newsletterDate) || b.receivedAt.localeCompare(a.receivedAt));
-
+  const newsletters = newsletterArchiveFromRows_(rows);
   if (!newsletters.length) return null;
   const latest = newsletters[0];
   return {
@@ -282,6 +262,39 @@ function latestNewsletterFromRows_(rows) {
     newsletterDate: latest.newsletterDate,
     sourceUrl: latest.sourceUrl,
   };
+}
+
+function newsletterArchiveFromRows_(rows) {
+  const byId = {};
+  rows.forEach((row) => {
+    const sourceUrl = normalizeUrl_(value_(row, "Action URL"));
+    if (!isSmoreUrl_(sourceUrl)) return;
+    const shortCode = sourceUrl.match(/\/n\/([a-z0-9-]+)/i)?.[1]?.split("-")[0] || "newsletter";
+    const id = `smore-${shortCode}`;
+    const title = cleanText_(value_(row, "Title") || cleanSubject_(value_(row, "Subject")) || "School newsletter");
+    const newsletterDate = newsletterDateFrom_(title)
+      || newsletterDateFrom_(value_(row, "Subject"))
+      || dateOnlyValue_(value_(row, "Received At"));
+    if (!newsletterDate) return;
+    const receivedAt = isoValue_(value_(row, "Received At"));
+    if (!byId[id] || receivedAt > byId[id].receivedAt) {
+      byId[id] = { id, title, newsletterDate, sourceUrl, receivedAt };
+    }
+  });
+
+  return Object.keys(byId)
+    .map((id) => byId[id])
+    .sort((a, b) => b.newsletterDate.localeCompare(a.newsletterDate) || b.receivedAt.localeCompare(a.receivedAt))
+    .map((newsletter, index) => ({
+      id: newsletter.id,
+      title: newsletter.title,
+      newsletterDate: newsletter.newsletterDate,
+      sourceUrl: newsletter.sourceUrl,
+      itemCount: 0,
+      grades: ["all-school"],
+      status: index === 0 ? "published" : "archived",
+      isDemo: false,
+    }));
 }
 
 function showSectionAdmin() {

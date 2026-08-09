@@ -62,6 +62,7 @@ const newsletters = (Array.isArray(payload.newsletters) ? payload.newsletters : 
     isDemo: false,
   };
 });
+const supportsAutomaticNewsletterArchive = Number(payload.version) >= 5;
 
 let latestNewsletterUpdated = false;
 if (Object.prototype.hasOwnProperty.call(payload, "latestNewsletter")) {
@@ -83,5 +84,7 @@ if (Object.prototype.hasOwnProperty.call(payload, "latestNewsletter")) {
 }
 
 await writeFile(outputUrl, `${JSON.stringify(items, null, 2)}\n`, "utf8");
-await writeFile(newsletterOutputUrl, `${JSON.stringify(newsletters, null, 2)}\n`, "utf8");
-console.log(`Synced ${items.length} approved item(s), ${newsletters.length} newsletter issue(s), and ${latestNewsletterUpdated ? "the latest newsletter" : "no latest-newsletter change"} from Google.`);
+if (supportsAutomaticNewsletterArchive || newsletters.length) {
+  await writeFile(newsletterOutputUrl, `${JSON.stringify(newsletters, null, 2)}\n`, "utf8");
+}
+console.log(`Synced ${items.length} approved item(s), ${supportsAutomaticNewsletterArchive || newsletters.length ? `${newsletters.length} newsletter issue(s)` : "no newsletter-archive change"}, and ${latestNewsletterUpdated ? "the latest newsletter" : "no latest-newsletter change"} from Google.`);

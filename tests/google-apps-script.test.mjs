@@ -15,6 +15,7 @@ vm.runInContext(`${source}\nthis.__testHelpers = {
   inferContentType_,
   isVolunteerSignupUrl_,
   latestNewsletterFromRows_,
+  newsletterArchiveFromRows_,
   newsletterDateFrom_,
   parseSmoreNewsletterHtml_,
   preferredUrl_,
@@ -72,14 +73,14 @@ test("falls back to a normal public link when no newsletter is present", () => {
 });
 
 test("publishes a visible feed version so empty deployments can be verified", () => {
-  assert.equal(helpers.PUBLIC_FEED_VERSION, 4);
+  assert.equal(helpers.PUBLIC_FEED_VERSION, 5);
   assert.match(source, /JSON\.stringify\(\{ version: PUBLIC_FEED_VERSION,/);
   assert.match(source, /latestNewsletter, items, newsletters/);
 });
 
 test("publishes the newest forwarded Smore link without exposing the private email body", () => {
   const rowFrom = (values) => helpers.HEADERS.map((header) => values[header] ?? "");
-  const latest = helpers.latestNewsletterFromRows_([
+  const rows = [
     rowFrom({
       "Message ID": "older",
       "Received At": "2026-08-07T20:00:00Z",
@@ -94,7 +95,9 @@ test("publishes the newest forwarded Smore link without exposing the private ema
       "Action URL": "https://app.smore.com/n/zk12p",
       "Private Email Body": "private latest email",
     }),
-  ]);
+  ];
+  const latest = helpers.latestNewsletterFromRows_(rows);
+  const archive = helpers.newsletterArchiveFromRows_(rows);
 
   assert.deepEqual({ ...latest }, {
     id: "smore-zk12p",
@@ -102,7 +105,12 @@ test("publishes the newest forwarded Smore link without exposing the private ema
     newsletterDate: "2026-07-28",
     sourceUrl: "https://app.smore.com/n/zk12p",
   });
+  assert.deepEqual([...archive].map((newsletter) => newsletter.id), ["smore-zk12p", "smore-older"]);
+  assert.equal(archive[0].status, "published");
+  assert.equal(archive[1].status, "archived");
+  assert.equal(archive[1].newsletterDate, "2026-06-02");
   assert.doesNotMatch(JSON.stringify(latest), /private/i);
+  assert.doesNotMatch(JSON.stringify(archive), /private/i);
 });
 
 test("splits structured Smore content into individually reviewable sections", () => {

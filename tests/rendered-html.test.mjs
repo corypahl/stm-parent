@@ -61,7 +61,10 @@ test("exports every requested route", async () => {
   assert.doesNotMatch(volunteerHtml, /About parent involvement|20 hours|10 hours|per family|Prototype content/);
 
   const archiveHtml = await readRoute("archive");
-  assert.match(archiveHtml, /Previous newsletters will appear here after a newer issue is published/);
+  assert.match(archiveHtml, /Browse every forwarded school newsletter/);
+  assert.match(archiveHtml, /Summer Notes 7\/28\/26/);
+  assert.match(archiveHtml, /Open Smore/);
+  assert.match(archiveHtml, /https:\/\/secure\.smore\.com\/n\/zk12p\?embed=1/);
   assert.doesNotMatch(archiveHtml, /Sample News Notes|Prototype content/);
 
   const adminHtml = await readRoute("admin");

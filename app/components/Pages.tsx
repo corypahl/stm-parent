@@ -501,21 +501,35 @@ function HandbookSectionContent({ section, query }: { section: HandbookSection; 
 
 export function ArchivePage() {
   const [query, setQuery] = useState("");
-  const previousNewsletters = newsletters.slice(1);
-  const filtered = previousNewsletters.filter((newsletter) => newsletter.title.toLowerCase().includes(query.toLowerCase()));
+  const [openNewsletterId, setOpenNewsletterId] = useState<string | null>(newsletters[0]?.id ?? null);
+  const normalized = query.trim().toLowerCase();
+  const filtered = newsletters.filter((newsletter) => `${newsletter.title} ${newsletter.newsletterDate}`.toLowerCase().includes(normalized));
   return (
     <>
-      <PageHeading eyebrow="Past weeks, still findable" title="Newsletter archive" description="Open previously published school newsletters from their original source." />
+      <PageHeading eyebrow="Every issue, still findable" title="Newsletter archive" description="Browse every forwarded school newsletter, open the original Smore page, or read an issue without leaving this site." aside={<div className="heading-stat"><strong>{newsletters.length}</strong><span>{newsletters.length === 1 ? "newsletter" : "newsletters"}</span></div>} />
       <label className="search-box"><span className="search-box__icon" aria-hidden="true">⌕</span><span className="sr-only">Search newsletter archive</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search the archive…" /></label>
       <div className="archive-list">
-        {filtered.map((newsletter) => (
-          <article className="archive-row" key={newsletter.id}>
-            <time dateTime={newsletter.newsletterDate}><strong>{formatDate(newsletter.newsletterDate, { day: "2-digit" })}</strong><span>{formatDate(newsletter.newsletterDate, { month: "short", year: "numeric" })}</span></time>
-            <div><div className="badge-row"><span className="badge">Archived</span></div><h2>{newsletter.title}</h2><p>{newsletter.itemCount} published sections · {newsletter.grades.length} grade groups</p></div>
-            <a className="button button--small" href={newsletter.sourceUrl} target="_blank" rel="noreferrer">Original source ↗</a>
-          </article>
-        ))}
-        {!filtered.length && <EmptyState>{query ? "No previous newsletters match that search." : "Previous newsletters will appear here after a newer issue is published."}</EmptyState>}
+        {filtered.map((newsletter) => {
+          const embedUrl = smoreEmbedUrl(newsletter.sourceUrl);
+          const isOpen = openNewsletterId === newsletter.id;
+          return (
+            <article className={`archive-newsletter ${isOpen ? "archive-newsletter--open" : ""}`} key={newsletter.id}>
+              <div className="archive-row">
+                <time dateTime={newsletter.newsletterDate}><strong>{formatDate(`${newsletter.newsletterDate}T12:00:00`, { day: "2-digit" })}</strong><span>{formatDate(`${newsletter.newsletterDate}T12:00:00`, { month: "short", year: "numeric" })}</span></time>
+                <div><div className="badge-row"><span className="badge">{newsletter.id === newsletters[0]?.id ? "Latest" : "Archived"}</span></div><h2>{newsletter.title}</h2><p>School newsletter · Smore</p></div>
+                <div className="archive-row__actions">
+                  {embedUrl && <button type="button" className="button button--small" aria-expanded={isOpen} aria-controls={`archive-reader-${newsletter.id}`} onClick={() => setOpenNewsletterId(isOpen ? null : newsletter.id)}>{isOpen ? "Close reader" : "Read here"}</button>}
+                  <a className="button button--small button--outline" href={newsletter.sourceUrl} target="_blank" rel="noreferrer">Open Smore ↗</a>
+                </div>
+              </div>
+              {isOpen && embedUrl && <div className="archive-newsletter__reader" id={`archive-reader-${newsletter.id}`}>
+                <iframe src={embedUrl} title={`${newsletter.title} embedded newsletter`} loading="lazy" referrerPolicy="strict-origin-when-cross-origin" />
+                <p>Embedded from Smore. Open the original above if this reader does not load on your device.</p>
+              </div>}
+            </article>
+          );
+        })}
+        {!filtered.length && <EmptyState>{query ? "No newsletters match that search." : "Forwarded Smore newsletters will appear here automatically."}</EmptyState>}
       </div>
     </>
   );
