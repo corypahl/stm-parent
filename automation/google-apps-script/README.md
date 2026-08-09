@@ -1,39 +1,22 @@
-# Google email intake and newsletter publishing
+# Automatic Gmail newsletter feed
 
-This Apps Script belongs to `stm.parent.updates@gmail.com`. It keeps complete forwarded messages and unreviewed newsletter sections in a private Google Sheet, exposes only approved public fields plus the newest public Smore newsletter link, and creates or updates approved events in the public Google Calendar.
+This Apps Script belongs to `stm.parent.updates@gmail.com`. It reads the account's inbox whenever the public feed is requested and returns one record for every email containing a public Smore newsletter link.
 
-## One-time installation
+There is no spreadsheet import, section parsing, grade tagging, review, or approval step. The public feed contains only each newsletter's cleaned title, newsletter date, and Smore URL. It never returns the sender, email body, or other Gmail data.
 
-1. Sign in as `stm.parent.updates@gmail.com` and create a Google Sheet named `St. Martha Parent Site Review Queue`.
-2. In that sheet, open **Extensions → Apps Script**.
-3. Replace the contents of `Code.gs` with this directory's `Code.gs`.
-4. Add an HTML file named `Admin` and replace its contents with this directory's `Admin.html`.
-5. In **Project Settings**, enable the manifest file in the editor. Replace `appsscript.json` with this directory's manifest.
-6. Select `setupParentSite` and click **Run**. Review and approve the requested Gmail, Calendar, Sheets, external newsletter retrieval, and trigger permissions.
-7. Return to the spreadsheet and reload it. A **Parent Site** menu will appear. New forwarded messages will begin entering the `Review Queue` sheet within 15 minutes.
-8. In Apps Script, choose **Deploy → New deployment → Web app**. Set **Execute as** to yourself and **Who has access** to anyone. Deploy and copy the `/exec` URL.
-9. Send the `/exec` URL to Codex. It contains approved public fields only; do not send passwords, OAuth tokens, or recovery codes.
+## Install or update
 
-## Review workflow
+1. Sign in as `stm.parent.updates@gmail.com` and open the existing Apps Script project from the Google Sheet with **Extensions → Apps Script**.
+2. Replace `Code.gs` with this directory's `Code.gs`.
+3. In **Project Settings**, enable the manifest file in the editor and replace `appsscript.json` with this directory's manifest.
+4. Save the project, select `setupParentSite`, and click **Run**. Approve Gmail access when asked. The code only reads inbox messages; Google's built-in Gmail service nevertheless requests its standard mailbox scope. Setup also removes the old import, approval, and newsletter-section triggers.
+5. Choose **Deploy → Manage deployments**, edit the existing web-app deployment, choose **New version**, and deploy. Keep **Execute as** set to yourself and **Who has access** set to anyone. The existing `/exec` URL remains the same.
 
-- Every incoming email begins with status `Review` in the private `Review Queue` sheet.
-- Every forwarded Smore title, newsletter date, and public URL is exposed automatically for the newsletter archive, with the newest issue used for the homepage embed. The sender and private email body remain private, and no section approval is required.
-- Smore links are retrieved and split at their horizontal separators. Every section begins with status `Unreviewed` in the private `Newsletter Sections` sheet.
-- From the spreadsheet, choose **Parent Site → Open section admin** to review the extracted sections in the private editor.
-- Verify the public title and summary, remove names or private information, add grade and category tags, and confirm dates and links.
-- Change a section to `Approved` and save it to expose only that section's safe public fields.
-- Approved sections with content type `event` and a start date are added to Google Calendar.
-- Change an approved section back to `Unreviewed` or `Rejected` to remove it from the public feed and delete its generated calendar event.
-- Choose `Remove` in the email review queue to delete an event previously created from an email row.
-- The private email body, sender, and original subject are never returned by the public feed.
+Feed version 6 scans all inbox messages, ignores email without a Smore link, removes duplicate Smore issues, and sorts newsletters by the date in the email subject or linked newsletter text. When neither contains a date, the email's received date is used.
 
-For a newsletter forwarded before this version was installed, choose **Parent Site → Import newsletter sections** once. Existing section IDs are skipped, so this action is safe to repeat.
+The site's scheduled GitHub Pages deployment checks the feed every 30 minutes. Every newsletter currently in the inbox appears in Archive, and the newest issue by newsletter date appears on Home. Removing a newsletter email from the inbox removes it from the site at the next successful update.
 
-## Update an existing deployment
-
-After replacing `Code.gs`, adding or updating `Admin.html`, and running `setupParentSite`, open **Deploy → Manage deployments**, edit the existing web-app deployment, choose **New version**, and deploy. The `/exec` URL remains the same. Version 5 returns every forwarded public Smore newsletter for the archive and the newest issue for the homepage, plus approved section records, while keeping unreviewed section text and private email fields private.
-
-Running `setupParentSite` also compacts managed records directly beneath their headers. This repairs rows created far down the sheet by versions that initialized every empty All Day checkbox with a `false` value.
+The old `Review Queue` and `Newsletter Sections` sheets are no longer read. They can be retained as a backup or deleted manually after confirming the new feed works.
 
 ## Seed the 2026–27 calendar
 

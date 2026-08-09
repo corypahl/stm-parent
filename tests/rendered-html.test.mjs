@@ -23,10 +23,7 @@ test("exports the finished parent companion home", async () => {
   assert.doesNotMatch(html, /Good to know|Parent service organization|Explore opportunities|cta-panel/);
   assert.match(html, /Source: St\. Martha 2026–27 Academic Calendar/);
   assert.doesNotMatch(html, /Sample: back-to-school family night/);
-  assert.match(html, /All-school notices are always included/);
-  assert.match(html, /Grade Filter/);
-  assert.match(html, />Pre-K<\/button>/);
-  assert.match(html, />1st<\/button>/);
+  assert.doesNotMatch(html, /Grade Filter|grade-chip|All-school notices are always included/);
   assert.match(html, /unofficial, parent-created/i);
   assert.match(html, /Source:/);
   assert.match(html, /og\.png/);
@@ -44,7 +41,6 @@ test("exports every requested route", async () => {
     ["documents", "Documents &amp; links"],
     ["handbook", "Parent &amp; student handbook"],
     ["archive", "Newsletter archive"],
-    ["admin", "Admin review"],
   ];
 
   for (const [pathname, heading] of routes) {
@@ -57,20 +53,17 @@ test("exports every requested route", async () => {
 
   const volunteerHtml = await readRoute("volunteer");
   assert.match(volunteerHtml, /Current SignUpGenius and Google Forms opportunities from the latest school newsletter/);
-  assert.match(volunteerHtml, /No volunteer signups were included in the latest newsletter for the selected grades/);
+  assert.match(volunteerHtml, /No volunteer signups were included in the latest newsletter/);
   assert.doesNotMatch(volunteerHtml, /About parent involvement|20 hours|10 hours|per family|Prototype content/);
 
   const archiveHtml = await readRoute("archive");
-  assert.match(archiveHtml, /Browse every forwarded school newsletter/);
+  assert.match(archiveHtml, /Browse every Smore newsletter in the school-updates inbox/);
   assert.match(archiveHtml, /Summer Notes 7\/28\/26/);
   assert.match(archiveHtml, /Open Smore/);
   assert.match(archiveHtml, /https:\/\/secure\.smore\.com\/n\/zk12p\?embed=1/);
   assert.doesNotMatch(archiveHtml, /Sample News Notes|Prototype content/);
 
-  const adminHtml = await readRoute("admin");
-  assert.match(adminHtml, /Open the private section admin from Google Sheets/);
-  assert.match(adminHtml, /Parent Site.*Open section admin/);
-  assert.doesNotMatch(adminHtml, /non-functional preview|No data is being imported yet|Sample News Notes/);
+  assert.doesNotMatch(archiveHtml, /\breview\b|\bapprove\b|grade tag/i);
 });
 
 test("publishes the source handbook and calendar PDFs", async () => {

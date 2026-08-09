@@ -52,23 +52,10 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .primary-nav a::after { content: ""; position: absolute; left: 17px; right: 17px; bottom: 0; height: 3px; background: var(--orange); transform: scaleX(0); transition: transform .18s ease; }
 .primary-nav a:hover, .primary-nav a.active { color: white; background: rgba(255,255,255,.07); }
 .primary-nav a.active::after { transform: scaleX(1); }
-.primary-nav .admin-link { margin-left: auto; border-left: 1px solid rgba(255,255,255,.16); }
-
-.filter-wrap { background: #f2ece4; border-bottom: 1px solid var(--line); }
-.grade-filter { padding: 16px 0 14px; }
-.grade-filter__heading { display: flex; justify-content: space-between; align-items: end; margin-bottom: 10px; }
-.grade-filter__heading > div { display: flex; align-items: baseline; gap: 12px; }
-.grade-filter__heading p { margin: 0; color: var(--muted); font-size: 12px; }
 .eyebrow { display: block; color: var(--burgundy); font-size: 10px; font-weight: 850; letter-spacing: .15em; text-transform: uppercase; }
 .eyebrow--accent { color: var(--orange); }
 .eyebrow--light { color: #f8dce4; }
 .text-button { border: 0; background: none; padding: 0; color: var(--burgundy); font-size: 12px; font-weight: 800; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
-.grade-filter__chips { display: flex; gap: 7px; overflow-x: auto; padding: 2px 3px 5px; margin-inline: -3px; scrollbar-width: thin; }
-.grade-chip { flex: 0 0 auto; min-width: 44px; min-height: 34px; padding: 5px 12px; border: 1px solid #d8cec4; border-radius: 999px; background: rgba(255,255,255,.7); color: #5d544f; font-size: 11px; font-weight: 750; cursor: pointer; transition: .15s ease; }
-.grade-chip:hover { border-color: var(--burgundy); color: var(--burgundy); }
-.grade-chip--selected { border-color: var(--burgundy); background: var(--burgundy); color: white; box-shadow: 0 3px 10px rgba(113,27,52,.2); }
-.grade-chip--selected:hover { color: white; }
-.grade-filter__note { margin: 3px 0 0; color: #857a72; font-size: 10px; }
 
 .button { display: inline-flex; justify-content: center; align-items: center; gap: 8px; min-height: 42px; padding: 10px 16px; border: 1px solid var(--burgundy); border-radius: 8px; background: var(--burgundy); color: white; font-size: 12px; font-weight: 800; text-decoration: none; cursor: pointer; transition: transform .14s ease, background .14s ease; }
 .button:hover { background: var(--burgundy-dark); transform: translateY(-1px); }
@@ -323,10 +310,6 @@ button.button:disabled, .admin-table button:disabled { cursor: not-allowed; opac
   .primary-nav--open { display: block; }
   .primary-nav__inner { display: grid; grid-template-columns: repeat(2,1fr); padding-block: 10px; }
   .primary-nav a { min-height: 45px; border-radius: 6px; }
-  .primary-nav .admin-link { margin: 0; border-left: 0; border-top: 1px solid rgba(255,255,255,.14); grid-column: 1/-1; }
-  .grade-filter__heading > div { display: block; }
-  .grade-filter__heading p { margin-top: 2px; }
-  .grade-chip { min-width: 42px; padding-inline: 9px; }
   .page-heading { display: block; margin-bottom: 24px; padding-bottom: 22px; }
   .page-heading h1 { font-size: 42px; }
   .page-heading p { font-size: 14px; }

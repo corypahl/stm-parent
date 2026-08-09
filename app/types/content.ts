@@ -114,10 +114,6 @@ export type NewsletterSummary = {
   title: string;
   newsletterDate: string;
   sourceUrl: string;
-  itemCount: number;
-  grades: GradeTag[];
-  status: "published" | "archived";
-  isDemo: boolean;
 };
 
 export type LatestNewsletter = {

@@ -32,7 +32,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Sync approved Google content
+      - name: Sync inbox newsletters
         env:
           GOOGLE_CONTENT_FEED_URL: ${{ vars.GOOGLE_CONTENT_FEED_URL }}
           GOOGLE_CALENDAR_ICS_URL: https://calendar.google.com/calendar/ical/stm.parent.updates%40gmail.com/public/basic.ics

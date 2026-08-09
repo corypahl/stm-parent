@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import contentData from "../data/content.json";
 import googleContentData from "../data/google-content.json";
 import googleNewsletterData from "../data/google-newsletters.json";
@@ -20,12 +20,10 @@ import type {
   SchoolDocument,
   StaffMember,
 } from "../types/content";
-import { filterByGrades, formatGradeLabel } from "../lib/filtering";
-import { formatDate } from "../lib/format";
+import { formatDate, formatGradeLabel } from "../lib/format";
 import { googleCalendar } from "../lib/google-calendar";
 import { getLatestNewsletterDate, isVolunteerSignupUrl, smoreEmbedUrl } from "../lib/newsletters";
 import { assetPath } from "../lib/site-path";
-import { useGradeFilter } from "./GradeFilterProvider";
 import { ContentCard } from "./ContentCard";
 import { EmptyState, PageHeading, SectionHeading } from "./PageHeading";
 
@@ -52,14 +50,10 @@ function formatCalendarRange(event: CalendarEvent) {
   return `${start}–${end}`;
 }
 
-function useVisibleItems(types?: ContentItem["contentType"][]) {
-  const { selectedGrades } = useGradeFilter();
-  return useMemo(() => {
-    const published = contentItems.filter(
-      (item) => item.status === "published" && (!types || types.includes(item.contentType)),
-    );
-    return filterByGrades(published, selectedGrades);
-  }, [selectedGrades, types]);
+function visibleItems(types?: ContentItem["contentType"][]) {
+  return contentItems.filter(
+    (item) => item.status === "published" && (!types || types.includes(item.contentType)),
+  );
 }
 
 function DemoNotice({ children }: { children?: React.ReactNode }) {
@@ -76,7 +70,7 @@ function DemoNotice({ children }: { children?: React.ReactNode }) {
 
 function CardGrid({ items }: { items: ContentItem[] }) {
   if (items.length === 0) {
-    return <EmptyState>No items match the selected grades. Try another grade or choose All school.</EmptyState>;
+    return <EmptyState>No items are available right now.</EmptyState>;
   }
   return (
     <div className="card-grid">
@@ -135,14 +129,14 @@ export function HomePage() {
             </div>
             <p className="newsletter-embed__note">Embedded from Smore. Use the button above if the newsletter does not load on your device.</p>
           </article>
-        ) : <EmptyState>The latest newsletter will appear here after a Smore link is received.</EmptyState>}
+        ) : <EmptyState>The latest newsletter will appear here after an email containing a Smore link reaches the inbox.</EmptyState>}
       </section>
     </>
   );
 }
 
 export function ActionPage() {
-  const items = useVisibleItems(["action", "deadline", "form", "signup"])
+  const items = visibleItems(["action", "deadline", "form", "signup"])
     .sort((a, b) => (a.deadlineAt ?? "9999").localeCompare(b.deadlineAt ?? "9999"));
   return (
     <>
@@ -301,10 +295,10 @@ export function StaffPage() {
 }
 
 export function VolunteerPage() {
-  const visibleItems = useVisibleItems();
+  const availableItems = visibleItems();
   const latestNewsletterDate = getLatestNewsletterDate(contentItems);
   const items = latestNewsletterDate
-    ? visibleItems.filter(
+    ? availableItems.filter(
       (item) => item.newsletterDate === latestNewsletterDate && isVolunteerSignupUrl(item.actionUrl),
     )
     : [];
@@ -314,7 +308,7 @@ export function VolunteerPage() {
       <PageHeading eyebrow="Ways to help" title="Volunteer" description="Current SignUpGenius and Google Forms opportunities from the latest school newsletter." />
       {items.length > 0
         ? <CardGrid items={items} />
-        : <EmptyState>No volunteer signups were included in the latest newsletter for the selected grades.</EmptyState>}
+        : <EmptyState>No volunteer signups were included in the latest newsletter.</EmptyState>}
     </>
   );
 }
@@ -348,9 +342,8 @@ export function LunchPage() {
 }
 
 export function DocumentsPage() {
-  const { selectedGrades } = useGradeFilter();
   const [query, setQuery] = useState("");
-  const visible = filterByGrades(documents, selectedGrades).filter((document) => `${document.title} ${document.description} ${document.category}`.toLowerCase().includes(query.toLowerCase()));
+  const visible = documents.filter((document) => `${document.title} ${document.description} ${document.category}`.toLowerCase().includes(query.toLowerCase()));
   return (
     <>
       <PageHeading eyebrow="The family file cabinet" title="Documents & links" description="Frequently used school resources, kept with their school year, source, and last-verified date." />
@@ -506,7 +499,7 @@ export function ArchivePage() {
   const filtered = newsletters.filter((newsletter) => `${newsletter.title} ${newsletter.newsletterDate}`.toLowerCase().includes(normalized));
   return (
     <>
-      <PageHeading eyebrow="Every issue, still findable" title="Newsletter archive" description="Browse every forwarded school newsletter, open the original Smore page, or read an issue without leaving this site." aside={<div className="heading-stat"><strong>{newsletters.length}</strong><span>{newsletters.length === 1 ? "newsletter" : "newsletters"}</span></div>} />
+      <PageHeading eyebrow="Every issue, still findable" title="Newsletter archive" description="Browse every Smore newsletter in the school-updates inbox, open the original page, or read an issue without leaving this site." aside={<div className="heading-stat"><strong>{newsletters.length}</strong><span>{newsletters.length === 1 ? "newsletter" : "newsletters"}</span></div>} />
       <label className="search-box"><span className="search-box__icon" aria-hidden="true">⌕</span><span className="sr-only">Search newsletter archive</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search the archive…" /></label>
       <div className="archive-list">
         {filtered.map((newsletter) => {
@@ -529,21 +522,8 @@ export function ArchivePage() {
             </article>
           );
         })}
-        {!filtered.length && <EmptyState>{query ? "No newsletters match that search." : "Forwarded Smore newsletters will appear here automatically."}</EmptyState>}
+        {!filtered.length && <EmptyState>{query ? "No newsletters match that search." : "Smore newsletters in the inbox will appear here automatically."}</EmptyState>}
       </div>
-    </>
-  );
-}
-
-export function AdminPage() {
-  return (
-    <>
-      <PageHeading eyebrow="Private workflow" title="Admin review" description="Newsletter review happens inside the private Google Sheet so unreviewed school communications never enter the public website." aside={<span className="badge badge--secure">Google account required</span>} />
-      <div className="notice"><span className="notice__icon" aria-hidden="true">✓</span><div><strong>Open the private section admin from Google Sheets</strong><p>Sign in as stm.parent.updates@gmail.com, open the review spreadsheet, then choose Parent Site → Open section admin.</p></div></div>
-      <section className="workflow">
-        <SectionHeading eyebrow="Protected publishing" title="How newsletter review works" />
-        <ol><li><span>1</span><div><strong>Import</strong><p>Each horizontal-bar section becomes an unreviewed private record.</p></div></li><li><span>2</span><div><strong>Edit</strong><p>Verify the title and summary, then add grades, categories, dates, and links.</p></div></li><li><span>3</span><div><strong>Approve</strong><p>Only explicitly approved section fields enter the public feed.</p></div></li><li><span>4</span><div><strong>Publish</strong><p>The next scheduled site update places sections on Home, Volunteer, Events, or Archive.</p></div></li></ol>
-      </section>
     </>
   );
 }

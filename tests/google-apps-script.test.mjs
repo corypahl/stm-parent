@@ -4,162 +4,126 @@ import test from "node:test";
 import vm from "node:vm";
 
 const source = await readFile(new URL("../automation/google-apps-script/Code.gs", import.meta.url), "utf8");
-const adminSource = await readFile(new URL("../automation/google-apps-script/Admin.html", import.meta.url), "utf8");
+const manifest = JSON.parse(await readFile(new URL("../automation/google-apps-script/appsscript.json", import.meta.url), "utf8"));
 const context = vm.createContext({ console });
 vm.runInContext(`${source}\nthis.__testHelpers = {
   PUBLIC_FEED_VERSION,
-  HEADERS,
-  actionLabelFor_,
-  categoryTagsFor_,
-  cleanBody_,
-  inferContentType_,
-  isVolunteerSignupUrl_,
-  latestNewsletterFromRows_,
-  newsletterArchiveFromRows_,
+  canonicalSmoreUrl_,
+  cleanSubject_,
+  latestNewsletterFromArchive_,
+  newsletterArchiveFromEmailRecords_,
   newsletterDateFrom_,
-  parseSmoreNewsletterHtml_,
-  preferredUrl_,
-  publicSummary_,
+  smoreLinkTitle_,
+  smoreUrlsFrom_,
 };`, context);
 
 const helpers = context.__testHelpers;
 
-const summerNotesBody = `<html><head><meta charset="iso-8859-1"></head><body>
-  <p><strong>Good afternoon,</strong></p>
-  <p><strong>Please click the link below to read our Summer News Notes. This includes important back to school information including:</strong></p>
-  <ul>
-    <li><strong>Important upcoming dates to remember</strong></li>
-    <li><strong>Supply List</strong></li>
-    <li><strong>New Lunch Ordering Process Information</strong></li>
-    <li><strong>Summer Packet information</strong></li>
-  </ul>
+const summerNotesHtml = `<html><body>
+  <p>Please click below to read our Summer News Notes.</p>
   <p><a href="https://app.smore.com/n/zk12p"><span>SUMMER NOTES 07.28.26</span></a></p>
-  <img width="1" height="1" src="http://renweb.com/RMT/EO.ashx?D=LANSING-DIO&amp;S=123" />
+  <img src="http://renweb.com/RMT/EO.ashx?D=LANSING-DIO&amp;S=123" />
 </body></html>`;
 
-test("cleans HTML-mislabeled email bodies into a readable review summary", () => {
-  const cleaned = helpers.cleanBody_(summerNotesBody);
-  const summary = helpers.publicSummary_(summerNotesBody);
-
-  assert.match(cleaned, /Good afternoon,/);
-  assert.match(cleaned, /• Important upcoming dates to remember/);
-  assert.match(cleaned, /SUMMER NOTES 07\.28\.26/);
-  assert.doesNotMatch(cleaned, /<\/?(?:html|p|strong|li|a)\b/i);
-  assert.doesNotMatch(summary, /<[^>]+>|renweb\.com/i);
+test("publishes a feed version dedicated to automatic inbox newsletters", () => {
+  assert.equal(helpers.PUBLIC_FEED_VERSION, 6);
+  assert.match(source, /GmailApp\.search\("in:inbox"/);
+  assert.match(source, /latestNewsletter,\s*newsletters,\s*items: \[\]/);
+  assert.doesNotMatch(source, /Review Queue|Newsletter Sections|Status.*Approved|gradeTags|categoryTags/);
 });
 
-test("prefers the Smore newsletter and rejects tracking URLs", () => {
-  assert.equal(helpers.preferredUrl_(summerNotesBody), "https://app.smore.com/n/zk12p");
-  assert.equal(helpers.actionLabelFor_("https://app.smore.com/n/zk12p"), "Read newsletter");
-  assert.deepEqual([...helpers.categoryTagsFor_("https://app.smore.com/n/zk12p")], ["Newsletter"]);
-});
-
-test("keeps newsletters as announcements even when their text mentions other actions", () => {
-  assert.equal(
-    helpers.inferContentType_("Summer Notes 7/28/26", "Volunteer sign-up and important upcoming dates"),
-    "announcement",
+test("keeps only public Smore newsletter links from email content", () => {
+  assert.deepEqual(
+    [...helpers.smoreUrlsFrom_(summerNotesHtml, "Tracking https://example.com/private")],
+    ["https://app.smore.com/n/zk12p"],
   );
+  assert.equal(helpers.canonicalSmoreUrl_("https://secure.smore.com/n/ZK12P?embed=1"), "https://app.smore.com/n/zk12p");
+  assert.equal(helpers.canonicalSmoreUrl_("https://example.com/n/zk12p"), "");
+  assert.equal(helpers.smoreLinkTitle_(summerNotesHtml), "SUMMER NOTES 07.28.26");
 });
 
-test("falls back to a normal public link when no newsletter is present", () => {
-  const body = [
-    "http://renweb.com/RMT/EO.ashx?D=school&S=123",
-    "Details: https://st-martha.org/school/events.",
-  ].join("\n");
-
-  assert.equal(helpers.preferredUrl_(body), "https://st-martha.org/school/events");
-  assert.equal(helpers.actionLabelFor_("https://st-martha.org/school/events"), "Open link");
-  assert.deepEqual([...helpers.categoryTagsFor_("https://st-martha.org/school/events")], ["Forwarded school email"]);
-});
-
-test("publishes a visible feed version so empty deployments can be verified", () => {
-  assert.equal(helpers.PUBLIC_FEED_VERSION, 5);
-  assert.match(source, /JSON\.stringify\(\{ version: PUBLIC_FEED_VERSION,/);
-  assert.match(source, /latestNewsletter, items, newsletters/);
-});
-
-test("publishes the newest forwarded Smore link without exposing the private email body", () => {
-  const rowFrom = (values) => helpers.HEADERS.map((header) => values[header] ?? "");
-  const rows = [
-    rowFrom({
-      "Message ID": "older",
-      "Received At": "2026-08-07T20:00:00Z",
-      Title: "NEWS NOTES 06/02/26",
-      "Action URL": "https://app.smore.com/n/older",
-      "Private Email Body": "private older email",
-    }),
-    rowFrom({
-      "Message ID": "latest",
-      "Received At": "2026-08-01T20:00:00Z",
-      Title: "Summer Notes 7/28/26",
-      "Action URL": "https://app.smore.com/n/zk12p",
-      "Private Email Body": "private latest email",
-    }),
+test("includes every inbox Smore issue and picks the latest newsletter date", () => {
+  const records = [
+    {
+      id: "newer-email",
+      receivedAt: "2026-08-07T20:00:00Z",
+      subject: "Fwd: NEWS NOTES 06/02/26",
+      plainBody: "Read https://app.smore.com/n/older",
+      htmlBody: "",
+    },
+    {
+      id: "older-email-with-newer-issue",
+      receivedAt: "2026-08-01T20:00:00Z",
+      subject: "FW: Summer Notes 7/28/26",
+      plainBody: "",
+      htmlBody: summerNotesHtml,
+    },
+    {
+      id: "not-a-newsletter",
+      receivedAt: "2026-08-08T20:00:00Z",
+      subject: "School reminder 8/8/26",
+      plainBody: "Private family message https://st-martha.org/school",
+      htmlBody: "",
+    },
   ];
-  const latest = helpers.latestNewsletterFromRows_(rows);
-  const archive = helpers.newsletterArchiveFromRows_(rows);
 
+  const archive = helpers.newsletterArchiveFromEmailRecords_(records);
+  const latest = helpers.latestNewsletterFromArchive_(archive);
+
+  assert.deepEqual([...archive].map((newsletter) => newsletter.id), ["smore-zk12p", "smore-older"]);
   assert.deepEqual({ ...latest }, {
     id: "smore-zk12p",
     title: "Summer Notes 7/28/26",
     newsletterDate: "2026-07-28",
     sourceUrl: "https://app.smore.com/n/zk12p",
   });
-  assert.deepEqual([...archive].map((newsletter) => newsletter.id), ["smore-zk12p", "smore-older"]);
-  assert.equal(archive[0].status, "published");
-  assert.equal(archive[1].status, "archived");
   assert.equal(archive[1].newsletterDate, "2026-06-02");
-  assert.doesNotMatch(JSON.stringify(latest), /private/i);
-  assert.doesNotMatch(JSON.stringify(archive), /private/i);
+  assert.doesNotMatch(JSON.stringify(archive), /Private family message|receivedAt|plainBody|htmlBody/i);
 });
 
-test("splits structured Smore content into individually reviewable sections", () => {
-  const blocks = [];
-  for (let index = 1; index <= 14; index += 1) {
-    blocks.push({ _t: "misc.separator", _id: `separator-${index}` });
-    blocks.push({
-      _t: "text.paragraph",
-      title: `Section ${index} title`,
-      content: [{ c: [`Section ${index} summary`], t: "p" }],
-    });
-    if (index === 6) {
-      blocks.push({ _t: "button", text: "Volunteer", cta: { url: "https://www.signupgenius.com/go/example" } });
-    }
-  }
-  const content = { header: { title: "SUMMER NOTES", subtitle: "07.28.26" }, blocks };
-  const html = `<script>newsletter:{js_content:${JSON.stringify(JSON.stringify(content))}}</script>`;
-  const newsletter = helpers.parseSmoreNewsletterHtml_(html, "https://app.smore.com/n/zk12p", "Fallback title");
+test("deduplicates repeated forwards of the same Smore issue", () => {
+  const archive = helpers.newsletterArchiveFromEmailRecords_([
+    {
+      receivedAt: "2026-08-01T20:00:00Z",
+      subject: "Summer Notes 7/28/26",
+      plainBody: "https://app.smore.com/n/zk12p",
+      htmlBody: "",
+    },
+    {
+      receivedAt: "2026-08-02T20:00:00Z",
+      subject: "Fwd: Summer Notes 7/28/26",
+      plainBody: "https://secure.smore.com/n/zk12p?embed=1",
+      htmlBody: "",
+    },
+  ]);
 
-  assert.equal(newsletter.id, "smore-zk12p");
-  assert.equal(newsletter.title, "SUMMER NOTES");
-  assert.equal(newsletter.date, "2026-07-28");
-  assert.equal(newsletter.sections.length, 14);
-  assert.equal(newsletter.sections[0].title, "Section 1 title");
-  assert.match(newsletter.sections[0].summary, /Section 1 summary/);
-  assert.equal(newsletter.sections[5].actionUrl, "https://www.signupgenius.com/go/example");
+  assert.equal(archive.length, 1);
+  assert.equal(archive[0].id, "smore-zk12p");
 });
 
-test("recognizes newsletter dates and supported volunteer form URLs", () => {
-  assert.equal(helpers.newsletterDateFrom_("07.28.26"), "2026-07-28");
-  assert.equal(helpers.newsletterDateFrom_("not a date"), "");
-  assert.equal(helpers.isVolunteerSignupUrl_("https://forms.gle/example"), true);
-  assert.equal(helpers.isVolunteerSignupUrl_("https://docs.google.com/forms/d/e/example/viewform"), true);
-  assert.equal(helpers.isVolunteerSignupUrl_("https://docs.google.com/document/d/example"), false);
+test("uses newsletter text for the date and received date only as a fallback", () => {
+  const fromLinkText = helpers.newsletterArchiveFromEmailRecords_([{
+    receivedAt: "2026-08-01T20:00:00Z",
+    subject: "Fwd: Summer information",
+    plainBody: "",
+    htmlBody: summerNotesHtml,
+  }]);
+  const fromReceivedDate = helpers.newsletterArchiveFromEmailRecords_([{
+    receivedAt: "2026-08-03T20:00:00Z",
+    subject: "Weekly newsletter",
+    plainBody: "https://app.smore.com/n/no-date",
+    htmlBody: "",
+  }]);
+
+  assert.equal(fromLinkText[0].newsletterDate, "2026-07-28");
+  assert.equal(fromReceivedDate[0].newsletterDate, "2026-08-03");
+  assert.equal(helpers.newsletterDateFrom_("NEWS NOTES 06.02.26"), "2026-06-02");
+  assert.equal(helpers.cleanSubject_("Fwd: RE: Summer Notes"), "Summer Notes");
 });
 
-test("ships a private section editor with explicit approval controls", () => {
-  assert.match(adminSource, /Newsletter section review/);
-  assert.match(adminSource, /Unreviewed sections stay private/);
-  assert.match(adminSource, /Approved/);
-  assert.match(adminSource, /Select at least one grade|name="grades"/);
-  assert.match(source, /String\(valueFrom_\(row, SECTION_HEADERS, "Status"\)\) === "Approved"/);
-});
-
-test("keeps empty spreadsheet rows empty and labels Gmail only after a successful write", () => {
-  const processInboxSource = source.slice(source.indexOf("function processInbox()"), source.indexOf("function publishApproved()"));
-
-  assert.match(source, /function compactDataRows_/);
-  assert.match(source, /requireCheckbox\(\)\.build\(\)/);
-  assert.doesNotMatch(source, /insertCheckboxes\(/);
-  assert.ok(processInboxSource.indexOf(".setValues(rows)") < processInboxSource.indexOf("threadsToLabel.forEach"));
+test("requests the documented GmailApp and trigger-management permissions", () => {
+  assert.deepEqual(manifest.oauthScopes, [
+    "https://mail.google.com/",
+    "https://www.googleapis.com/auth/script.scriptapp",
+  ]);
 });

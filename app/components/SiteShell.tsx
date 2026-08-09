@@ -3,8 +3,6 @@
 import { usePathname } from "next/navigation";
 import { useState, type ReactNode } from "react";
 import { routePath, sitePath } from "../lib/site-path";
-import { GradeFilter } from "./GradeFilter";
-import { GradeFilterProvider } from "./GradeFilterProvider";
 
 const navigation = [
   { href: "/", label: "Home" },
@@ -22,13 +20,13 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <GradeFilterProvider>
+    <>
       <a className="skip-link" href="#main-content">
         Skip to main content
       </a>
       <div className="preview-ribbon">
-        <span>Prototype</span>
-        Sample newsletter content is clearly marked. Always verify official school communications.
+        <span>Parent-created</span>
+        Newsletters update automatically from the school-updates inbox. Always verify official communications.
       </div>
       <header className="site-header">
         <div className="site-header__top page-width">
@@ -77,11 +75,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
           </div>
         </nav>
       </header>
-      <div className="filter-wrap">
-        <div className="page-width">
-          <GradeFilter />
-        </div>
-      </div>
       <main id="main-content" className="page-width main-content">
         {children}
       </main>
@@ -108,6 +101,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
           </div>
         </div>
       </footer>
-    </GradeFilterProvider>
+    </>
   );
 }

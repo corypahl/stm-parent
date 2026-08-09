@@ -1,8 +1,7 @@
 "use client";
 
 import type { ContentItem } from "../types/content";
-import { formatGradeLabel } from "../lib/filtering";
-import { formatDate, formatTime } from "../lib/format";
+import { formatDate, formatGradeLabel, formatTime } from "../lib/format";
 
 const statusLabel: Record<string, string> = {
   open: "Open",
