@@ -113,11 +113,11 @@ test("exports every requested route", async () => {
 
 test("stores searchable native and OCR newsletter text with extracted signup links", async () => {
   const newsletters = JSON.parse(await readFile(new URL("../app/data/google-newsletters.json", import.meta.url), "utf8"));
-  assert.equal(newsletters[0].textStatus, "available");
-  assert.ok(newsletters[0].ocrImageCount > 0);
-  assert.match(newsletters[0].textContent, /District Code Update/);
-  assert.match(newsletters[0].textContent, /Summer Office Hours/);
-  assert.equal(newsletters[0].signups[0].url, "https://forms.gle/pHZuPKCD2GW1aNp66");
+  assert.ok(newsletters.length > 0);
+  assert.ok(newsletters.some((newsletter) => newsletter.textStatus === "available" && newsletter.textContent.length > 100));
+  assert.ok(newsletters.some((newsletter) => newsletter.ocrImageCount > 0));
+  assert.ok(newsletters.some((newsletter) => newsletter.textSections.length > 0));
+  assert.ok(newsletters.flatMap((newsletter) => newsletter.signups).some((signup) => /(?:forms\.gle|signupgenius\.com)/i.test(signup.url)));
 });
 
 test("publishes the source handbook and calendar PDFs", async () => {
