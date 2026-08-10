@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import contentData from "../data/content.json";
 import googleContentData from "../data/google-content.json";
 import googleNewsletterData from "../data/google-newsletters.json";
@@ -10,6 +10,17 @@ import lunchData from "../data/lunch.json";
 import handbookData from "../data/handbook.json";
 import calendarData from "../data/calendar.json";
 import staffData from "../data/staff.json";
+import {
+  consequenceMatrices,
+  handbookClergy,
+  handbookHours,
+  handbookStaffRoster,
+  handbookUpdatedInformation,
+  kidsCornerFees,
+  tardinessRows,
+  uniformGroups,
+  type ConsequenceMatrix,
+} from "../data/handbook-layout";
 import type {
   CalendarEvent,
   ContentItem,
@@ -431,20 +442,24 @@ export function HandbookPage() {
 type HandbookBlock =
   | { type: "heading"; text: string }
   | { type: "paragraph"; text: string }
+  | { type: "note"; text: string }
   | { type: "list"; ordered: boolean; items: string[] };
 
 function formatHandbookPages(pageStart: number, pageEnd: number) {
   return pageEnd > pageStart ? `Pages ${pageStart}–${pageEnd}` : `Page ${pageStart}`;
 }
 
-function parseHandbookContent(section: HandbookSection): HandbookBlock[] {
+function parseHandbookContent(section: HandbookSection, content = section.content): HandbookBlock[] {
   const headings = new Set(section.subheadings);
   const blocks: HandbookBlock[] = [];
   let paragraph: string[] = [];
   let list: Extract<HandbookBlock, { type: "list" }> | undefined;
 
   const flushParagraph = () => {
-    if (paragraph.length) blocks.push({ type: "paragraph", text: paragraph.join(" ") });
+    if (paragraph.length) {
+      const text = paragraph.join(" ").replace(/^\*\*|\*\*$/g, "").trim();
+      blocks.push({ type: handbookNote_(text) ? "note" : "paragraph", text });
+    }
     paragraph = [];
   };
   const flushList = () => {
@@ -452,11 +467,17 @@ function parseHandbookContent(section: HandbookSection): HandbookBlock[] {
     list = undefined;
   };
 
-  for (const rawLine of section.content.split(/\r?\n/)) {
+  for (const rawLine of content.split(/\r?\n/)) {
     const line = rawLine.trim();
     if (!line) {
       flushParagraph();
       flushList();
+      continue;
+    }
+    if (line.startsWith("**")) {
+      flushParagraph();
+      flushList();
+      blocks.push({ type: "note", text: line.replace(/^\*\*|\*\*$/g, "").trim() });
       continue;
     }
     if (headings.has(line)) {
@@ -487,6 +508,10 @@ function parseHandbookContent(section: HandbookSection): HandbookBlock[] {
   return blocks;
 }
 
+function handbookNote_(text: string) {
+  return /^(Please note:|Note:|Important:|Parents are strongly urged|Please remember|All half days are|Summer uniform and shorts|Younger siblings or additional guests|When your child is going to be absent)/i.test(text);
+}
+
 function HighlightedText({ text, query }: { text: string; query: string }) {
   if (!query) return <>{text}</>;
   const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -494,21 +519,141 @@ function HighlightedText({ text, query }: { text: string; query: string }) {
   return <>{parts.map((part, index) => part.toLowerCase() === query ? <mark key={`${part}-${index}`}>{part}</mark> : part)}</>;
 }
 
-function HandbookSectionContent({ section, query }: { section: HandbookSection; query: string }) {
-  const blocks = parseHandbookContent(section);
-  if (section.id === "staff-roster") {
-    return <pre className="handbook-section__pre"><HighlightedText text={section.content} query={query} /></pre>;
-  }
+function HandbookText({ text, query }: { text: string; query: string }) {
+  const parts = text.split(/(https?:\/\/[^\s]+|[\w.+-]+@[\w.-]+\.[A-Za-z]{2,})/g);
+  return <>{parts.map((part, index) => {
+    if (/^https?:\/\//.test(part)) return <a href={part} target="_blank" rel="noreferrer" key={`${part}-${index}`}><HighlightedText text={part} query={query} /></a>;
+    if (/^[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}$/.test(part)) return <a href={`mailto:${part}`} key={`${part}-${index}`}><HighlightedText text={part} query={query} /></a>;
+    return <HighlightedText text={part} query={query} key={`${part.slice(0, 20)}-${index}`} />;
+  })}</>;
+}
+
+function HandbookBlocks({ section, query, content = section.content }: { section: HandbookSection; query: string; content?: string }) {
+  const blocks = parseHandbookContent(section, content);
   return (
     <div className="handbook-section__body">
       {blocks.map((block, index) => {
         if (block.type === "heading") return <h3 key={`${block.text}-${index}`}><HighlightedText text={block.text} query={query} /></h3>;
-        if (block.type === "paragraph") return <p key={`${block.text.slice(0, 30)}-${index}`}><HighlightedText text={block.text} query={query} /></p>;
+        if (block.type === "paragraph") return <p key={`${block.text.slice(0, 30)}-${index}`}><HandbookText text={block.text} query={query} /></p>;
+        if (block.type === "note") return <aside className="handbook-callout" key={`${block.text.slice(0, 30)}-${index}`}><HandbookText text={block.text} query={query} /></aside>;
         const List = block.ordered ? "ol" : "ul";
-        return <List key={`list-${index}`}>{block.items.map((item, itemIndex) => <li key={`${item.slice(0, 30)}-${itemIndex}`}><HighlightedText text={item} query={query} /></li>)}</List>;
+        return <List key={`list-${index}`}>{block.items.map((item, itemIndex) => <li key={`${item.slice(0, 30)}-${itemIndex}`}><HandbookText text={item} query={query} /></li>)}</List>;
       })}
     </div>
   );
+}
+
+function HandbookTableFrame({ children }: { children: ReactNode }) {
+  return <div className="handbook-table-frame"><p className="handbook-table-hint">Swipe or scroll to see every column.</p><div className="handbook-table-scroll">{children}</div></div>;
+}
+
+function StaffRosterContent({ query }: { query: string }) {
+  return <div className="handbook-rich-content">
+    <dl className="handbook-clergy">{handbookClergy.map((person) => <div key={person.role}><dt>{person.role}</dt><dd><strong><HighlightedText text={person.name} query={query} /></strong><a href={`mailto:${person.email}`}><HighlightedText text={person.email} query={query} /></a></dd></div>)}</dl>
+    <HandbookTableFrame><table className="handbook-data-table handbook-roster-table"><caption>Staff roster</caption><thead><tr><th scope="col">Staff member</th><th scope="col">Room</th><th scope="col">Subject or role</th><th scope="col">Email</th></tr></thead><tbody>{handbookStaffRoster.map((person) => <tr key={`${person.names.join("-")}-${person.role}`}><th scope="row">{person.names.map((name) => <span key={name}><HighlightedText text={name} query={query} /></span>)}</th><td><HighlightedText text={person.room || "-"} query={query} /></td><td><HighlightedText text={person.role} query={query} /></td><td>{person.email ? <a href={`mailto:${person.email}`}><HighlightedText text={person.email} query={query} /></a> : "-"}</td></tr>)}</tbody></table></HandbookTableFrame>
+  </div>;
+}
+
+function HoursContent({ query }: { query: string }) {
+  return <dl className="handbook-hours">{handbookHours.map(([label, value]) => <div key={label}><dt><HighlightedText text={label} query={query} /></dt><dd><HighlightedText text={value} query={query} /></dd></div>)}</dl>;
+}
+
+function AcademicPoliciesContent({ section, query }: { section: HandbookSection; query: string }) {
+  const tableStart = section.content.indexOf("If in a school year, you are late");
+  const tableEnd = section.content.indexOf("Parent/Teacher Conferences", tableStart);
+  const before = section.content.slice(0, tableStart);
+  const after = section.content.slice(tableEnd);
+  return <div className="handbook-rich-content">
+    <HandbookBlocks section={section} query={query} content={before} />
+    <HandbookTableFrame><table className="handbook-data-table handbook-tardy-table"><caption>How daily tardiness adds up over a school year</caption><thead><tr><th scope="col">Late every day by</th><th scope="col">School time lost</th><th scope="col">Lessons missed</th></tr></thead><tbody>{tardinessRows.map((row) => <tr key={row[0]}>{row.map((cell, index) => index === 0 ? <th scope="row" key={cell}><HighlightedText text={cell} query={query} /></th> : <td key={cell}><HighlightedText text={cell} query={query} /></td>)}</tr>)}</tbody></table></HandbookTableFrame>
+    <HandbookBlocks section={section} query={query} content={after} />
+  </div>;
+}
+
+function UniformContent({ section, query }: { section: HandbookSection; query: string }) {
+  const tableStart = section.content.indexOf("Uniform Guidelines K-8");
+  const introduction = section.content.slice(0, tableStart).replace(/^\(See Uniform Booklet\)\s*/, "");
+  return <div className="handbook-rich-content">
+    <p className="handbook-section-deck">See Uniform Booklet</p>
+    <HandbookBlocks section={section} query={query} content={introduction} />
+    <section className="handbook-subsection" aria-labelledby="uniform-guidelines-heading"><div className="handbook-subsection__heading"><span className="eyebrow">At a glance</span><h3 id="uniform-guidelines-heading">Uniform guidelines K-8</h3><p>Requirements are grouped by grade band so families can compare the items purchased from MAPU with items that may be purchased elsewhere.</p></div>
+      <div className="uniform-guide-grid">{uniformGroups.map((group) => <article className="uniform-guide-card" key={group.title}><h4><HighlightedText text={group.title} query={query} /></h4>{group.groups.map((itemGroup) => <section key={itemGroup.heading}><h5><HighlightedText text={itemGroup.heading} query={query} /></h5><ul>{itemGroup.items.map((item) => <li key={item}><HandbookText text={item} query={query} /></li>)}</ul></section>)}</article>)}</div>
+    </section>
+  </div>;
+}
+
+function ConsequenceTable({ matrix, query }: { matrix: ConsequenceMatrix; query: string }) {
+  return <HandbookTableFrame><table className="handbook-data-table handbook-consequence-table"><caption>{matrix.title}</caption><thead><tr><th scope="col">Grade level</th>{matrix.columns.map((column) => <th scope="col" key={column}><HighlightedText text={column} query={query} /></th>)}</tr></thead><tbody>{matrix.rows.map((row) => <tr key={row.grade}><th scope="row"><HighlightedText text={row.grade} query={query} /></th>{row.consequences.map((items, index) => <td key={`${row.grade}-${matrix.columns[index]}`}><ul>{items.map((item) => <li key={item}><HandbookText text={item} query={query} /></li>)}</ul></td>)}</tr>)}</tbody></table></HandbookTableFrame>;
+}
+
+function PhysicalConductContent({ section, query }: { section: HandbookSection; query: string }) {
+  const severeStart = section.content.indexOf("Severe Physical Aggression (");
+  const severeExamplesStart = section.content.indexOf("Examples Include:", severeStart);
+  const severeTableStart = section.content.indexOf("Consequences by Grade Level:", severeStart);
+  const severeNotesStart = section.content.indexOf("*Students who display severe", severeTableStart);
+  const roughStart = section.content.indexOf("Rough Play / Unsafe Physical Contact", severeNotesStart);
+  const roughTableStart = section.content.indexOf("Consequences by Grade Level:", roughStart);
+  const roughNotesStart = section.content.indexOf("*Students who display roughhousing", roughTableStart);
+  const languageStart = section.content.indexOf("Discriminatory or Offensive Language", roughNotesStart);
+  const languageTableStart = section.content.indexOf("Consequences by Grade Level:", languageStart);
+  const restorativeStart = section.content.indexOf("*As part of the restorative process", languageTableStart);
+  return <div className="handbook-rich-content handbook-policy-content">
+    <HandbookBlocks section={section} query={query} content={section.content.slice(0, severeStart)} />
+    <section className="handbook-policy-intro"><h3>Severe Physical Aggression</h3><p><HighlightedText text="Purposely striking someone with the intent to cause harm out of malice." query={query} /></p></section>
+    <HandbookBlocks section={section} query={query} content={section.content.slice(severeExamplesStart, severeTableStart)} />
+    <ConsequenceTable matrix={consequenceMatrices.severe} query={query} />
+    <HandbookBlocks section={section} query={query} content={section.content.slice(severeNotesStart, roughStart)} />
+    <HandbookBlocks section={section} query={query} content={section.content.slice(roughStart, roughTableStart)} />
+    <ConsequenceTable matrix={consequenceMatrices.rough} query={query} />
+    <HandbookBlocks section={section} query={query} content={section.content.slice(roughNotesStart, languageStart)} />
+    <HandbookBlocks section={section} query={query} content={section.content.slice(languageStart, languageTableStart)} />
+    <ConsequenceTable matrix={consequenceMatrices.language} query={query} />
+    <HandbookBlocks section={section} query={query} content={section.content.slice(restorativeStart)} />
+  </div>;
+}
+
+function KidsCornerContent({ section, query }: { section: HandbookSection; query: string }) {
+  const feeStart = section.content.indexOf("Fee Schedule");
+  const billingStart = section.content.indexOf("Billing for Before Care/Kids Corner", feeStart);
+  return <div className="handbook-rich-content">
+    <HandbookBlocks section={section} query={query} content={section.content.slice(0, feeStart)} />
+    <HandbookTableFrame><table className="handbook-data-table handbook-fee-table"><caption>Fee schedule</caption><thead><tr><th scope="col">Care option</th><th scope="col">1st student</th><th scope="col">2 students</th><th scope="col">3+ students</th></tr></thead><tbody>{kidsCornerFees.map((row) => <tr key={row[0]}>{row.map((cell, index) => index === 0 ? <th scope="row" key={cell}><HighlightedText text={cell} query={query} /></th> : <td key={`${row[0]}-${index}`}><HighlightedText text={cell} query={query} /></td>)}</tr>)}</tbody></table></HandbookTableFrame>
+    <HandbookBlocks section={section} query={query} content={section.content.slice(billingStart)} />
+  </div>;
+}
+
+function WelcomeContent({ section, query }: { section: HandbookSection; query: string }) {
+  const foundationsStart = section.content.indexOf("School Mission Statement");
+  const letter = section.content.slice(0, foundationsStart);
+  return <div className="handbook-rich-content"><aside className="handbook-letter" aria-label="Welcome letter from the principal"><HandbookBlocks section={section} query={query} content={letter} /></aside><HandbookBlocks section={section} query={query} content={section.content.slice(foundationsStart)} /></div>;
+}
+
+function DiocesanRequirementContent({ section, query }: { section: HandbookSection; query: string }) {
+  const introStart = section.content.indexOf("St. Martha School is committed");
+  const familyStart = section.content.indexOf("Family Name:");
+  const intro = section.content.slice(introStart, familyStart);
+  return <div className="handbook-acknowledgment">
+    <div className="handbook-acknowledgment__notice"><strong>Printable acknowledgment</strong><span>Please sign and return the PDF page to school.</span></div>
+    <HandbookBlocks section={section} query={query} content={intro} />
+    <div className="handbook-form-lines"><div><span>Family name</span><i /></div><div><span>Names and grades of children at Saint Martha School</span><i /><i /><i /></div></div>
+    <aside className="handbook-updates"><h3>Updated information for 2025-26</h3><dl>{handbookUpdatedInformation.map(([page, topic]) => <div key={topic}><dt><HighlightedText text={page} query={query} /></dt><dd><HighlightedText text={topic} query={query} /></dd></div>)}</dl></aside>
+    <section className="handbook-signature-block"><h3>Parents/Guardians</h3><p><span className="initial-line" aria-hidden="true">Initial</span> <HandbookText text="I have read and discussed the policies outlined in the St. Martha School Handbook with my child(ren). I understand that failure to follow the guidelines, expectations, and procedures described may result in disciplinary action. I agree to support the school in reinforcing these rules and expectations with my child(ren) and will partner with the school to promote a positive and respectful learning environment." query={query} /></p><div className="signature-lines"><span>Parent signature</span><span>Date</span></div></section>
+    <section className="handbook-signature-block handbook-signature-block--student"><h3>For students in grades 4-8 only</h3><p><HandbookText text="I have read and understand the contents of the 2025-2026 St. Martha School Handbook. I will respect and follow these rules while I am a student at St. Martha School." query={query} /></p><div className="signature-lines"><span>Student signatures</span><span>Date</span></div></section>
+  </div>;
+}
+
+function HandbookSectionContent({ section, query }: { section: HandbookSection; query: string }) {
+  switch (section.id) {
+    case "welcome-and-school-foundations": return <WelcomeContent section={section} query={query} />;
+    case "staff-roster": return <StaffRosterContent query={query} />;
+    case "hours": return <HoursContent query={query} />;
+    case "academic-policies": return <AcademicPoliciesContent section={section} query={query} />;
+    case "uniforms-and-dress-code": return <UniformContent section={section} query={query} />;
+    case "physical-conduct-discriminatory-behavior": return <PhysicalConductContent section={section} query={query} />;
+    case "kids-corner": return <KidsCornerContent section={section} query={query} />;
+    case "diocesan-requirement": return <DiocesanRequirementContent section={section} query={query} />;
+    default: return <HandbookBlocks section={section} query={query} />;
+  }
 }
 
 export function NewslettersPage() {

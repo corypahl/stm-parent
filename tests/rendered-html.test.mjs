@@ -92,6 +92,19 @@ test("exports every requested route", async () => {
   assert.doesNotMatch(newslettersHtml, /Sample News Notes|Prototype content/);
 
   assert.doesNotMatch(newslettersHtml, /\breview\b|\bapprove\b|grade tag/i);
+
+  const handbookHtml = await readRoute("handbook");
+  assert.equal((handbookHtml.match(/<table\b/g) || []).length, 6);
+  assert.match(handbookHtml, /<caption>Staff roster<\/caption>/);
+  assert.match(handbookHtml, /How daily tardiness adds up over a school year/);
+  assert.match(handbookHtml, /Severe physical aggression consequences by grade level/);
+  assert.match(handbookHtml, /Rough play and unsafe physical contact consequences by grade level/);
+  assert.match(handbookHtml, /Discriminatory or offensive language consequences by grade level/);
+  assert.match(handbookHtml, /<caption>Fee schedule<\/caption>/);
+  assert.equal((handbookHtml.match(/class="uniform-guide-card"/g) || []).length, 4);
+  assert.match(handbookHtml, /class="handbook-acknowledgment"/);
+  assert.match(handbookHtml, /mailto:apatton@st-martha\.org/);
+  assert.doesNotMatch(handbookHtml, /The following items must be The following items must be/);
 });
 
 test("stores searchable native and OCR newsletter text with extracted signup links", async () => {
