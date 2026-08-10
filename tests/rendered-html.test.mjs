@@ -13,9 +13,9 @@ test("exports the finished parent companion home", async () => {
   const html = await readRoute();
   assert.match(html, /St\. Martha School/);
   assert.match(html, /Unofficial Parent Site/);
-  assert.match(html, /Coming up/);
-  assert.match(html, /On the calendar/);
-  assert.match(html, /Latest school newsletter/);
+  assert.match(html, /Coming Up/);
+  assert.match(html, /Latest News/);
+  assert.doesNotMatch(html, /On the calendar|School updates|Latest school newsletter/);
   assert.match(html, /Summer Notes 7\/28\/26/);
   assert.match(html, /https:\/\/secure\.smore\.com\/n\/zk12p\?embed=1/);
   assert.doesNotMatch(html, /No newsletter sections have been approved yet/);
@@ -28,6 +28,8 @@ test("exports the finished parent companion home", async () => {
   assert.match(html, />Newsletters<\/a>/);
   assert.match(html, /href="(?:\/stm-parent)?\/sign-ups\.html"[^>]*>Sign Ups<\/a>/);
   assert.match(html, /href="(?:\/stm-parent)?\/newsletters\.html"[^>]*>Newsletters<\/a>/);
+  assert.match(html, />Home<\/a>.*>Newsletters<\/a>.*>Events<\/a>.*>Sign Ups<\/a>.*>Handbook<\/a>.*>Contacts<\/a>/s);
+  assert.doesNotMatch(html, />Lunch<\/a>/);
   assert.doesNotMatch(html, /href="(?:\/stm-parent)?\/(?:volunteer|archive)\.html"/);
   assert.doesNotMatch(html, />Volunteer<\/a>|>Archive<\/a>/);
   assert.match(html, /unofficial, parent-created/i);
@@ -58,6 +60,7 @@ test("exports every requested route", async () => {
   const calendarHtml = await readRoute("calendar");
   assert.match(calendarHtml, /Subscribe with Google/);
   assert.match(calendarHtml, /stm\.parent\.updates%40gmail\.com\/public\/basic\.ics/);
+  assert.doesNotMatch(calendarHtml, /calendar-category|<span class="badge/);
 
   const lunchHtml = await readRoute("lunch");
   assert.match(lunchHtml, /May 2026/);
@@ -80,11 +83,12 @@ test("exports every requested route", async () => {
   assert.match(newslettersHtml, /<h1>Newsletters<\/h1>/);
   assert.match(newslettersHtml, /Browse every Smore newsletter in the school-updates inbox/);
   assert.match(newslettersHtml, /Summer Notes 7\/28\/26/);
-  assert.match(newslettersHtml, /Open Smore/);
-  assert.match(newslettersHtml, /Searchable text/);
-  assert.match(newslettersHtml, /Text version/);
+  assert.match(newslettersHtml, />Read here<\/button>/);
+  assert.match(newslettersHtml, />Text version<\/button>/);
+  assert.match(newslettersHtml, />Open Smore<\/a>/);
   assert.match(newslettersHtml, /Search newsletters/);
   assert.doesNotMatch(newslettersHtml, /<iframe\b/);
+  assert.doesNotMatch(newslettersHtml, /<span class="badge|Searchable text|>Latest<\/span>|>Archived<\/span>|Read original|Close original|Close text/);
   assert.doesNotMatch(newslettersHtml, /Sample News Notes|Prototype content/);
 
   assert.doesNotMatch(newslettersHtml, /\breview\b|\bapprove\b|grade tag/i);

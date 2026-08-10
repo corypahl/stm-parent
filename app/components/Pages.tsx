@@ -87,7 +87,7 @@ export function HomePage() {
     <>
       <section className="home-section home-section--first">
         <div>
-          <SectionHeading eyebrow="Coming up" title="On the calendar" count={upcomingEvents.length} link={{ href: "/calendar", label: "Full calendar" }} />
+          <SectionHeading title="Coming Up" count={upcomingEvents.length} link={{ href: "/calendar", label: "Full calendar" }} />
           <div className="calendar-preview">
             {upcomingEvents.map((event) => (
               <article className="calendar-entry" key={event.id}>
@@ -108,7 +108,7 @@ export function HomePage() {
       </section>
 
       <section className="home-section">
-        <SectionHeading eyebrow="School updates" title="Latest school newsletter" />
+        <SectionHeading title="Latest News" />
         {latestNewsletter && embedUrl ? (
           <article className="newsletter-embed">
             <header className="newsletter-embed__header">
@@ -218,7 +218,7 @@ export function CalendarPage() {
                       <strong>{formatCalendarDate(event.date, { day: "numeric" })}</strong>
                     </time>
                     <div>
-                      <div className="badge-row"><span className={`badge calendar-category calendar-category--${event.category.toLowerCase().replaceAll(" ", "-")}`}>{event.category}</span>{event.endDate && <span className="date-range">{formatCalendarRange(event)}</span>}</div>
+                      {event.endDate && <span className="date-range">{formatCalendarRange(event)}</span>}
                       <h3>{event.title}</h3>
                       {(event.time || event.details) && <p>{[event.time, event.details].filter(Boolean).join(" · ")}</p>}
                     </div>
@@ -542,11 +542,11 @@ export function NewslettersPage() {
             <article className={`archive-newsletter ${isOpen ? "archive-newsletter--open" : ""}`} key={newsletter.id}>
               <div className="archive-row">
                 <time dateTime={newsletter.newsletterDate}><strong>{formatDate(`${newsletter.newsletterDate}T12:00:00`, { day: "2-digit" })}</strong><span>{formatDate(`${newsletter.newsletterDate}T12:00:00`, { month: "short", year: "numeric" })}</span></time>
-                <div><div className="badge-row"><span className="badge">{newsletter.id === newsletters[0]?.id ? "Latest" : "Archived"}</span>{newsletter.textStatus === "available" && <span className="badge badge--text">Searchable text</span>}</div><h2>{newsletter.title}</h2><p>School newsletter · Smore</p>{excerpt && <p className="archive-row__excerpt">…<HighlightedText text={excerpt} query={query} />…</p>}</div>
+                <div><h2>{newsletter.title}</h2><p>School newsletter · Smore</p>{excerpt && <p className="archive-row__excerpt">…<HighlightedText text={excerpt} query={query} />…</p>}</div>
                 <div className="archive-row__actions">
-                  {embedUrl && <button type="button" className={`button button--small ${isOpen && readerMode === "original" ? "" : "button--outline"}`} aria-expanded={isOpen && readerMode === "original"} aria-controls={`archive-reader-${newsletter.id}`} onClick={() => openReader("original")}>{isOpen && readerMode === "original" ? "Close original" : "Read original"}</button>}
-                  {newsletter.textStatus === "available" && <button type="button" className={`button button--small ${isOpen && readerMode === "text" ? "" : "button--outline"}`} aria-expanded={isOpen && readerMode === "text"} aria-controls={`archive-reader-${newsletter.id}`} onClick={() => openReader("text")}>{isOpen && readerMode === "text" ? "Close text" : "Text version"}</button>}
-                  <a className="button button--small button--outline" href={newsletter.sourceUrl} target="_blank" rel="noreferrer">Open Smore ↗</a>
+                  {embedUrl && <button type="button" className={`button button--small ${isOpen && readerMode === "original" ? "" : "button--outline"}`} aria-expanded={isOpen && readerMode === "original"} aria-controls={`archive-reader-${newsletter.id}`} aria-label={isOpen && readerMode === "original" ? `Close ${newsletter.title} reader` : `Read ${newsletter.title} here`} onClick={() => openReader("original")}>Read here</button>}
+                  {newsletter.textStatus === "available" && <button type="button" className={`button button--small ${isOpen && readerMode === "text" ? "" : "button--outline"}`} aria-expanded={isOpen && readerMode === "text"} aria-controls={`archive-reader-${newsletter.id}`} aria-label={isOpen && readerMode === "text" ? `Close ${newsletter.title} text version` : `Read ${newsletter.title} text version`} onClick={() => openReader("text")}>Text version</button>}
+                  <a className="button button--small button--outline" href={newsletter.sourceUrl} target="_blank" rel="noreferrer">Open Smore</a>
                 </div>
               </div>
               {isOpen && readerMode === "original" && embedUrl && <div className="archive-newsletter__reader" id={`archive-reader-${newsletter.id}`}>

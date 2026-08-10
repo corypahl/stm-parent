@@ -6,12 +6,11 @@ import { routePath, sitePath } from "../lib/site-path";
 
 const navigation = [
   { href: "/", label: "Home" },
+  { href: "/newsletters", label: "Newsletters" },
   { href: "/calendar", label: "Events" },
-  { href: "/lunch", label: "Lunch" },
   { href: "/sign-ups", label: "Sign Ups" },
   { href: "/handbook", label: "Handbook" },
   { href: "/staff", label: "Contacts" },
-  { href: "/newsletters", label: "Newsletters" },
 ];
 
 export function SiteShell({ children }: { children: ReactNode }) {
