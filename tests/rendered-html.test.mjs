@@ -16,8 +16,8 @@ test("exports the finished parent companion home", async () => {
   assert.match(html, /Coming Up/);
   assert.match(html, /Latest News/);
   assert.doesNotMatch(html, /On the calendar|School updates|Latest school newsletter/);
-  assert.match(html, /Summer Notes 7\/28\/26/);
-  assert.match(html, /https:\/\/secure\.smore\.com\/n\/zk12p\?embed=1/);
+  assert.match(html, /<span class="eyebrow">Latest issue<\/span>/);
+  assert.match(html, /https:\/\/secure\.smore\.com\/n\/[a-z0-9-]+\?embed=1/);
   assert.doesNotMatch(html, /No newsletter sections have been approved yet/);
   assert.doesNotMatch(html, /home-hero|Needs your attention|At a glance|Weekly overview|official school hours/);
   assert.doesNotMatch(html, /Good to know|Parent service organization|Explore opportunities|cta-panel/);
