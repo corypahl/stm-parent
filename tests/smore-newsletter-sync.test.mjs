@@ -36,6 +36,20 @@ test("extracts native Smore text, image URLs, and signup forms", () => {
   assert.deepEqual(parsed.signups, [{ title: "Family RSVP", url: "https://forms.gle/example" }]);
 });
 
+test("prefers an explicit email title date when the Smore subtitle year is wrong", () => {
+  const mismatchedContent = {
+    ...content,
+    header: { title: "NEWS NOTES", subtitle: "01/06/25" },
+  };
+  const mismatchedHtml = `<script>newsletter:{js_content:${JSON.stringify(JSON.stringify(mismatchedContent))}}</script>`;
+  const parsed = parseSmoreNewsletterHtml(mismatchedHtml, {
+    title: "NEWS NOTES 01/06/26",
+    newsletterDate: "2026-01-06",
+  });
+
+  assert.equal(parsed.newsletterDate, "2026-01-06");
+});
+
 test("combines native and OCR text into a searchable newsletter representation", () => {
   const parsed = parseSmoreNewsletterHtml(html);
   const newsletter = newsletterWithText({

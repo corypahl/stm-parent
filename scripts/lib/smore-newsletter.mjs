@@ -17,7 +17,11 @@ export function parseSmoreNewsletterHtml(html, fallback = {}) {
   const blocks = Array.isArray(content.blocks) ? content.blocks : [];
   const groups = groupBlocks_(blocks);
   const newsletterTitle = cleanText_(content.header?.title || fallback.title || "School newsletter");
-  const newsletterDate = newsletterDateFrom_(content.header?.subtitle) || fallback.newsletterDate || "";
+  const newsletterDate = newsletterDateFrom_(fallback.title)
+    || newsletterDateFrom_(newsletterTitle)
+    || newsletterDateFrom_(content.header?.subtitle)
+    || fallback.newsletterDate
+    || "";
 
   const sections = groups.map((group, index) => sectionFromBlocks_(group, index));
   const signups = dedupeSignups_(sections.flatMap((section) => section.signups));

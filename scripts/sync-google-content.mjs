@@ -74,7 +74,7 @@ const newsletters = parsedNewsletters.map(({ newsletter, parsed }) => {
     ocrImageCount: existing?.ocrImageCount || 0,
     textStatus: existing?.textContent ? "available" : "unavailable",
   };
-});
+}).sort((a, b) => b.newsletterDate.localeCompare(a.newsletterDate) || a.title.localeCompare(b.title));
 
 const latestNewsletter = newsletters[0]
   ? publicNewsletterFields_(newsletters[0])
