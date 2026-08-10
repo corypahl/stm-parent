@@ -353,7 +353,7 @@ button.button:disabled, .admin-table button:disabled { cursor: not-allowed; opac
 .signup-source time::before { content: "·"; margin-right: 9px; }
 .signup-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
 .signup-card { display: flex; flex-direction: column; min-height: 220px; padding: 23px; border: 1px solid var(--line); border-radius: 13px; background: var(--paper); box-shadow: 0 8px 28px rgba(66,35,31,.06); }
-.signup-card h2 { margin: 8px 0 7px; color: var(--burgundy-dark); font: 700 23px/1.25 var(--serif); }
+.signup-card h2, .signup-card h3 { margin: 8px 0 7px; color: var(--burgundy-dark); font: 700 23px/1.25 var(--serif); }
 .signup-card > p { margin: 0; color: var(--muted); font-size: 12px; }
 .signup-card__actions { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: auto; padding-top: 24px; }
 

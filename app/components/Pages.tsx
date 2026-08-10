@@ -9,6 +9,7 @@ import documentData from "../data/documents.json";
 import lunchData from "../data/lunch.json";
 import handbookData from "../data/handbook.json";
 import calendarData from "../data/calendar.json";
+import newsletterEventData from "../data/newsletter-events.json";
 import staffData from "../data/staff.json";
 import {
   consequenceMatrices,
@@ -33,6 +34,7 @@ import type {
 } from "../types/content";
 import { formatDate, formatGradeLabel } from "../lib/format";
 import { googleCalendar } from "../lib/google-calendar";
+import { mergeCalendarEvents } from "../lib/calendar-events";
 import { smoreEmbedUrl } from "../lib/newsletters";
 import { assetPath } from "../lib/site-path";
 import { ContentCard } from "./ContentCard";
@@ -44,7 +46,7 @@ const lunchDays = lunchData as LunchDay[];
 const handbookSections = handbookData as HandbookSection[];
 const newsletters = (googleNewsletterData as NewsletterSummary[]).sort((a, b) => b.newsletterDate.localeCompare(a.newsletterDate));
 const latestNewsletter = latestNewsletterData as LatestNewsletter | null;
-const calendarEvents = calendarData as CalendarEvent[];
+const calendarEvents = mergeCalendarEvents(calendarData as CalendarEvent[], newsletterEventData as CalendarEvent[]);
 const staffMembers = staffData as StaffMember[];
 
 const calendarCategories = ["All", "School day", "No school", "Family event", "Faith", "Academic"] as const;
@@ -90,6 +92,20 @@ function CardGrid({ items }: { items: ContentItem[] }) {
   );
 }
 
+function LatestNewsletterSignups() {
+  const newsletter = newsletters[0];
+  const signups = newsletter?.signups ?? [];
+
+  return (
+    <>
+      {newsletter && <div className="signup-source"><span>From</span><strong>{newsletter.title}</strong><time dateTime={newsletter.newsletterDate}>{formatDate(`${newsletter.newsletterDate}T12:00:00`, { month: "long", day: "numeric", year: "numeric" })}</time></div>}
+      {signups.length > 0
+        ? <div className="signup-grid">{signups.map((signup) => <article className="signup-card" key={signup.id}><span className="eyebrow">Newsletter form</span><h3>{signup.title}</h3><p>Found automatically in {newsletter.title}.</p><div className="signup-card__actions"><a className="source-link" href={newsletter.sourceUrl} target="_blank" rel="noreferrer">Newsletter source ↗</a><a className="button button--small" href={signup.url} target="_blank" rel="noreferrer">Open form ↗</a></div></article>)}</div>
+        : <EmptyState>No signup form links were found in the latest newsletter.</EmptyState>}
+    </>
+  );
+}
+
 export function HomePage() {
   const upcomingEvents = calendarEvents.slice(0, 3);
   const embedUrl = latestNewsletter ? smoreEmbedUrl(latestNewsletter.sourceUrl) : undefined;
@@ -114,8 +130,13 @@ export function HomePage() {
               </article>
             ))}
           </div>
-          <p className="preview-source">Source: St. Martha 2026–27 Academic Calendar</p>
+          <p className="preview-source">Sources: St. Martha 2026–27 Academic Calendar and upcoming dates extracted from school newsletters.</p>
         </div>
+      </section>
+
+      <section className="home-section">
+        <SectionHeading title="Sign Ups" />
+        <LatestNewsletterSignups />
       </section>
 
       <section className="home-section">
@@ -180,14 +201,14 @@ export function CalendarPage() {
       <PageHeading
         eyebrow="2026–27 school year"
         title="Academic calendar"
-        description="Every date from the school-issued calendar, with a live Google Calendar that families can subscribe to for future updates."
+        description="School-calendar dates plus upcoming dates discovered automatically in the latest newsletters."
         aside={<a className="button" href={calendarPdf} target="_blank" rel="noreferrer">Download calendar PDF ↗</a>}
       />
       <section className="calendar-subscribe" aria-labelledby="calendar-subscribe-title">
         <div>
           <span className="eyebrow eyebrow--light">Stay up to date</span>
           <h2 id="calendar-subscribe-title">Add school events to your calendar.</h2>
-          <p>Subscribe once and approved event updates will appear in your calendar automatically.</p>
+          <p>Subscribe to the public calendar for school-calendar updates. Newsletter-discovered dates are also shown below.</p>
         </div>
         <div className="calendar-subscribe__actions">
           <a className="button button--light" href={googleCalendar.subscribeUrl} target="_blank" rel="noreferrer">Subscribe with Google ↗</a>
@@ -195,8 +216,8 @@ export function CalendarPage() {
         </div>
       </section>
       <div className="source-banner" role="note">
-        <div><strong>School-issued calendar</strong><span>Updated July 29, 2026</span></div>
-        <p>The source notes that dates may change during the school year. Check school communications before making plans.</p>
+        <div><strong>Calendar and newsletter dates</strong><span>Checked during every site update</span></div>
+        <p>Dates extracted from newsletters may contain automated-reading errors. Check school communications before making plans.</p>
       </div>
       <div className="calendar-toolbar">
         <label className="search-box calendar-search">
@@ -241,7 +262,7 @@ export function CalendarPage() {
         }) : <EmptyState>No calendar entries match that search and filter.</EmptyState>}
       </div>
       <div className="source-footer">
-        <span>Source: St. Martha 2026–27 Academic Calendar</span>
+        <span>Sources: St. Martha 2026–27 Academic Calendar and school newsletters</span>
         <a className="source-link" href={calendarPdf} target="_blank" rel="noreferrer">Open the original PDF ↗</a>
       </div>
     </>
@@ -306,16 +327,10 @@ export function StaffPage() {
 }
 
 export function SignUpsPage() {
-  const newsletter = newsletters[0];
-  const signups = newsletter?.signups ?? [];
-
   return (
     <>
       <PageHeading eyebrow="Forms and opportunities" title="Sign Ups" description="Signup, RSVP, registration, and volunteer forms extracted automatically from the latest school newsletter." />
-      {newsletter && <div className="signup-source"><span>From</span><strong>{newsletter.title}</strong><time dateTime={newsletter.newsletterDate}>{formatDate(`${newsletter.newsletterDate}T12:00:00`, { month: "long", day: "numeric", year: "numeric" })}</time></div>}
-      {signups.length > 0
-        ? <div className="signup-grid">{signups.map((signup) => <article className="signup-card" key={signup.id}><span className="eyebrow">Newsletter form</span><h2>{signup.title}</h2><p>Found automatically in {newsletter.title}.</p><div className="signup-card__actions"><a className="source-link" href={newsletter.sourceUrl} target="_blank" rel="noreferrer">Newsletter source ↗</a><a className="button button--small" href={signup.url} target="_blank" rel="noreferrer">Open form ↗</a></div></article>)}</div>
-        : <EmptyState>No signup form links were found in the latest newsletter.</EmptyState>}
+      <LatestNewsletterSignups />
     </>
   );
 }

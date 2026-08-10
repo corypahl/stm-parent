@@ -71,7 +71,9 @@ export function isSignupFormUrl(value, label = "") {
       || hostname.endsWith(".signupgenius.com")
       || hostname.endsWith(".jotform.com")
       || (hostname === "docs.google.com" && url.pathname.startsWith("/forms/"));
-    return knownHost || /\b(sign\s*up|signup|rsvp|register|registration|volunteer|form)\b/i.test(label);
+    const labeledForm = /\b(sign\s*up|signup|rsvp|register|registration|volunteer|form)\b/i.test(label)
+      && /\b(sign\s*up|signup|rsvp|register|registration|volunteer|forms?)\b/i.test(`${url.pathname} ${url.search}`);
+    return knownHost || labeledForm;
   } catch {
     return false;
   }
@@ -172,6 +174,8 @@ function collectUrls_(node, urls = []) {
 function normalizePublicUrl_(value) {
   const decoded = decodeHtmlEntities_(String(value || "")).replace(/[\])},.;!?]+$/, "");
   try {
+    const protectedGoogleForm = decoded.match(/^https?:\/\/(?:[^/]+\.)?urldefense\.com\/v3\/__(https?:\/\/.*?)__;/i)?.[1];
+    if (protectedGoogleForm) return new URL(protectedGoogleForm).href;
     const url = new URL(decoded);
     return ["http:", "https:"].includes(url.protocol) ? url.href : "";
   } catch {

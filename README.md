@@ -1,6 +1,6 @@
 # St. Martha Parent Companion
 
-An unofficial, parent-created site that turns school communications into searchable newsletters and structured pages for events, lunch, signups, handbook search, and contacts.
+An unofficial, parent-created site that turns school communications into searchable newsletters and structured pages for events, lunch, handbook search, and the school directory.
 
 The site combines automated Gmail and Google Calendar feeds with public facts linked to the [official St. Martha School website](https://st-martha.org/school). It is not operated or endorsed by the school.
 
@@ -40,11 +40,12 @@ Every push to `main` runs `.github/workflows/pages.yml`. The workflow tests, lin
 
 ## What is included
 
-- Public routes for Home, Events, Lunch, Sign Ups, Handbook, Contacts, and Newsletters
+- Public navigation for Home, Newsletters, Events, Lunch, Handbook, and Directory
 - Automatic inbox-to-Smore newsletter publishing
 - Searchable native and OCR newsletter text
 - Cell-by-cell OCR of the newest lunch-menu calendar found across inbox newsletters
 - Automatic signup-form link extraction
+- Automatic extraction of newsletter sections labeled Important Upcoming Dates into site events
 - Responsive navigation and accessible form controls
 - Scheduled synchronization of newsletters and Google Calendar events
 - Unit coverage for newsletter, lunch-menu, calendar, and static-publishing workflows

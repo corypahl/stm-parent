@@ -50,6 +50,26 @@ test("prefers an explicit email title date when the Smore subtitle year is wrong
   assert.equal(parsed.newsletterDate, "2026-01-06");
 });
 
+test("unwraps a Google Form from an email security redirect", () => {
+  const wrappedContent = {
+    header: { title: "WEEKLY NOTES", subtitle: "08.10.26" },
+    blocks: [
+      { _t: "misc.separator" },
+      {
+        _t: "button",
+        text: "New Family Orientation - RSVP",
+        cta: { url: "https://urldefense.com/v3/__https://docs.google.com/forms/d/e/example/viewform?usp=publish-editor__;!!token$" },
+      },
+    ],
+  };
+  const wrappedHtml = `<script>newsletter:{js_content:${JSON.stringify(JSON.stringify(wrappedContent))}}</script>`;
+
+  assert.deepEqual(parseSmoreNewsletterHtml(wrappedHtml).signups, [{
+    title: "New Family Orientation - RSVP",
+    url: "https://docs.google.com/forms/d/e/example/viewform?usp=publish-editor",
+  }]);
+});
+
 test("combines native and OCR text into a searchable newsletter representation", () => {
   const parsed = parseSmoreNewsletterHtml(html);
   const newsletter = newsletterWithText({
@@ -72,6 +92,8 @@ test("recognizes supported form hosts and contextual signup links", () => {
   assert.equal(isSignupFormUrl("https://docs.google.com/forms/d/e/example/viewform"), true);
   assert.equal(isSignupFormUrl("https://forms.office.com/r/example"), true);
   assert.equal(isSignupFormUrl("https://example.com/rsvp", "Register for family night"), true);
+  assert.equal(isSignupFormUrl("https://virtus.org/", "Criminal Background Check Form"), false);
+  assert.equal(isSignupFormUrl("https://security.example.com/?d=factsmgt.com", "Medication form and family portal"), false);
   assert.equal(isSignupFormUrl("https://example.com/shop", "Shop uniforms"), false);
   assert.equal(isSignupFormUrl("not a URL", "RSVP"), false);
 });

@@ -6,6 +6,7 @@ import {
   normalizeOcrText,
   parseSmoreNewsletterHtml,
 } from "./lib/smore-newsletter.mjs";
+import { extractNewsletterEvents } from "./lib/newsletter-events.mjs";
 import {
   findLatestLunchMenuCandidate,
   imageDimensions,
@@ -17,6 +18,7 @@ const feedUrl = process.env.GOOGLE_CONTENT_FEED_URL?.trim();
 const contentOutputUrl = new URL("../app/data/google-content.json", import.meta.url);
 const newsletterOutputUrl = new URL("../app/data/google-newsletters.json", import.meta.url);
 const latestNewsletterOutputUrl = new URL("../app/data/latest-newsletter.json", import.meta.url);
+const newsletterEventsOutputUrl = new URL("../app/data/newsletter-events.json", import.meta.url);
 const lunchOutputUrl = new URL("../app/data/lunch.json", import.meta.url);
 const existingNewsletters = JSON.parse(await readFile(newsletterOutputUrl, "utf8"));
 const existingLunchDays = JSON.parse(await readFile(lunchOutputUrl, "utf8"));
@@ -79,16 +81,18 @@ const newsletters = parsedNewsletters.map(({ newsletter, parsed }) => {
 const latestNewsletter = newsletters[0]
   ? publicNewsletterFields_(newsletters[0])
   : null;
+const newsletterEvents = extractNewsletterEvents(newsletters);
 
 await Promise.all([
   writeFile(contentOutputUrl, "[]\n", "utf8"),
   writeFile(newsletterOutputUrl, `${JSON.stringify(newsletters, null, 2)}\n`, "utf8"),
   writeFile(latestNewsletterOutputUrl, `${JSON.stringify(latestNewsletter, null, 2)}\n`, "utf8"),
+  writeFile(newsletterEventsOutputUrl, `${JSON.stringify(newsletterEvents, null, 2)}\n`, "utf8"),
   writeFile(lunchOutputUrl, `${JSON.stringify(lunchDays, null, 2)}\n`, "utf8"),
 ]);
 
 const signupCount = newsletters.reduce((total, newsletter) => total + newsletter.signups.length, 0);
-console.log(`Synced ${newsletters.length} inbox newsletter(s), ${imageTextByUrl.size} OCR image(s), ${signupCount} signup link(s), and ${lunchDays.length} lunch day(s).`);
+console.log(`Synced ${newsletters.length} inbox newsletter(s), ${imageTextByUrl.size} OCR image(s), ${signupCount} signup link(s), ${newsletterEvents.length} upcoming event(s), and ${lunchDays.length} lunch day(s).`);
 
 async function recognizeImages_(urls) {
   const results = new Map();

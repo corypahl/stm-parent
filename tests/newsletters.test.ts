@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { getLatestNewsletterDate, isVolunteerSignupUrl, smoreEmbedUrl } from "../app/lib/newsletters";
-import type { ContentItem } from "../app/types/content";
+import { mergeCalendarEvents } from "../app/lib/calendar-events";
+import type { CalendarEvent, ContentItem } from "../app/types/content";
 
 test("recognizes SignUpGenius and Google Forms action links", () => {
   assert.equal(isVolunteerSignupUrl("https://www.signupgenius.com/go/example"), true);
@@ -26,4 +27,22 @@ test("creates the supported Smore iframe URL from a public newsletter link", () 
   assert.equal(smoreEmbedUrl("https://app.smore.com/n/zk12p"), "https://secure.smore.com/n/zk12p?embed=1");
   assert.equal(smoreEmbedUrl("https://secure.smore.com/n/kzd0-embedding-your-smore-newsletter?ref=email"), "https://secure.smore.com/n/kzd0-embedding-your-smore-newsletter?embed=1");
   assert.equal(smoreEmbedUrl("https://example.com/n/zk12p"), undefined);
+});
+
+test("merges newsletter dates into the school calendar without duplicating known events", () => {
+  const official = [
+    { id: "walkthrough", date: "2026-08-20", title: "Student Walk Through", details: "Meet the Miracles, 5:30–7:00 p.m.", category: "Family event" },
+    { id: "first-day", date: "2026-08-24", title: "First day of school", category: "School day" },
+  ] as CalendarEvent[];
+  const extracted = [
+    { id: "new-family", date: "2026-08-11", title: "New Family Night", category: "Family event" },
+    { id: "meet", date: "2026-08-20", title: "Meet the Miracles & Supply Drop-Off", category: "Family event" },
+    { id: "first-day-newsletter", date: "2026-08-24", title: "First Day of School (Half Day)", category: "School day" },
+  ] as CalendarEvent[];
+
+  assert.deepEqual(mergeCalendarEvents(official, extracted).map((event) => event.id), [
+    "new-family",
+    "walkthrough",
+    "first-day",
+  ]);
 });

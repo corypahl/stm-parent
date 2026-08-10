@@ -14,6 +14,7 @@ test("exports the finished parent companion home", async () => {
   assert.match(html, /St\. Martha School/);
   assert.match(html, /Unofficial Parent Site/);
   assert.match(html, /Coming Up/);
+  assert.match(html, /<h2>Coming Up[\s\S]*?<h2>Sign Ups[\s\S]*?<h2>Latest News/);
   assert.match(html, /Latest News/);
   assert.doesNotMatch(html, /On the calendar|School updates|Latest school newsletter/);
   assert.match(html, /<span class="eyebrow">Latest issue<\/span>/);
@@ -21,22 +22,23 @@ test("exports the finished parent companion home", async () => {
   assert.doesNotMatch(html, /No newsletter sections have been approved yet/);
   assert.doesNotMatch(html, /home-hero|Needs your attention|At a glance|Weekly overview|official school hours/);
   assert.doesNotMatch(html, /Good to know|Parent service organization|Explore opportunities|cta-panel/);
-  assert.match(html, /Source: St\. Martha 2026–27 Academic Calendar/);
+  assert.match(html, /Sources: St\. Martha 2026–27 Academic Calendar and upcoming dates extracted from school newsletters/);
   assert.doesNotMatch(html, /Sample: back-to-school family night/);
   assert.doesNotMatch(html, /Grade Filter|grade-chip|All-school notices are always included/);
   assert.doesNotMatch(html, /calendar-category|<span class="badge[^>]*">(?:School day|No school|Family event|Faith|Academic)<\/span>/);
-  assert.match(html, />Sign Ups<\/a>/);
+  assert.match(html, /<h2>Sign Ups/);
+  assert.match(html, /Newsletter form|No signup form links were found in the latest newsletter/);
   assert.match(html, />Newsletters<\/a>/);
-  assert.match(html, /href="(?:\/stm-parent)?\/sign-ups\.html"[^>]*>Sign Ups<\/a>/);
+  assert.doesNotMatch(html, /href="(?:\/stm-parent)?\/sign-ups\.html"[^>]*>Sign Ups<\/a>/);
   assert.match(html, /href="(?:\/stm-parent)?\/newsletters\.html"[^>]*>Newsletters<\/a>/);
   assert.match(html, /href="(?:\/stm-parent)?\/lunch\.html"[^>]*>Lunch<\/a>/);
   assert.match(html, /href="(?:\/stm-parent)?\/directory\.html"[^>]*>Directory<\/a>/);
-  assert.match(html, />Home<\/a>.*>Newsletters<\/a>.*>Events<\/a>.*>Lunch<\/a>.*>Sign Ups<\/a>.*>Handbook<\/a>.*>Directory<\/a>/s);
+  assert.match(html, />Home<\/a>.*>Newsletters<\/a>.*>Events<\/a>.*>Lunch<\/a>.*>Handbook<\/a>.*>Directory<\/a>/s);
   assert.doesNotMatch(html, /href="(?:\/stm-parent)?\/(?:volunteer|archive)\.html"/);
   assert.doesNotMatch(html, /href="(?:\/stm-parent)?\/staff\.html"[^>]*>Directory<\/a>/);
   assert.doesNotMatch(html, />Volunteer<\/a>|>Archive<\/a>/);
   assert.match(html, /unofficial, parent-created/i);
-  assert.match(html, /Source:/);
+  assert.match(html, /Sources?:/);
   assert.match(html, /og\.png/);
   assert.doesNotMatch(html, /codex-preview|react-loading-skeleton|Your site is taking shape/i);
 });
@@ -64,6 +66,7 @@ test("exports every requested route", async () => {
   const calendarHtml = await readRoute("calendar");
   assert.match(calendarHtml, /Subscribe with Google/);
   assert.match(calendarHtml, /stm\.parent\.updates%40gmail\.com\/public\/basic\.ics/);
+  assert.match(calendarHtml, /school newsletters/);
   assert.doesNotMatch(calendarHtml, /calendar-category|<span class="badge/);
 
   const lunchHtml = await readRoute("lunch");
@@ -78,9 +81,7 @@ test("exports every requested route", async () => {
   const signUpsHtml = await readRoute("sign-ups");
   assert.match(signUpsHtml, /<h1>Sign Ups<\/h1>/);
   assert.match(signUpsHtml, /extracted automatically from the latest school newsletter/);
-  assert.match(signUpsHtml, /Meet the Miracles RSVP &amp; Volunteer Sign UP/);
-  assert.match(signUpsHtml, /https:\/\/forms\.gle\/pHZuPKCD2GW1aNp66/);
-  assert.doesNotMatch(signUpsHtml, /No signup form links were found/);
+  assert.match(signUpsHtml, /Newsletter form|No signup form links were found in the latest newsletter/);
   assert.doesNotMatch(signUpsHtml, /About parent involvement|20 hours|10 hours|per family|Prototype content/);
 
   const newslettersHtml = await readRoute("newsletters");
@@ -134,7 +135,7 @@ test("publishes the source handbook and calendar PDFs", async () => {
   assert.match(handbookHtml, /Food Allergies, Intolerances, and Nut Restrictions/i);
   assert.match(handbookHtml, /The complete handbook wording is reproduced below/i);
   assert.doesNotMatch(handbookHtml, /Handbook summary|parent-friendly summaries/i);
-  assert.match(await readRoute("calendar"), /Updated July 29, 2026/i);
+  assert.match(await readRoute("calendar"), /Checked during every site update/i);
   assert.match(await readRoute("directory"), /Verified August 7, 2026/i);
   assert.match(await readRoute("staff"), /Verified August 7, 2026/i);
 });

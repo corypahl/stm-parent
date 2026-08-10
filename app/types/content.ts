@@ -99,6 +99,8 @@ export type CalendarEvent = {
   time?: string;
   details?: string;
   category: "School day" | "No school" | "Family event" | "Faith" | "Academic";
+  sourceUrl?: string;
+  sourceLabel?: string;
 };
 
 export type StaffMember = {
