@@ -28,9 +28,11 @@ test("exports the finished parent companion home", async () => {
   assert.match(html, />Newsletters<\/a>/);
   assert.match(html, /href="(?:\/stm-parent)?\/sign-ups\.html"[^>]*>Sign Ups<\/a>/);
   assert.match(html, /href="(?:\/stm-parent)?\/newsletters\.html"[^>]*>Newsletters<\/a>/);
+  assert.match(html, /href="(?:\/stm-parent)?\/directory\.html"[^>]*>Directory<\/a>/);
   assert.match(html, />Home<\/a>.*>Newsletters<\/a>.*>Events<\/a>.*>Sign Ups<\/a>.*>Handbook<\/a>.*>Directory<\/a>/s);
   assert.doesNotMatch(html, />Lunch<\/a>/);
   assert.doesNotMatch(html, /href="(?:\/stm-parent)?\/(?:volunteer|archive)\.html"/);
+  assert.doesNotMatch(html, /href="(?:\/stm-parent)?\/staff\.html"[^>]*>Directory<\/a>/);
   assert.doesNotMatch(html, />Volunteer<\/a>|>Archive<\/a>/);
   assert.match(html, /unofficial, parent-created/i);
   assert.match(html, /Source:/);
@@ -43,6 +45,7 @@ test("exports every requested route", async () => {
     ["action", "Needs action"],
     ["events", "Academic calendar"],
     ["calendar", "Academic calendar"],
+    ["directory", "Directory"],
     ["staff", "Directory"],
     ["lunch", "Lunch menu"],
     ["sign-ups", "Sign Ups"],
@@ -131,6 +134,7 @@ test("publishes the source handbook and calendar PDFs", async () => {
   assert.match(handbookHtml, /The complete handbook wording is reproduced below/i);
   assert.doesNotMatch(handbookHtml, /Handbook summary|parent-friendly summaries/i);
   assert.match(await readRoute("calendar"), /Updated July 29, 2026/i);
+  assert.match(await readRoute("directory"), /Verified August 7, 2026/i);
   assert.match(await readRoute("staff"), /Verified August 7, 2026/i);
 });
 
