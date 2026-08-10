@@ -107,7 +107,7 @@ export function HomePage() {
                   <strong>{formatCalendarDate(event.date, { day: "numeric" })}</strong>
                 </time>
                 <div>
-                  <div className="badge-row"><span className={`badge calendar-category calendar-category--${event.category.toLowerCase().replaceAll(" ", "-")}`}>{event.category}</span>{event.endDate && <span className="date-range">{formatCalendarRange(event)}</span>}</div>
+                  {event.endDate && <span className="date-range">{formatCalendarRange(event)}</span>}
                   <h3>{event.title}</h3>
                   {(event.time || event.details) && <p>{[event.time, event.details].filter(Boolean).join(" · ")}</p>}
                 </div>

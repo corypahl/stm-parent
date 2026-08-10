@@ -24,6 +24,7 @@ test("exports the finished parent companion home", async () => {
   assert.match(html, /Source: St\. Martha 2026–27 Academic Calendar/);
   assert.doesNotMatch(html, /Sample: back-to-school family night/);
   assert.doesNotMatch(html, /Grade Filter|grade-chip|All-school notices are always included/);
+  assert.doesNotMatch(html, /calendar-category|<span class="badge[^>]*">(?:School day|No school|Family event|Faith|Academic)<\/span>/);
   assert.match(html, />Sign Ups<\/a>/);
   assert.match(html, />Newsletters<\/a>/);
   assert.match(html, /href="(?:\/stm-parent)?\/sign-ups\.html"[^>]*>Sign Ups<\/a>/);
