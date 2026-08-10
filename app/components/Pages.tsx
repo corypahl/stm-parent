@@ -257,7 +257,7 @@ export function StaffPage() {
     <>
       <PageHeading
         eyebrow="People who make the school go"
-        title="Contacts"
+        title="Directory"
         description="Find teachers, school leadership, specialists, and support staff, with direct contact details where the school publishes them."
         aside={<a className="button" href="https://st-martha.org/staff-school" target="_blank" rel="noreferrer">Official staff directory ↗</a>}
       />
