@@ -8,6 +8,7 @@ const navigation = [
   { href: "/", label: "Home" },
   { href: "/newsletters", label: "Newsletters" },
   { href: "/calendar", label: "Events" },
+  { href: "/lunch", label: "Lunch" },
   { href: "/sign-ups", label: "Sign Ups" },
   { href: "/handbook", label: "Handbook" },
   { href: "/directory", label: "Directory" },
