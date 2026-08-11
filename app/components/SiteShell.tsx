@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useState, type ReactNode } from "react";
-import { routePath, sitePath } from "../lib/site-path";
+import { assetPath, routePath, sitePath } from "../lib/site-path";
 
 const navigation = [
   { href: "/", label: "Home" },
@@ -30,9 +30,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
       <header className="site-header">
         <div className="site-header__top page-width">
           <a className="brand" href={sitePath("/")} aria-label="St. Martha School unofficial parent site home">
-            <span className="brand__mark" aria-hidden="true">
-              M
-            </span>
+            <span className="brand__mark" aria-hidden="true" style={{ backgroundImage: `url(${assetPath("/st-martha-mark.png")})` }} />
             <span>
               <span className="brand__school">St. Martha School</span>
               <span className="brand__name">Unofficial Parent Site</span>

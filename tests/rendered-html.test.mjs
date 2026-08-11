@@ -13,6 +13,10 @@ test("exports the finished parent companion home", async () => {
   const html = await readRoute();
   assert.match(html, /St\. Martha School/);
   assert.match(html, /Unofficial Parent Site/);
+  assert.match(html, /st-martha-mark\.png/);
+  assert.doesNotMatch(html, /class="brand__mark"[^>]*>\s*M\s*<\/span>/);
+  assert.match(html, /rel="icon"[^>]+favicon\.ico|favicon\.ico[^>]+rel="icon"/);
+  assert.match(html, /apple-touch-icon\.png/);
   assert.match(html, /What do you need to find\?/);
   assert.match(html, /Search newsletters, handbook, and calendar/);
   assert.match(html, />Ask AI<\/button>/);
@@ -147,6 +151,17 @@ test("publishes the source handbook and calendar PDFs", async () => {
   assert.match(await readRoute("calendar"), /Checked during every site update/i);
   assert.match(await readRoute("directory"), /Verified August 7, 2026/i);
   assert.match(await readRoute("staff"), /Verified August 7, 2026/i);
+});
+
+test("publishes the supplied St. Martha mark and favicon variants", async () => {
+  await Promise.all([
+    "st-martha-mark.png",
+    "favicon.ico",
+    "favicon-32.png",
+    "favicon-192.png",
+    "favicon-512.png",
+    "apple-touch-icon.png",
+  ].map((filename) => access(new URL(filename, outputRoot))));
 });
 
 test("includes the GitHub Pages no-Jekyll marker", async () => {
