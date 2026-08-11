@@ -38,6 +38,8 @@ This is a Codex-first repository. Codex works directly on `main`, creates one in
 
 Every push to `main` runs `.github/workflows/pages.yml`. The workflow tests, lints, creates a static export, and deploys `dist/client` to GitHub Pages. Request-time server features are intentionally unavailable while GitHub Pages is the deployment target.
 
+Every Monday, `.github/workflows/sync-staff.yml` checks the [official school staff directory](https://st-martha.org/staff-school). It validates the parsed roster and commits `app/data/staff.json` only when the official directory changes; that commit then triggers the normal Pages deployment.
+
 ## What is included
 
 - Public navigation for Home, Newsletters, Events, Lunch, Handbook, and Directory
@@ -50,7 +52,8 @@ Every push to `main` runs `.github/workflows/pages.yml`. The workflow tests, lin
 - Automatic extraction of newsletter sections labeled Important Upcoming Dates into site events
 - Responsive navigation and accessible form controls
 - Scheduled synchronization of newsletters and Google Calendar events
-- Unit coverage for newsletter, lunch-menu, calendar, and static-publishing workflows
+- Weekly synchronization of the official school staff directory
+- Unit coverage for newsletter, lunch-menu, calendar, staff-directory, and static-publishing workflows
 
 ## Explicitly deferred
 

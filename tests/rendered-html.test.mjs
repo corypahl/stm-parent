@@ -149,8 +149,8 @@ test("publishes the source handbook and calendar PDFs", async () => {
   assert.match(handbookHtml, /The complete handbook wording is reproduced below/i);
   assert.doesNotMatch(handbookHtml, /Handbook summary|parent-friendly summaries/i);
   assert.match(await readRoute("calendar"), /Checked during every site update/i);
-  assert.match(await readRoute("directory"), /Verified August 7, 2026/i);
-  assert.match(await readRoute("staff"), /Verified August 7, 2026/i);
+  assert.match(await readRoute("directory"), /Checked weekly/i);
+  assert.match(await readRoute("staff"), /Checked weekly/i);
 });
 
 test("publishes the supplied St. Martha mark and favicon variants", async () => {

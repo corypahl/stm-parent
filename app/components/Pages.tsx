@@ -364,8 +364,8 @@ export function StaffPage() {
         aside={<a className="button" href="https://st-martha.org/staff-school" target="_blank" rel="noreferrer">Official staff directory ↗</a>}
       />
       <div className="source-banner" role="note">
-        <div><strong>{staffMembers.length} staff members</strong><span>Verified August 7, 2026</span></div>
-        <p>Roles and contact details come from the official school directory. Use that directory as the authority for later changes.</p>
+        <div><strong>{staffMembers.length} staff members</strong><span>Checked weekly</span></div>
+        <p>Roles and contact details are synchronized from the official school directory. Use that directory as the authority for recent changes.</p>
       </div>
       <label className="search-box staff-search">
         <span className="search-box__icon" aria-hidden="true">⌕</span>

@@ -1,0 +1,54 @@
+name: Sync official staff directory
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 10 * * 1"
+
+permissions:
+  actions: write
+  contents: write
+
+concurrency:
+  group: staff-directory-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Scrape and validate official directory
+        run: npm run sync:staff
+
+      - name: Test directory parser
+        run: node --test tests/staff-sync.test.mjs
+
+      - name: Commit roster changes
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if git diff --quiet -- app/data/staff.json; then
+            echo "The official staff directory is unchanged."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app/data/staff.json
+          git commit -m "Sync official staff directory"
+          git push origin HEAD:main
+          gh workflow run pages.yml --ref main
