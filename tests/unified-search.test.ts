@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { absoluteSourceHref } from "../app/lib/ai-search";
 import { buildUnifiedSearchIndex, searchUnifiedIndex } from "../app/lib/unified-search";
 import type { CalendarEvent, HandbookSection, NewsletterSummary } from "../app/types/content";
 
@@ -54,4 +55,15 @@ test("finds policy and newsletter information with stop words removed", () => {
 test("returns no results for an empty or unrelated query", () => {
   assert.deepEqual(searchUnifiedIndex(index, ""), []);
   assert.deepEqual(searchUnifiedIndex(index, "snowmobile"), []);
+});
+
+test("expands site-relative citation links before sending sources to Apps Script", () => {
+  assert.equal(
+    absoluteSourceHref("/stm-parent/calendar.html#event-first-day-of-school", "https://corypahl.github.io"),
+    "https://corypahl.github.io/stm-parent/calendar.html#event-first-day-of-school",
+  );
+  assert.equal(
+    absoluteSourceHref("https://app.smore.com/n/example", "https://corypahl.github.io"),
+    "https://app.smore.com/n/example",
+  );
 });

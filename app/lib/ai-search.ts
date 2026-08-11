@@ -17,6 +17,10 @@ export type AiSearchAnswer = {
 
 const parentSiteApiUrl = process.env.NEXT_PUBLIC_PARENT_SITE_API_URL?.trim() ?? "";
 
+export function absoluteSourceHref(href: string, origin: string): string {
+  return new URL(href, origin).href;
+}
+
 export async function askParentSiteAi(
   question: string,
   results: UnifiedSearchResult[],
@@ -41,6 +45,7 @@ export async function askParentSiteAi(
     kindLabel: result.kindLabel,
     href: resultHref(result),
   }));
+  const sourceOrigin = window.location.origin;
   const response = await fetch(parentSiteApiUrl, {
     method: "POST",
     headers: { "Content-Type": "text/plain;charset=UTF-8" },
@@ -52,7 +57,7 @@ export async function askParentSiteAi(
         type: result.kindLabel,
         title: result.title,
         subtitle: result.subtitle,
-        url: resultHref(result),
+        url: absoluteSourceHref(resultHref(result), sourceOrigin),
         text: result.context,
       })),
     }),
