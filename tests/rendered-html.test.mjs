@@ -67,6 +67,10 @@ test("exports every requested route", async () => {
   assert.match(calendarHtml, /Subscribe with Google/);
   assert.match(calendarHtml, /stm\.parent\.updates%40gmail\.com\/public\/basic\.ics/);
   assert.match(calendarHtml, /school newsletters/);
+  assert.match(calendarHtml, /<h2 id="calendar-view-title">Calendar view<\/h2>[\s\S]*?<h2>Upcoming[\s\S]*?<h2>Past Events/);
+  assert.match(calendarHtml, /role="grid"/);
+  assert.match(calendarHtml, /Sun<\/div>.*Mon<\/div>.*Tue<\/div>.*Wed<\/div>.*Thu<\/div>.*Fri<\/div>.*Sat<\/div>/s);
+  assert.doesNotMatch(calendarHtml, /class="calendar-months"/);
   assert.doesNotMatch(calendarHtml, /calendar-category|<span class="badge/);
 
   const lunchHtml = await readRoute("lunch");

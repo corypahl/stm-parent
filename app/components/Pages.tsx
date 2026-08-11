@@ -50,6 +50,7 @@ const calendarEvents = mergeCalendarEvents(calendarData as CalendarEvent[], news
 const staffMembers = staffData as StaffMember[];
 
 const calendarCategories = ["All", "School day", "No school", "Family event", "Faith", "Academic"] as const;
+const calendarWeekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"] as const;
 const staffGroups: StaffMember["group"][] = ["Leadership & office", "Homeroom teachers", "Specials", "Support staff"];
 
 function formatCalendarDate(value: string, options: Intl.DateTimeFormatOptions) {
@@ -61,6 +62,57 @@ function formatCalendarRange(event: CalendarEvent) {
   if (!event.endDate) return start;
   const end = formatCalendarDate(event.endDate, { month: "short", day: "numeric" });
   return `${start}–${end}`;
+}
+
+function detroitDateKey() {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/Detroit",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date());
+  const values = Object.fromEntries(parts.map(({ type, value }) => [type, value]));
+  return `${values.year}-${values.month}-${values.day}`;
+}
+
+function shiftCalendarMonth(month: string, amount: number) {
+  const [year, monthNumber] = month.split("-").map(Number);
+  const shifted = new Date(Date.UTC(year, monthNumber - 1 + amount, 1, 12));
+  return shifted.toISOString().slice(0, 7);
+}
+
+function calendarCells(month: string) {
+  const [year, monthNumber] = month.split("-").map(Number);
+  const firstWeekday = new Date(Date.UTC(year, monthNumber - 1, 1, 12)).getUTCDay();
+  const dayCount = new Date(Date.UTC(year, monthNumber, 0, 12)).getUTCDate();
+  const cellCount = Math.ceil((firstWeekday + dayCount) / 7) * 7;
+  return Array.from({ length: cellCount }, (_, index) => {
+    const day = index - firstWeekday + 1;
+    return day >= 1 && day <= dayCount
+      ? `${month}-${String(day).padStart(2, "0")}`
+      : null;
+  });
+}
+
+function eventOccursOn(event: CalendarEvent, date: string) {
+  return event.date <= date && (event.endDate ?? event.date) >= date;
+}
+
+function CalendarEventCard({ event, dateLabel = "weekday" }: { event: CalendarEvent; dateLabel?: "weekday" | "month" }) {
+  const labelOptions: Intl.DateTimeFormatOptions = dateLabel === "weekday" ? { weekday: "short" } : { month: "short" };
+  return (
+    <article className="calendar-entry">
+      <time dateTime={event.date}>
+        <span>{formatCalendarDate(event.date, labelOptions)}</span>
+        <strong>{formatCalendarDate(event.date, { day: "numeric" })}</strong>
+      </time>
+      <div>
+        {event.endDate && <span className="date-range">{formatCalendarRange(event)}</span>}
+        <h3>{event.title}</h3>
+        {(event.time || event.details) && <p>{[event.time, event.details].filter(Boolean).join(" · ")}</p>}
+      </div>
+    </article>
+  );
 }
 
 function visibleItems(types?: ContentItem["contentType"][]) {
@@ -107,7 +159,8 @@ function LatestNewsletterSignups() {
 }
 
 export function HomePage() {
-  const upcomingEvents = calendarEvents.slice(0, 3);
+  const today = detroitDateKey();
+  const upcomingEvents = calendarEvents.filter((event) => (event.endDate ?? event.date) >= today).slice(0, 3);
   const embedUrl = latestNewsletter ? smoreEmbedUrl(latestNewsletter.sourceUrl) : undefined;
 
   return (
@@ -117,17 +170,7 @@ export function HomePage() {
           <SectionHeading title="Coming Up" count={upcomingEvents.length} link={{ href: "/calendar", label: "Full calendar" }} />
           <div className="calendar-preview">
             {upcomingEvents.map((event) => (
-              <article className="calendar-entry" key={event.id}>
-                <time dateTime={event.date}>
-                  <span>{formatCalendarDate(event.date, { month: "short" })}</span>
-                  <strong>{formatCalendarDate(event.date, { day: "numeric" })}</strong>
-                </time>
-                <div>
-                  {event.endDate && <span className="date-range">{formatCalendarRange(event)}</span>}
-                  <h3>{event.title}</h3>
-                  {(event.time || event.details) && <p>{[event.time, event.details].filter(Boolean).join(" · ")}</p>}
-                </div>
-              </article>
+              <CalendarEventCard event={event} dateLabel="month" key={event.id} />
             ))}
           </div>
           <p className="preview-source">Sources: St. Martha 2026–27 Academic Calendar and upcoming dates extracted from school newsletters.</p>
@@ -187,13 +230,26 @@ export function EventsPage() {
 export function CalendarPage() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<(typeof calendarCategories)[number]>("All");
+  const today = detroitDateKey();
+  const todayMonth = today.slice(0, 7);
+  const firstEventMonth = calendarEvents[0]?.date.slice(0, 7);
+  const lastEventMonth = calendarEvents.at(-1)?.date.slice(0, 7);
+  const initialMonth = firstEventMonth && lastEventMonth && todayMonth >= firstEventMonth && todayMonth <= lastEventMonth
+    ? todayMonth
+    : firstEventMonth ?? todayMonth;
+  const [selectedMonth, setSelectedMonth] = useState(initialMonth);
   const normalized = query.trim().toLowerCase();
   const visible = calendarEvents.filter((event) => {
     const matchesCategory = category === "All" || event.category === category;
     const matchesQuery = !normalized || `${event.title} ${event.details ?? ""} ${event.time ?? ""} ${event.category}`.toLowerCase().includes(normalized);
     return matchesCategory && matchesQuery;
   });
-  const months = Array.from(new Set(visible.map((event) => event.date.slice(0, 7))));
+  const upcoming = visible.filter((event) => (event.endDate ?? event.date) >= today);
+  const past = visible
+    .filter((event) => (event.endDate ?? event.date) < today)
+    .sort((a, b) => b.date.localeCompare(a.date) || a.title.localeCompare(b.title));
+  const monthCells = calendarCells(selectedMonth);
+  const selectedMonthHasEvents = monthCells.some((date) => date && visible.some((event) => eventOccursOn(event, date)));
   const calendarPdf = assetPath("/documents/2026-27-academic-calendar.pdf");
 
   return (
@@ -233,34 +289,54 @@ export function CalendarPage() {
         </label>
       </div>
       <p className="result-count" aria-live="polite">Showing {visible.length} of {calendarEvents.length} calendar entries</p>
-      <div className="calendar-months">
-        {months.length ? months.map((month) => {
-          const events = visible.filter((event) => event.date.startsWith(month));
-          return (
-            <section className="calendar-month" key={month}>
-              <div className="calendar-month__heading">
-                <span>{formatCalendarDate(`${month}-01`, { year: "numeric" })}</span>
-                <h2>{formatCalendarDate(`${month}-01`, { month: "long" })}</h2>
-              </div>
-              <div className="calendar-month__events">
-                {events.map((event) => (
-                  <article className="calendar-entry" key={event.id}>
-                    <time dateTime={event.date}>
-                      <span>{formatCalendarDate(event.date, { weekday: "short" })}</span>
-                      <strong>{formatCalendarDate(event.date, { day: "numeric" })}</strong>
-                    </time>
-                    <div>
-                      {event.endDate && <span className="date-range">{formatCalendarRange(event)}</span>}
-                      <h3>{event.title}</h3>
-                      {(event.time || event.details) && <p>{[event.time, event.details].filter(Boolean).join(" · ")}</p>}
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </section>
-          );
-        }) : <EmptyState>No calendar entries match that search and filter.</EmptyState>}
-      </div>
+      <section className="calendar-view" aria-labelledby="calendar-view-title">
+        <div className="calendar-view__header">
+          <div>
+            <span className="eyebrow">Browse by month</span>
+            <h2 id="calendar-view-title">Calendar view</h2>
+          </div>
+          <div className="calendar-view__controls">
+            <button type="button" aria-label="Previous month" onClick={() => setSelectedMonth((month) => shiftCalendarMonth(month, -1))}>←</button>
+            <strong aria-live="polite">{formatCalendarDate(`${selectedMonth}-01`, { month: "long", year: "numeric" })}</strong>
+            <button type="button" aria-label="Next month" onClick={() => setSelectedMonth((month) => shiftCalendarMonth(month, 1))}>→</button>
+            <button type="button" className="calendar-view__today" onClick={() => setSelectedMonth(todayMonth)}>Today</button>
+          </div>
+        </div>
+        <p className="calendar-grid-hint">Scroll horizontally to view the full month.</p>
+        <div className="calendar-grid-scroll">
+          <div className="calendar-grid" role="grid" aria-label={`${formatCalendarDate(`${selectedMonth}-01`, { month: "long", year: "numeric" })} events`}>
+            {calendarWeekdays.map((weekday) => <div className="calendar-grid__weekday" role="columnheader" key={weekday}>{weekday.slice(0, 3)}</div>)}
+            {monthCells.map((date, index) => {
+              if (!date) return <div className="calendar-grid__day calendar-grid__day--empty" role="gridcell" aria-hidden="true" key={`empty-${index + 1}`} />;
+              const dayEvents = visible.filter((event) => eventOccursOn(event, date));
+              return (
+                <div className={`calendar-grid__day ${date === today ? "calendar-grid__day--today" : ""}`} role="gridcell" aria-label={`${formatCalendarDate(date, { month: "long", day: "numeric" })}, ${dayEvents.length} event${dayEvents.length === 1 ? "" : "s"}`} key={date}>
+                  <time dateTime={date}>{Number(date.slice(-2))}</time>
+                  <div className="calendar-grid__events">
+                    {dayEvents.slice(0, 3).map((event) => <span className="calendar-grid__event" key={`${date}-${event.id}`}>{event.time && <small>{event.time}</small>}{event.title}</span>)}
+                    {dayEvents.length > 3 && <span className="calendar-grid__more">+{dayEvents.length - 3} more</span>}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        {!selectedMonthHasEvents && <p className="calendar-view__empty">No matching events in this month.</p>}
+      </section>
+
+      <section className="event-list-section">
+        <SectionHeading title="Upcoming" count={upcoming.length} />
+        {upcoming.length
+          ? <div className="event-list">{upcoming.map((event) => <CalendarEventCard event={event} key={event.id} />)}</div>
+          : <EmptyState>No upcoming events match that search and filter.</EmptyState>}
+      </section>
+
+      <section className="event-list-section event-list-section--past">
+        <SectionHeading title="Past Events" count={past.length} />
+        {past.length
+          ? <div className="event-list">{past.map((event) => <CalendarEventCard event={event} key={event.id} />)}</div>
+          : <EmptyState>Past events will appear here after their date.</EmptyState>}
+      </section>
       <div className="source-footer">
         <span>Sources: St. Martha 2026–27 Academic Calendar and school newsletters</span>
         <a className="source-link" href={calendarPdf} target="_blank" rel="noreferrer">Open the original PDF ↗</a>
