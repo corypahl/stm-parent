@@ -37,8 +37,10 @@ import { googleCalendar } from "../lib/google-calendar";
 import { mergeCalendarEvents } from "../lib/calendar-events";
 import { smoreEmbedUrl } from "../lib/newsletters";
 import { assetPath } from "../lib/site-path";
+import { buildUnifiedSearchIndex } from "../lib/unified-search";
 import { ContentCard } from "./ContentCard";
 import { EmptyState, PageHeading, SectionHeading } from "./PageHeading";
+import { UnifiedSearch } from "./UnifiedSearch";
 
 const contentItems = [...(googleContentData as ContentItem[]), ...(contentData as ContentItem[])];
 const documents = documentData as SchoolDocument[];
@@ -48,6 +50,7 @@ const newsletters = (googleNewsletterData as NewsletterSummary[]).sort((a, b) =>
 const latestNewsletter = latestNewsletterData as LatestNewsletter | null;
 const calendarEvents = mergeCalendarEvents(calendarData as CalendarEvent[], newsletterEventData as CalendarEvent[]);
 const staffMembers = staffData as StaffMember[];
+const unifiedSearchEntries = buildUnifiedSearchIndex({ handbookSections, newsletters, calendarEvents });
 
 const calendarCategories = ["All", "School day", "No school", "Family event", "Faith", "Academic"] as const;
 const calendarWeekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"] as const;
@@ -98,10 +101,10 @@ function eventOccursOn(event: CalendarEvent, date: string) {
   return event.date <= date && (event.endDate ?? event.date) >= date;
 }
 
-function CalendarEventCard({ event, dateLabel = "weekday" }: { event: CalendarEvent; dateLabel?: "weekday" | "month" }) {
+function CalendarEventCard({ event, dateLabel = "weekday", anchorId }: { event: CalendarEvent; dateLabel?: "weekday" | "month"; anchorId?: string }) {
   const labelOptions: Intl.DateTimeFormatOptions = dateLabel === "weekday" ? { weekday: "short" } : { month: "short" };
   return (
-    <article className="calendar-entry">
+    <article className="calendar-entry" id={anchorId}>
       <time dateTime={event.date}>
         <span>{formatCalendarDate(event.date, labelOptions)}</span>
         <strong>{formatCalendarDate(event.date, { day: "numeric" })}</strong>
@@ -165,6 +168,8 @@ export function HomePage() {
 
   return (
     <>
+      <UnifiedSearch entries={unifiedSearchEntries} />
+
       <section className="home-section home-section--first">
         <div>
           <SectionHeading title="Coming Up" count={upcomingEvents.length} link={{ href: "/calendar", label: "Full calendar" }} />
@@ -327,14 +332,14 @@ export function CalendarPage() {
       <section className="event-list-section">
         <SectionHeading title="Upcoming" count={upcoming.length} />
         {upcoming.length
-          ? <div className="event-list">{upcoming.map((event) => <CalendarEventCard event={event} key={event.id} />)}</div>
+          ? <div className="event-list">{upcoming.map((event) => <CalendarEventCard event={event} anchorId={`event-${event.id}`} key={event.id} />)}</div>
           : <EmptyState>No upcoming events match that search and filter.</EmptyState>}
       </section>
 
       <section className="event-list-section event-list-section--past">
         <SectionHeading title="Past Events" count={past.length} />
         {past.length
-          ? <div className="event-list">{past.map((event) => <CalendarEventCard event={event} key={event.id} />)}</div>
+          ? <div className="event-list">{past.map((event) => <CalendarEventCard event={event} anchorId={`event-${event.id}`} key={event.id} />)}</div>
           : <EmptyState>Past events will appear here after their date.</EmptyState>}
       </section>
       <div className="source-footer">
@@ -775,7 +780,7 @@ export function NewslettersPage() {
             setReaderMode(mode);
           };
           return (
-            <article className={`archive-newsletter ${isOpen ? "archive-newsletter--open" : ""}`} key={newsletter.id}>
+            <article className={`archive-newsletter ${isOpen ? "archive-newsletter--open" : ""}`} id={`newsletter-${newsletter.id}`} key={newsletter.id}>
               <div className="archive-row">
                 <time dateTime={newsletter.newsletterDate}><strong>{formatDate(`${newsletter.newsletterDate}T12:00:00`, { day: "2-digit" })}</strong><span>{formatDate(`${newsletter.newsletterDate}T12:00:00`, { month: "short", year: "numeric" })}</span></time>
                 <div><h2>{newsletter.title}</h2><p>School newsletter · Smore</p>{excerpt && <p className="archive-row__excerpt">…<HighlightedText text={excerpt} query={query} />…</p>}</div>

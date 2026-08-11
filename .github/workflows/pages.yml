@@ -48,6 +48,8 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Build static site
+        env:
+          NEXT_PUBLIC_PARENT_SITE_API_URL: ${{ vars.GOOGLE_CONTENT_FEED_URL }}
         run: npm run build
 
       - name: Verify static export

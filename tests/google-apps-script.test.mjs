@@ -8,13 +8,19 @@ const manifest = JSON.parse(await readFile(new URL("../automation/google-apps-sc
 const context = vm.createContext({ console });
 vm.runInContext(`${source}\nthis.__testHelpers = {
   PUBLIC_FEED_VERSION,
+  GEMINI_MODEL,
+  answerSearchRequest_,
+  buildGeminiSearchPrompt_,
   canonicalSmoreUrl_,
   cleanSubject_,
+  interactionOutputText_,
   latestNewsletterFromArchive_,
   newsletterArchiveFromEmailRecords_,
   newsletterDateFrom_,
+  sanitizeSearchSources_,
   smoreLinkTitle_,
   smoreUrlsFrom_,
+  validGeminiAnswer_,
 };`, context);
 
 const helpers = context.__testHelpers;
@@ -125,5 +131,80 @@ test("requests the documented GmailApp and trigger-management permissions", () =
   assert.deepEqual(manifest.oauthScopes, [
     "https://mail.google.com/",
     "https://www.googleapis.com/auth/script.scriptapp",
+    "https://www.googleapis.com/auth/script.external_request",
   ]);
+});
+
+test("keeps Gemini credentials server-side and uses the current Flash-Lite model", () => {
+  assert.equal(helpers.GEMINI_MODEL, "gemini-3.5-flash-lite");
+  assert.match(source, /PropertiesService\.getScriptProperties\(\)\.getProperty\(GEMINI_API_KEY_PROPERTY\)/);
+  assert.match(source, /UrlFetchApp\.fetch\(GEMINI_API_URL/);
+  assert.match(source, /function doPost\(event\)/);
+  assert.doesNotMatch(source, /AIza[A-Za-z0-9_-]{20,}/);
+});
+
+test("sanitizes AI search sources and rejects uncited model output", () => {
+  const sources = helpers.sanitizeSearchSources_([
+    { id: "S1", type: "Event", title: "New Family Night", subtitle: "August 11", url: "https://corypahl.github.io/stm-parent/calendar.html#event-family-night", text: "New Family Night is August 11 at 6 PM." },
+    { id: "S2", type: "Private email", title: "No", subtitle: "", url: "https://example.com", text: "Do not include" },
+    { id: "S3", type: "Handbook", title: "No", subtitle: "", url: "http://example.com", text: "Insecure URL" },
+  ]);
+  assert.deepEqual(JSON.parse(JSON.stringify(sources)).map((item) => item.id), ["S1"]);
+
+  const validated = JSON.parse(JSON.stringify(helpers.validGeminiAnswer_({
+    answer: "New Family Night is August 11. [S1] This unsupported claim is removed. [S9]",
+    citation_ids: ["S1", "S9"],
+    insufficient_evidence: false,
+  }, sources)));
+  assert.deepEqual(validated.citations, ["S1"]);
+  assert.doesNotMatch(validated.answer, /S9/);
+
+  const uncited = JSON.parse(JSON.stringify(helpers.validGeminiAnswer_({
+    answer: "An answer without a source.",
+    citation_ids: [],
+    insufficient_evidence: false,
+  }, sources)));
+  assert.equal(uncited.insufficientEvidence, true);
+});
+
+test("builds a source-bound prompt and reads structured Interactions API output", () => {
+  const sources = [{ id: "S1", type: "Handbook", title: "Attendance", subtitle: "Page 12", url: "https://example.com/handbook", text: "Call the office for an absence." }];
+  const prompt = helpers.buildGeminiSearchPrompt_("How do I report an absence?", sources, "2026-08-11");
+  assert.match(prompt, /Use only the supplied source excerpts/);
+  assert.match(prompt, /\[S1\]/);
+  assert.match(prompt, /2026-08-11/);
+  assert.equal(helpers.interactionOutputText_({ steps: [{ type: "model_output", content: [{ type: "text", text: "{\"answer\":\"Call the office. [S1]\"}" }] }] }), "{\"answer\":\"Call the office. [S1]\"}");
+});
+
+test("calls Gemini through the server-side proxy and returns validated citations", () => {
+  let request;
+  context.PropertiesService = { getScriptProperties: () => ({ getProperty: () => "server-only-test-key" }) };
+  context.Session = { getScriptTimeZone: () => "America/Detroit" };
+  context.Utilities = {
+    DigestAlgorithm: { SHA_256: "SHA_256" },
+    formatDate: () => "2026-08-11",
+    computeDigest: () => [1, 2, 3],
+    base64EncodeWebSafe: () => "cache-key",
+  };
+  context.CacheService = { getScriptCache: () => ({ get: () => null, put: () => undefined }) };
+  context.UrlFetchApp = { fetch: (url, options) => {
+    request = { url, options };
+    return {
+      getResponseCode: () => 200,
+      getContentText: () => JSON.stringify({ steps: [{ type: "model_output", content: [{ type: "text", text: JSON.stringify({ answer: "New Family Night is August 11 at 6 PM. [S1]", citation_ids: ["S1"], insufficient_evidence: false }) }] }] }),
+    };
+  } };
+
+  const result = JSON.parse(JSON.stringify(helpers.answerSearchRequest_({
+    question: "When is New Family Night?",
+    sources: [{ id: "S1", type: "Event", title: "New Family Night", subtitle: "August 11", url: "https://corypahl.github.io/stm-parent/calendar.html#event-family-night", text: "New Family Night is August 11 at 6 PM." }],
+  })));
+  const payload = JSON.parse(request.options.payload);
+
+  assert.equal(request.url, "https://generativelanguage.googleapis.com/v1beta/interactions");
+  assert.equal(request.options.headers["x-goog-api-key"], "server-only-test-key");
+  assert.equal(payload.model, "gemini-3.5-flash-lite");
+  assert.equal(payload.response_format.mime_type, "application/json");
+  assert.deepEqual(result.citations, ["S1"]);
+  assert.equal(result.insufficientEvidence, false);
 });

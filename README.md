@@ -43,6 +43,8 @@ Every push to `main` runs `.github/workflows/pages.yml`. The workflow tests, lin
 - Public navigation for Home, Newsletters, Events, Lunch, Handbook, and Directory
 - Automatic inbox-to-Smore newsletter publishing
 - Searchable native and OCR newsletter text
+- Unified local search across newsletter sections, the handbook, and events
+- Optional cited Gemini answers through the secure Apps Script web app
 - Cell-by-cell OCR of the newest lunch-menu calendar found across inbox newsletters
 - Automatic signup-form link extraction
 - Automatic extraction of newsletter sections labeled Important Upcoming Dates into site events
@@ -52,4 +54,4 @@ Every push to `main` runs `.github/workflows/pages.yml`. The workflow tests, lin
 
 ## Explicitly deferred
 
-A separate application backend, public-site authentication, model-assisted extraction, AWS infrastructure, and parent accounts remain deferred. See `docs/architecture.md` for the current capability boundaries.
+Public-site authentication, AI-generated content publication, a standalone application server, AWS infrastructure, and parent accounts remain deferred. See `docs/architecture.md` for the current capability boundaries.

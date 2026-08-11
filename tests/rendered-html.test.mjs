@@ -13,6 +13,11 @@ test("exports the finished parent companion home", async () => {
   const html = await readRoute();
   assert.match(html, /St\. Martha School/);
   assert.match(html, /Unofficial Parent Site/);
+  assert.match(html, /What do you need to find\?/);
+  assert.match(html, /Search newsletters, handbook, and calendar/);
+  assert.match(html, />Ask AI<\/button>/);
+  assert.match(html, /Do not enter private student information/);
+  assert.doesNotMatch(html, /AIza[A-Za-z0-9_-]{20,}/);
   assert.match(html, /Coming Up/);
   assert.match(html, /<h2>Coming Up[\s\S]*?<h2>Sign Ups[\s\S]*?<h2>Latest News/);
   assert.match(html, /Latest News/);
