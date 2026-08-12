@@ -112,17 +112,17 @@ test("exports every requested route", async () => {
   assert.doesNotMatch(newslettersHtml, /\breview\b|\bapprove\b|grade tag/i);
 
   const handbookHtml = await readRoute("handbook");
-  assert.equal((handbookHtml.match(/<table\b/g) || []).length, 6);
+  assert.equal((handbookHtml.match(/<table\b/g) || []).length, 4);
   assert.match(handbookHtml, /<caption>Staff roster<\/caption>/);
   assert.match(handbookHtml, /How daily tardiness adds up over a school year/);
-  assert.match(handbookHtml, /Severe physical aggression consequences by grade level/);
-  assert.match(handbookHtml, /Rough play and unsafe physical contact consequences by grade level/);
-  assert.match(handbookHtml, /Discriminatory or offensive language consequences by grade level/);
+  assert.match(handbookHtml, /<caption>Major behavior response rubric<\/caption>/);
   assert.match(handbookHtml, /<caption>Fee schedule<\/caption>/);
   assert.equal((handbookHtml.match(/class="uniform-guide-card"/g) || []).length, 4);
   assert.match(handbookHtml, /class="handbook-acknowledgment"/);
-  assert.match(handbookHtml, /mailto:apatton@st-martha\.org/);
+  assert.match(handbookHtml, /mailto:akonopaska@st-martha\.org/);
+  assert.match(handbookHtml, /Updated information for 2026-27/);
   assert.doesNotMatch(handbookHtml, /The following items must be The following items must be/);
+  assert.doesNotMatch(handbookHtml, /Andrea Patton|2025.{0,3}2026|SchoolSpeak|Blackbaud/);
 });
 
 test("stores searchable native and OCR newsletter text with extracted signup links", async () => {
@@ -135,17 +135,18 @@ test("stores searchable native and OCR newsletter text with extracted signup lin
 });
 
 test("publishes the source handbook and calendar PDFs", async () => {
-  await access(new URL("documents/2025-26-st-martha-handbook.pdf", outputRoot));
+  await access(new URL("documents/2026-27-st-martha-handbook.pdf", outputRoot));
   await access(new URL("documents/2026-27-academic-calendar.pdf", outputRoot));
   const calendarImport = await readFile(new URL("documents/st-martha-2026-27-calendar.ics", outputRoot), "utf8");
   assert.match(calendarImport, /^BEGIN:VCALENDAR/);
   assert.match(calendarImport, /BEGIN:VEVENT/);
 
   const handbookHtml = await readRoute("handbook");
-  assert.match(handbookHtml, /33 content pages/i);
-  assert.match(handbookHtml, /22 sections/i);
-  assert.match(handbookHtml, /All students are expected to attend school regularly/i);
-  assert.match(handbookHtml, /Food Allergies, Intolerances, and Nut Restrictions/i);
+  assert.match(handbookHtml, /38 content pages/i);
+  assert.match(handbookHtml, /28(?:<!-- -->)? sections/i);
+  assert.match(handbookHtml, /Middle School \(5th-8th\) Late &amp; Missing Work Policy/i);
+  assert.match(handbookHtml, /Food Allergies, Intolerances &amp; Nut Restrictions/i);
+  assert.match(handbookHtml, /monthly menu is provided by Lansing Catholic/i);
   assert.match(handbookHtml, /The complete handbook wording is reproduced below/i);
   assert.doesNotMatch(handbookHtml, /Handbook summary|parent-friendly summaries/i);
   assert.match(await readRoute("calendar"), /Checked during every site update/i);

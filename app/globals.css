@@ -366,10 +366,8 @@ button.button:disabled, .admin-table button:disabled { cursor: not-allowed; opac
 .uniform-guide-card h5 { margin: 0 0 8px; color: var(--burgundy-dark); font-size: 10px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
 .uniform-guide-card ul { display: grid; gap: 7px; margin: 0 0 13px; padding-left: 18px; }
 .uniform-guide-card li { padding-left: 2px; color: #433a35; font-size: 11px; line-height: 1.55; }
-.handbook-consequence-table { min-width: 980px; table-layout: fixed; }
-.handbook-consequence-table th:first-child { width: 72px; }
-.handbook-consequence-table td ul { display: grid; gap: 5px; margin: 0; padding-left: 16px; }
-.handbook-consequence-table td li { padding: 0; font-size: 10px; line-height: 1.4; }
+.handbook-behavior-table { min-width: 760px; table-layout: fixed; }
+.handbook-behavior-table th, .handbook-behavior-table td { width: 33.333%; }
 .handbook-policy-content > .handbook-section__body { max-width: 78ch; }
 .handbook-policy-intro { max-width: 78ch; }
 .handbook-policy-intro h3 { margin: 0 0 7px; color: var(--burgundy-dark); font: 700 23px/1.2 var(--serif); }

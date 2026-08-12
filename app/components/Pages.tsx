@@ -12,15 +12,14 @@ import calendarData from "../data/calendar.json";
 import newsletterEventData from "../data/newsletter-events.json";
 import staffData from "../data/staff.json";
 import {
-  consequenceMatrices,
   handbookClergy,
   handbookHours,
   handbookStaffRoster,
   handbookUpdatedInformation,
   kidsCornerFees,
+  majorBehaviorResponses,
   tardinessRows,
   uniformGroups,
-  type ConsequenceMatrix,
 } from "../data/handbook-layout";
 import type {
   CalendarEvent,
@@ -490,18 +489,22 @@ export function DocumentsPage() {
 export function HandbookPage() {
   const [query, setQuery] = useState("");
   const normalized = query.trim().toLowerCase().replace(/\s+/g, " ");
-  const results = handbookSections.filter((section) => !normalized || `${section.title} ${section.content}`.toLowerCase().replace(/\s+/g, " ").includes(normalized));
-  const handbookPdf = assetPath("/documents/2025-26-st-martha-handbook.pdf");
+  const searchTerms = normalized.split(" ").filter(Boolean);
+  const results = handbookSections.filter((section) => {
+    const searchable = `${section.title} ${section.content}`.toLowerCase().replace(/\s+/g, " ");
+    return searchTerms.every((term) => searchable.includes(term));
+  });
+  const handbookPdf = assetPath("/documents/2026-27-st-martha-handbook.pdf");
   return (
     <>
       <PageHeading
         eyebrow="Search every policy"
         title="Parent & student handbook"
-        description="Search and read the complete 2025–26 handbook directly on this page, organized into clear sections for phones and computers."
+        description="Search and read the complete 2026–27 handbook directly on this page, organized into clear sections for phones and computers."
         aside={<a className="button" href={handbookPdf} target="_blank" rel="noreferrer">Download handbook PDF ↗</a>}
       />
       <div className="source-banner" role="note">
-        <div><strong>2025–26 handbook</strong><span>33 content pages · 22 sections</span></div>
+        <div><strong>2026–27 handbook</strong><span>38 content pages · {handbookSections.length} sections</span></div>
         <p>The complete handbook wording is reproduced below for convenient reading. The school-issued PDF remains the source document.</p>
       </div>
       <div className="handbook-search">
@@ -528,7 +531,7 @@ export function HandbookPage() {
         </div>
       </div>
       <div className="source-footer">
-        <span>Source: St. Martha Parent and Student Handbook 2025–2026</span>
+        <span>Source: St. Martha Parent & Student Handbook 2026–2027</span>
         <a className="source-link" href={handbookPdf} target="_blank" rel="noreferrer">Open the complete PDF ↗</a>
       </div>
     </>
@@ -646,7 +649,7 @@ function HandbookTableFrame({ children }: { children: ReactNode }) {
 function StaffRosterContent({ query }: { query: string }) {
   return <div className="handbook-rich-content">
     <dl className="handbook-clergy">{handbookClergy.map((person) => <div key={person.role}><dt>{person.role}</dt><dd><strong><HighlightedText text={person.name} query={query} /></strong><a href={`mailto:${person.email}`}><HighlightedText text={person.email} query={query} /></a></dd></div>)}</dl>
-    <HandbookTableFrame><table className="handbook-data-table handbook-roster-table"><caption>Staff roster</caption><thead><tr><th scope="col">Staff member</th><th scope="col">Room</th><th scope="col">Subject or role</th><th scope="col">Email</th></tr></thead><tbody>{handbookStaffRoster.map((person) => <tr key={`${person.names.join("-")}-${person.role}`}><th scope="row">{person.names.map((name) => <span key={name}><HighlightedText text={name} query={query} /></span>)}</th><td><HighlightedText text={person.room || "-"} query={query} /></td><td><HighlightedText text={person.role} query={query} /></td><td>{person.email ? <a href={`mailto:${person.email}`}><HighlightedText text={person.email} query={query} /></a> : "-"}</td></tr>)}</tbody></table></HandbookTableFrame>
+    <HandbookTableFrame><table className="handbook-data-table handbook-roster-table"><caption>Staff roster</caption><thead><tr><th scope="col">Staff member</th><th scope="col">Subject or role</th><th scope="col">Email</th></tr></thead><tbody>{handbookStaffRoster.map((person) => <tr key={`${person.name}-${person.role}`}><th scope="row"><HighlightedText text={person.name} query={query} /></th><td><HighlightedText text={person.role} query={query} /></td><td>{person.email ? <a href={`mailto:${person.email}`}><HighlightedText text={person.email} query={query} /></a> : "-"}</td></tr>)}</tbody></table></HandbookTableFrame>
   </div>;
 }
 
@@ -654,15 +657,12 @@ function HoursContent({ query }: { query: string }) {
   return <dl className="handbook-hours">{handbookHours.map(([label, value]) => <div key={label}><dt><HighlightedText text={label} query={query} /></dt><dd><HighlightedText text={value} query={query} /></dd></div>)}</dl>;
 }
 
-function AcademicPoliciesContent({ section, query }: { section: HandbookSection; query: string }) {
+function TardinessContent({ section, query }: { section: HandbookSection; query: string }) {
   const tableStart = section.content.indexOf("If in a school year, you are late");
-  const tableEnd = section.content.indexOf("Parent/Teacher Conferences", tableStart);
   const before = section.content.slice(0, tableStart);
-  const after = section.content.slice(tableEnd);
   return <div className="handbook-rich-content">
     <HandbookBlocks section={section} query={query} content={before} />
     <HandbookTableFrame><table className="handbook-data-table handbook-tardy-table"><caption>How daily tardiness adds up over a school year</caption><thead><tr><th scope="col">Late every day by</th><th scope="col">School time lost</th><th scope="col">Lessons missed</th></tr></thead><tbody>{tardinessRows.map((row) => <tr key={row[0]}>{row.map((cell, index) => index === 0 ? <th scope="row" key={cell}><HighlightedText text={cell} query={query} /></th> : <td key={cell}><HighlightedText text={cell} query={query} /></td>)}</tr>)}</tbody></table></HandbookTableFrame>
-    <HandbookBlocks section={section} query={query} content={after} />
   </div>;
 }
 
@@ -678,33 +678,13 @@ function UniformContent({ section, query }: { section: HandbookSection; query: s
   </div>;
 }
 
-function ConsequenceTable({ matrix, query }: { matrix: ConsequenceMatrix; query: string }) {
-  return <HandbookTableFrame><table className="handbook-data-table handbook-consequence-table"><caption>{matrix.title}</caption><thead><tr><th scope="col">Grade level</th>{matrix.columns.map((column) => <th scope="col" key={column}><HighlightedText text={column} query={query} /></th>)}</tr></thead><tbody>{matrix.rows.map((row) => <tr key={row.grade}><th scope="row"><HighlightedText text={row.grade} query={query} /></th>{row.consequences.map((items, index) => <td key={`${row.grade}-${matrix.columns[index]}`}><ul>{items.map((item) => <li key={item}><HandbookText text={item} query={query} /></li>)}</ul></td>)}</tr>)}</tbody></table></HandbookTableFrame>;
-}
-
-function PhysicalConductContent({ section, query }: { section: HandbookSection; query: string }) {
-  const severeStart = section.content.indexOf("Severe Physical Aggression (");
-  const severeExamplesStart = section.content.indexOf("Examples Include:", severeStart);
-  const severeTableStart = section.content.indexOf("Consequences by Grade Level:", severeStart);
-  const severeNotesStart = section.content.indexOf("*Students who display severe", severeTableStart);
-  const roughStart = section.content.indexOf("Rough Play / Unsafe Physical Contact", severeNotesStart);
-  const roughTableStart = section.content.indexOf("Consequences by Grade Level:", roughStart);
-  const roughNotesStart = section.content.indexOf("*Students who display roughhousing", roughTableStart);
-  const languageStart = section.content.indexOf("Discriminatory or Offensive Language", roughNotesStart);
-  const languageTableStart = section.content.indexOf("Consequences by Grade Level:", languageStart);
-  const restorativeStart = section.content.indexOf("*As part of the restorative process", languageTableStart);
+function MajorBehaviorContent({ section, query }: { section: HandbookSection; query: string }) {
+  const rubricStart = section.content.indexOf("Major Behavior Response Rubric");
+  const noteStart = section.content.indexOf("Please Note:", rubricStart);
   return <div className="handbook-rich-content handbook-policy-content">
-    <HandbookBlocks section={section} query={query} content={section.content.slice(0, severeStart)} />
-    <section className="handbook-policy-intro"><h3>Severe Physical Aggression</h3><p><HighlightedText text="Purposely striking someone with the intent to cause harm out of malice." query={query} /></p></section>
-    <HandbookBlocks section={section} query={query} content={section.content.slice(severeExamplesStart, severeTableStart)} />
-    <ConsequenceTable matrix={consequenceMatrices.severe} query={query} />
-    <HandbookBlocks section={section} query={query} content={section.content.slice(severeNotesStart, roughStart)} />
-    <HandbookBlocks section={section} query={query} content={section.content.slice(roughStart, roughTableStart)} />
-    <ConsequenceTable matrix={consequenceMatrices.rough} query={query} />
-    <HandbookBlocks section={section} query={query} content={section.content.slice(roughNotesStart, languageStart)} />
-    <HandbookBlocks section={section} query={query} content={section.content.slice(languageStart, languageTableStart)} />
-    <ConsequenceTable matrix={consequenceMatrices.language} query={query} />
-    <HandbookBlocks section={section} query={query} content={section.content.slice(restorativeStart)} />
+    <HandbookBlocks section={section} query={query} content={section.content.slice(0, rubricStart)} />
+    <HandbookTableFrame><table className="handbook-data-table handbook-behavior-table"><caption>Major behavior response rubric</caption><thead><tr>{majorBehaviorResponses.map((response) => <th scope="col" key={response.heading}><HighlightedText text={response.heading} query={query} /></th>)}</tr></thead><tbody><tr>{majorBehaviorResponses.map((response) => <td key={response.heading}><HandbookText text={response.text} query={query} /></td>)}</tr></tbody></table></HandbookTableFrame>
+    <HandbookBlocks section={section} query={query} content={section.content.slice(noteStart)} />
   </div>;
 }
 
@@ -719,35 +699,38 @@ function KidsCornerContent({ section, query }: { section: HandbookSection; query
 }
 
 function WelcomeContent({ section, query }: { section: HandbookSection; query: string }) {
-  const foundationsStart = section.content.indexOf("School Mission Statement");
-  const letter = section.content.slice(0, foundationsStart);
-  return <div className="handbook-rich-content"><aside className="handbook-letter" aria-label="Welcome letter from the principal"><HandbookBlocks section={section} query={query} content={letter} /></aside><HandbookBlocks section={section} query={query} content={section.content.slice(foundationsStart)} /></div>;
+  return <div className="handbook-rich-content"><aside className="handbook-letter" aria-label="Welcome letter from the principal"><HandbookBlocks section={section} query={query} /></aside></div>;
+}
+
+function FoundationsContent({ section, query }: { section: HandbookSection; query: string }) {
+  const hoursStart = section.content.indexOf("School Hours");
+  return <div className="handbook-rich-content"><HandbookBlocks section={section} query={query} content={section.content.slice(0, hoursStart)} /><h3>School hours</h3><HoursContent query={query} /></div>;
 }
 
 function DiocesanRequirementContent({ section, query }: { section: HandbookSection; query: string }) {
-  const introStart = section.content.indexOf("St. Martha School is committed");
+  const introStart = section.content.indexOf("Commitment to a Safe and Respectful School Community");
   const familyStart = section.content.indexOf("Family Name:");
   const intro = section.content.slice(introStart, familyStart);
   return <div className="handbook-acknowledgment">
     <div className="handbook-acknowledgment__notice"><strong>Printable acknowledgment</strong><span>Please sign and return the PDF page to school.</span></div>
     <HandbookBlocks section={section} query={query} content={intro} />
     <div className="handbook-form-lines"><div><span>Family name</span><i /></div><div><span>Names and grades of children at Saint Martha School</span><i /><i /><i /></div></div>
-    <aside className="handbook-updates"><h3>Updated information for 2025-26</h3><dl>{handbookUpdatedInformation.map(([page, topic]) => <div key={topic}><dt><HighlightedText text={page} query={query} /></dt><dd><HighlightedText text={topic} query={query} /></dd></div>)}</dl></aside>
+    <aside className="handbook-updates"><h3>Updated information for 2026-27</h3><dl>{handbookUpdatedInformation.map(([page, topic]) => <div key={`${page}-${topic}`}><dt><HighlightedText text={page} query={query} /></dt><dd><HighlightedText text={topic} query={query} /></dd></div>)}</dl></aside>
     <section className="handbook-signature-block"><h3>Parents/Guardians</h3><p><span className="initial-line" aria-hidden="true">Initial</span> <HandbookText text="I have read and discussed the policies outlined in the St. Martha School Handbook with my child(ren). I understand that failure to follow the guidelines, expectations, and procedures described may result in disciplinary action. I agree to support the school in reinforcing these rules and expectations with my child(ren) and will partner with the school to promote a positive and respectful learning environment." query={query} /></p><div className="signature-lines"><span>Parent signature</span><span>Date</span></div></section>
-    <section className="handbook-signature-block handbook-signature-block--student"><h3>For students in grades 4-8 only</h3><p><HandbookText text="I have read and understand the contents of the 2025-2026 St. Martha School Handbook. I will respect and follow these rules while I am a student at St. Martha School." query={query} /></p><div className="signature-lines"><span>Student signatures</span><span>Date</span></div></section>
+    <section className="handbook-signature-block handbook-signature-block--student"><h3>For students in grades 4-8 only</h3><p><HandbookText text="I have read and understand the contents of the 2026-2027 St. Martha School Parent & Student Handbook. I will respect and follow these rules while I am a student at St. Martha School. Please sign and date below." query={query} /></p><div className="signature-lines"><span>Student signatures</span><span>Date</span></div></section>
   </div>;
 }
 
 function HandbookSectionContent({ section, query }: { section: HandbookSection; query: string }) {
   switch (section.id) {
-    case "welcome-and-school-foundations": return <WelcomeContent section={section} query={query} />;
+    case "welcome-letter": return <WelcomeContent section={section} query={query} />;
+    case "mission-philosophy-hours": return <FoundationsContent section={section} query={query} />;
     case "staff-roster": return <StaffRosterContent query={query} />;
-    case "hours": return <HoursContent query={query} />;
-    case "academic-policies": return <AcademicPoliciesContent section={section} query={query} />;
-    case "uniforms-and-dress-code": return <UniformContent section={section} query={query} />;
-    case "physical-conduct-discriminatory-behavior": return <PhysicalConductContent section={section} query={query} />;
+    case "tardiness": return <TardinessContent section={section} query={query} />;
+    case "uniforms": return <UniformContent section={section} query={query} />;
+    case "major-behavior-rubric": return <MajorBehaviorContent section={section} query={query} />;
     case "kids-corner": return <KidsCornerContent section={section} query={query} />;
-    case "diocesan-requirement": return <DiocesanRequirementContent section={section} query={query} />;
+    case "acknowledgment": return <DiocesanRequirementContent section={section} query={query} />;
     default: return <HandbookBlocks section={section} query={query} />;
   }
 }
