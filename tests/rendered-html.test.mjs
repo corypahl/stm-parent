@@ -156,6 +156,9 @@ test("publishes the source handbook and calendar PDFs", async () => {
     assert.match(directoryHtml, /2026(?:<!-- -->)?–27 handbook/i);
     assert.match(directoryHtml, /Mrs\. Amanda Konopaska/);
     assert.match(directoryHtml, /mailto:akonopaska@st-martha\.org/);
+    assert.match(directoryHtml, /<table class="staff-table">/);
+    assert.equal((directoryHtml.match(/class="staff-table__group"/g) || []).length, 4);
+    assert.doesNotMatch(directoryHtml, /class="staff-card/);
     assert.doesNotMatch(directoryHtml, /Andrea Patton|Checked weekly|official staff directory/i);
   }
 });

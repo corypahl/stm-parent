@@ -282,16 +282,22 @@ button.button:disabled, .admin-table button:disabled { cursor: not-allowed; opac
 .newsletter-embed__note { margin: 0; padding: 10px 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 10px; text-align: center; }
 
 .staff-search { max-width: 700px; }
-.staff-directory { display: grid; gap: 50px; }
-.staff-section .section-heading { margin-bottom: 16px; }
-.staff-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
-.staff-card { display: flex; gap: 15px; min-height: 142px; padding: 20px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); }
-.staff-card__monogram { display: grid; place-items: center; flex: 0 0 auto; width: 45px; height: 45px; border-radius: 50%; background: var(--burgundy-soft); color: var(--burgundy); font: 700 14px/1 var(--serif); }
-.staff-card__body { display: flex; flex: 1; flex-direction: column; min-width: 0; }
-.staff-card h3 { margin: 1px 0 6px; color: var(--burgundy-dark); font: 700 20px/1.15 var(--serif); }
-.staff-card p { margin: 0; color: var(--muted); font-size: 11px; }
-.staff-card__contact { display: flex; flex-wrap: wrap; gap: 12px; margin-top: auto; padding-top: 14px; }
-.staff-card__contact a { color: var(--burgundy); font-size: 10px; font-weight: 800; text-underline-offset: 3px; }
+.staff-table-hint { display: none; margin: 0 0 8px; color: var(--muted); font-size: 10px; }
+.staff-table-frame { overflow-x: auto; border: 1px solid var(--line); border-radius: 13px; background: var(--paper); box-shadow: var(--shadow); }
+.staff-table { width: 100%; min-width: 720px; border-collapse: collapse; }
+.staff-table th, .staff-table td { padding: 15px 18px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.staff-table thead th { background: var(--burgundy); color: white; font-size: 9px; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
+.staff-table thead th:first-child { width: 27%; }
+.staff-table thead th:nth-child(2) { width: 43%; }
+.staff-table__group th { padding: 10px 18px; background: var(--burgundy-soft); color: var(--burgundy); }
+.staff-table__group th span:first-child { font: 700 17px/1.2 var(--serif); }
+.staff-table__group th span:last-child { display: inline-grid; place-items: center; min-width: 22px; height: 22px; margin-left: 8px; padding: 0 6px; border-radius: 999px; background: white; font: 800 9px/1 var(--sans); }
+.staff-table tbody tr:not(.staff-table__group):last-child > * { border-bottom: 1px solid var(--line); }
+.staff-table tbody:last-child tr:last-child > * { border-bottom: 0; }
+.staff-table tbody > tr > th[scope="row"] { color: var(--burgundy-dark); font: 700 16px/1.25 var(--serif); }
+.staff-table td { color: var(--muted); font-size: 11px; line-height: 1.45; }
+.staff-table td a { color: var(--burgundy); font-weight: 750; overflow-wrap: anywhere; text-underline-offset: 3px; }
+.staff-table__empty { color: #8e827c; font-style: italic; }
 
 .handbook-search { display: grid; grid-template-columns: 1fr auto; max-width: 800px; margin: 0 auto; padding: 8px; border: 1px solid #dacfc6; border-radius: 13px; background: white; box-shadow: var(--shadow); }
 .handbook-search label { display: flex; }
@@ -545,10 +551,10 @@ button.button:disabled, .admin-table button:disabled { cursor: not-allowed; opac
   .calendar-view__controls strong { order: -1; width: 100%; text-align: left; }
   .calendar-view__controls .calendar-view__today { margin-left: 0; }
   .calendar-grid-hint { display: block; }
-  .event-list, .staff-grid { grid-template-columns: 1fr; }
+  .event-list { grid-template-columns: 1fr; }
   .newsletter-embed__header { align-items: flex-start; flex-direction: column; }
   .newsletter-embed__frame { height: 72vh; min-height: 560px; }
-  .staff-directory { gap: 38px; }
+  .staff-table-hint { display: block; }
   .admin-stats { grid-template-columns: 1fr; }
   .admin-table { border: 0; background: transparent; }
   .admin-table__row { grid-template-columns: 1fr 1fr; margin-bottom: 10px; padding: 16px; border: 1px solid var(--line) !important; border-radius: 10px; background: white; }

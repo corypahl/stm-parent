@@ -373,31 +373,27 @@ export function StaffPage() {
         <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search a name, grade, or subject…" />
       </label>
       <div className="staff-directory" aria-live="polite">
-        {staffGroups.map((group) => {
-          const members = visible.filter((member) => member.group === group);
-          if (!members.length) return null;
-          return (
-            <section className="staff-section" key={group}>
-              <SectionHeading title={group} count={members.length} />
-              <div className="staff-grid">
-                {members.map((member) => (
-                  <article className="staff-card" key={member.id}>
-                    <div className="staff-card__monogram" aria-hidden="true">{member.name.split(" ").filter((part) => !part.includes(".")).map((part) => part[0]).slice(0, 2).join("")}</div>
-                    <div className="staff-card__body">
-                      <h3>{member.name}</h3>
-                      <p>{member.roles.join(" · ")}</p>
-                      {(member.email || member.phone) && <div className="staff-card__contact">
-                        {member.email && <a href={`mailto:${member.email}`}>Email</a>}
-                        {member.phone && <a href={`tel:+1${member.phone.replace(/\D/g, "")}`}>{member.phone}</a>}
-                      </div>}
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </section>
-          );
-        })}
-        {!visible.length && <EmptyState>No staff members match that search.</EmptyState>}
+        {visible.length ? <>
+          <p className="staff-table-hint">Scroll horizontally to see all contact details.</p>
+          <div className="staff-table-frame">
+            <table className="staff-table">
+              <caption className="sr-only">School contacts from the 2026–27 parent and student handbook</caption>
+              <thead><tr><th scope="col">Name</th><th scope="col">Role</th><th scope="col">Email</th></tr></thead>
+              {staffGroups.map((group) => {
+                const members = visible.filter((member) => member.group === group);
+                if (!members.length) return null;
+                return <tbody key={group}>
+                  <tr className="staff-table__group"><th colSpan={3} scope="rowgroup"><span>{group}</span><span>{members.length}</span></th></tr>
+                  {members.map((member) => <tr key={member.id}>
+                    <th scope="row">{member.name}</th>
+                    <td>{member.roles.join(" · ")}</td>
+                    <td>{member.email ? <a href={`mailto:${member.email}`}>{member.email}</a> : <span className="staff-table__empty">Not listed</span>}</td>
+                  </tr>)}
+                </tbody>;
+              })}
+            </table>
+          </div>
+        </> : <EmptyState>No staff members match that search.</EmptyState>}
       </div>
       <div className="source-footer">
         <span>Source: St. Martha Parent and Student Handbook 2026–27</span>
