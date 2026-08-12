@@ -10,9 +10,9 @@ import lunchData from "../data/lunch.json";
 import handbookData from "../data/handbook.json";
 import calendarData from "../data/calendar.json";
 import newsletterEventData from "../data/newsletter-events.json";
-import staffData from "../data/staff.json";
 import {
   handbookClergy,
+  handbookDirectoryContacts,
   handbookHours,
   handbookStaffRoster,
   handbookUpdatedInformation,
@@ -48,7 +48,7 @@ const handbookSections = handbookData as HandbookSection[];
 const newsletters = (googleNewsletterData as NewsletterSummary[]).sort((a, b) => b.newsletterDate.localeCompare(a.newsletterDate));
 const latestNewsletter = latestNewsletterData as LatestNewsletter | null;
 const calendarEvents = mergeCalendarEvents(calendarData as CalendarEvent[], newsletterEventData as CalendarEvent[]);
-const staffMembers = staffData as StaffMember[];
+const staffMembers = handbookDirectoryContacts;
 const unifiedSearchEntries = buildUnifiedSearchIndex({ handbookSections, newsletters, calendarEvents });
 
 const calendarCategories = ["All", "School day", "No school", "Family event", "Faith", "Academic"] as const;
@@ -353,18 +353,19 @@ export function StaffPage() {
   const [query, setQuery] = useState("");
   const normalized = query.trim().toLowerCase();
   const visible = staffMembers.filter((member) => `${member.name} ${member.group} ${member.roles.join(" ")}`.toLowerCase().includes(normalized));
+  const handbookPdf = assetPath("/documents/2026-27-st-martha-handbook.pdf");
 
   return (
     <>
       <PageHeading
         eyebrow="People who make the school go"
         title="Directory"
-        description="Find teachers, school leadership, specialists, and support staff, with direct contact details where the school publishes them."
-        aside={<a className="button" href="https://st-martha.org/staff-school" target="_blank" rel="noreferrer">Official staff directory ↗</a>}
+        description="Find the teachers, school leadership, specialists, and support staff listed in the current parent and student handbook."
+        aside={<a className="button" href={handbookPdf} target="_blank" rel="noreferrer">Open handbook PDF ↗</a>}
       />
       <div className="source-banner" role="note">
-        <div><strong>{staffMembers.length} staff members</strong><span>Checked weekly</span></div>
-        <p>Roles and contact details are synchronized from the official school directory. Use that directory as the authority for recent changes.</p>
+        <div><strong>{staffMembers.length} handbook contacts</strong><span>2026–27 handbook</span></div>
+        <p>Names, roles, and email addresses come from the staff roster in the current handbook, which is also shown on the Handbook page.</p>
       </div>
       <label className="search-box staff-search">
         <span className="search-box__icon" aria-hidden="true">⌕</span>
@@ -399,8 +400,8 @@ export function StaffPage() {
         {!visible.length && <EmptyState>No staff members match that search.</EmptyState>}
       </div>
       <div className="source-footer">
-        <span>Source: official St. Martha School staff directory</span>
-        <a className="source-link" href="https://st-martha.org/staff-school" target="_blank" rel="noreferrer">View official directory ↗</a>
+        <span>Source: St. Martha Parent and Student Handbook 2026–27</span>
+        <a className="source-link" href={handbookPdf} target="_blank" rel="noreferrer">Open handbook PDF ↗</a>
       </div>
     </>
   );

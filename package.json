@@ -10,10 +10,9 @@
     "build": "npm run calendar:generate && vinext build && node scripts/prepare-pages.mjs",
     "calendar:generate": "node scripts/generate-calendar-ics.mjs",
     "sync:google": "node scripts/sync-google-content.mjs && node scripts/sync-google-calendar.mjs",
-    "sync:staff": "node scripts/sync-school-staff.mjs",
     "start": "vite preview --outDir dist/client",
     "test": "npm run test:unit && npm run build && node --test tests/rendered-html.test.mjs",
-    "test:unit": "tsx --test tests/newsletters.test.ts tests/unified-search.test.ts && node --test tests/google-calendar-sync.test.mjs tests/google-apps-script.test.mjs tests/lunch-menu-sync.test.mjs tests/newsletter-events.test.mjs tests/smore-newsletter-sync.test.mjs tests/staff-sync.test.mjs",
+    "test:unit": "tsx --test tests/newsletters.test.ts tests/unified-search.test.ts && node --test tests/google-calendar-sync.test.mjs tests/google-apps-script.test.mjs tests/lunch-menu-sync.test.mjs tests/newsletter-events.test.mjs tests/smore-newsletter-sync.test.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next"
   },
   "dependencies": {

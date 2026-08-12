@@ -150,8 +150,14 @@ test("publishes the source handbook and calendar PDFs", async () => {
   assert.match(handbookHtml, /The complete handbook wording is reproduced below/i);
   assert.doesNotMatch(handbookHtml, /Handbook summary|parent-friendly summaries/i);
   assert.match(await readRoute("calendar"), /Checked during every site update/i);
-  assert.match(await readRoute("directory"), /Checked weekly/i);
-  assert.match(await readRoute("staff"), /Checked weekly/i);
+  for (const route of ["directory", "staff"]) {
+    const directoryHtml = await readRoute(route);
+    assert.match(directoryHtml, /28(?:<!-- -->)? handbook contacts/i);
+    assert.match(directoryHtml, /2026(?:<!-- -->)?–27 handbook/i);
+    assert.match(directoryHtml, /Mrs\. Amanda Konopaska/);
+    assert.match(directoryHtml, /mailto:akonopaska@st-martha\.org/);
+    assert.doesNotMatch(directoryHtml, /Andrea Patton|Checked weekly|official staff directory/i);
+  }
 });
 
 test("publishes the supplied St. Martha mark and favicon variants", async () => {
@@ -174,8 +180,8 @@ test("places the referenced stylesheet at the deployed artifact path", async () 
   const stylesheet = html.match(/<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"/i)?.[1];
   assert.ok(stylesheet, "exported HTML must reference a stylesheet");
 
-  const deploymentPrefix = "/stm-parent/";
-  assert.ok(stylesheet.startsWith(deploymentPrefix), "stylesheet URL must include the Pages base path");
+  const deploymentPrefix = process.env.GITHUB_ACTIONS === "true" ? "/stm-parent/" : "/";
+  assert.ok(stylesheet.startsWith(deploymentPrefix), "stylesheet URL must use the configured base path");
 
   const artifactPath = stylesheet.slice(deploymentPrefix.length);
   await access(new URL(artifactPath, outputRoot));

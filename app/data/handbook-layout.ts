@@ -1,41 +1,70 @@
+import type { StaffMember } from "../types/content";
+
 export type HandbookRosterRow = {
   name: string;
   role: string;
   email?: string;
+  directoryGroup: StaffMember["group"];
 };
 
-export const handbookClergy = [
-  { role: "Pastor", name: "Father Ryan Riley", email: "frryan@st-martha.org" },
-  { role: "Assistant to the Pastor", name: "Father Mike Murray", email: "frmike@st-martha.org" },
+export const handbookClergy: HandbookRosterRow[] = [
+  { role: "Pastor", name: "Father Ryan Riley", email: "frryan@st-martha.org", directoryGroup: "Leadership & office" },
+  { role: "Assistant to the Pastor", name: "Father Mike Murray", email: "frmike@st-martha.org", directoryGroup: "Leadership & office" },
 ];
 
 export const handbookStaffRoster: HandbookRosterRow[] = [
-  { name: "Mrs. Amanda Konopaska", role: "Principal", email: "akonopaska@st-martha.org" },
-  { name: "Mrs. Cynthia Farnsworth", role: "School Secretary", email: "cfarnsworth@st-martha.org" },
-  { name: "Mrs. Ellen Belloli", role: "Preschool Teacher", email: "ebelloli@st-martha.org" },
-  { name: "Mrs. Sara Rivet", role: "Preschool Aide", email: "srivet@st-martha.org" },
-  { name: "Mrs. Kara Lamke", role: "Kindergarten Teacher", email: "klamke@st-martha.org" },
-  { name: "Mrs. Lilia Rampe", role: "Kindergarten Aide & Lunch/Recess", email: "lrampe@st-martha.org" },
-  { name: "Miss Natalie Bertsch", role: "Kindergarten Aide & Lunch/Recess", email: "nbertsch@st-martha.org" },
-  { name: "Mrs. Sara Ramereiz", role: "First Grade Teacher", email: "sramereiz@st-martha.org" },
-  { name: "Mrs. Marisa Strom", role: "First Grade Aide and Lunch/Recess", email: "mstrom@st-martha.org" },
-  { name: "Ms. Denise Zieleniewski", role: "First Grade Aide and Lunch/Recess", email: "dzieleniewski@st-martha.org" },
-  { name: "Miss Karly Marth", role: "Second Grade Teacher", email: "kmarth@st-martha.org" },
-  { name: "Mrs. Plaehn (Jacobs)", role: "Third Grade Teacher", email: "mjacobs@st-martha.org" },
-  { name: "Mrs. Jodee Plefka", role: "Fourth Grade Teacher", email: "jplefka@st-martha.org" },
-  { name: "Miss Dani Flint", role: "Fifth Grade Homeroom; Grades 5-8 Social Studies; Grades 5-6 Literature", email: "dflint@st-martha.org" },
-  { name: "Mr. Andreas Quintus", role: "Sixth Grade Homeroom; Grades 4-8 Science; Grade 7 Literature", email: "aquintus@st-martha.org" },
-  { name: "Mrs. Char Richardson", role: "Eighth Grade Homeroom; Grades 5-8 English; Grade 8 Literature & Religion; Grade 6 Religion", email: "crichardson@st-martha.org" },
-  { name: "Mrs. Carolyn Hall", role: "Seventh Grade Homeroom (AM only); Grades 5-8 Math", email: "chall@st-martha.org" },
-  { name: "Mrs. Ann Williams", role: "Academic Interventionist", email: "awilliams@st-martha.org" },
-  { name: "Mrs. Cecelia Clark", role: "Spanish (K-8) and Music (K-8)", email: "cclark@st-martha.org" },
-  { name: "Mrs. Julie Hanson", role: "Physical Education (K-8), STEM/Library K-8", email: "jhanson@st-martha.org" },
-  { name: "Mrs. Liz Wylegala", role: "Visual Arts (K-8)", email: "lwylegala@st-martha-org" },
-  { name: "Mrs. Wendy Muzzatti", role: "Technology (K-8)", email: "wmuzzatti@st-martha.org" },
-  { name: "Mrs. Rebeca Ardis", role: "Violin & String Orchestra", email: "rardis@st-martha.org" },
-  { name: "Lunch Supervision", role: "Lunch supervision", email: "lunch@st-martha.org" },
-  { name: "Mrs. Maribeth Fletcher", role: "Kids Corner", email: "mfletcher@st-martha.org" },
-  { name: "Mrs. Stephanie Moody", role: "Kids Corner", email: "smoody@st-martha.org" },
+  { name: "Mrs. Amanda Konopaska", role: "Principal", email: "akonopaska@st-martha.org", directoryGroup: "Leadership & office" },
+  { name: "Mrs. Cynthia Farnsworth", role: "School Secretary", email: "cfarnsworth@st-martha.org", directoryGroup: "Leadership & office" },
+  { name: "Mrs. Ellen Belloli", role: "Preschool Teacher", email: "ebelloli@st-martha.org", directoryGroup: "Homeroom teachers" },
+  { name: "Mrs. Sara Rivet", role: "Preschool Aide", email: "srivet@st-martha.org", directoryGroup: "Support staff" },
+  { name: "Mrs. Kara Lamke", role: "Kindergarten Teacher", email: "klamke@st-martha.org", directoryGroup: "Homeroom teachers" },
+  { name: "Mrs. Lilia Rampe", role: "Kindergarten Aide & Lunch/Recess", email: "lrampe@st-martha.org", directoryGroup: "Support staff" },
+  { name: "Miss Natalie Bertsch", role: "Kindergarten Aide & Lunch/Recess", email: "nbertsch@st-martha.org", directoryGroup: "Support staff" },
+  { name: "Mrs. Sara Ramereiz", role: "First Grade Teacher", email: "sramereiz@st-martha.org", directoryGroup: "Homeroom teachers" },
+  { name: "Mrs. Marisa Strom", role: "First Grade Aide and Lunch/Recess", email: "mstrom@st-martha.org", directoryGroup: "Support staff" },
+  { name: "Ms. Denise Zieleniewski", role: "First Grade Aide and Lunch/Recess", email: "dzieleniewski@st-martha.org", directoryGroup: "Support staff" },
+  { name: "Miss Karly Marth", role: "Second Grade Teacher", email: "kmarth@st-martha.org", directoryGroup: "Homeroom teachers" },
+  { name: "Mrs. Plaehn (Jacobs)", role: "Third Grade Teacher", email: "mjacobs@st-martha.org", directoryGroup: "Homeroom teachers" },
+  { name: "Mrs. Jodee Plefka", role: "Fourth Grade Teacher", email: "jplefka@st-martha.org", directoryGroup: "Homeroom teachers" },
+  { name: "Miss Dani Flint", role: "Fifth Grade Homeroom; Grades 5-8 Social Studies; Grades 5-6 Literature", email: "dflint@st-martha.org", directoryGroup: "Homeroom teachers" },
+  { name: "Mr. Andreas Quintus", role: "Sixth Grade Homeroom; Grades 4-8 Science; Grade 7 Literature", email: "aquintus@st-martha.org", directoryGroup: "Homeroom teachers" },
+  { name: "Mrs. Char Richardson", role: "Eighth Grade Homeroom; Grades 5-8 English; Grade 8 Literature & Religion; Grade 6 Religion", email: "crichardson@st-martha.org", directoryGroup: "Homeroom teachers" },
+  { name: "Mrs. Carolyn Hall", role: "Seventh Grade Homeroom (AM only); Grades 5-8 Math", email: "chall@st-martha.org", directoryGroup: "Homeroom teachers" },
+  { name: "Mrs. Ann Williams", role: "Academic Interventionist", email: "awilliams@st-martha.org", directoryGroup: "Support staff" },
+  { name: "Mrs. Cecelia Clark", role: "Spanish (K-8) and Music (K-8)", email: "cclark@st-martha.org", directoryGroup: "Specials" },
+  { name: "Mrs. Julie Hanson", role: "Physical Education (K-8), STEM/Library K-8", email: "jhanson@st-martha.org", directoryGroup: "Specials" },
+  { name: "Mrs. Liz Wylegala", role: "Visual Arts (K-8)", email: "lwylegala@st-martha-org", directoryGroup: "Specials" },
+  { name: "Mrs. Wendy Muzzatti", role: "Technology (K-8)", email: "wmuzzatti@st-martha.org", directoryGroup: "Specials" },
+  { name: "Mrs. Rebeca Ardis", role: "Violin & String Orchestra", email: "rardis@st-martha.org", directoryGroup: "Specials" },
+  { name: "Lunch Supervision", role: "Lunch supervision", email: "lunch@st-martha.org", directoryGroup: "Support staff" },
+  { name: "Mrs. Maribeth Fletcher", role: "Kids Corner", email: "mfletcher@st-martha.org", directoryGroup: "Support staff" },
+  { name: "Mrs. Stephanie Moody", role: "Kids Corner", email: "smoody@st-martha.org", directoryGroup: "Support staff" },
+];
+
+function directoryId(name: string) {
+  return name
+    .replace(/^(?:father|fr\.?|mrs\.?|mr\.?|miss|ms\.?|dr\.?)\s+/i, "")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+function directoryMember(person: HandbookRosterRow): StaffMember {
+  const email = person.email && /^[^\s@]+@st-martha\.org$/i.test(person.email) ? person.email : undefined;
+  return {
+    id: directoryId(person.name),
+    name: person.name,
+    group: person.directoryGroup,
+    roles: person.role.split(/\s*;\s*/).filter(Boolean),
+    ...(email ? { email } : {}),
+  };
+}
+
+export const handbookDirectoryContacts: StaffMember[] = [
+  ...handbookClergy.map(directoryMember),
+  ...handbookStaffRoster.map(directoryMember),
 ];
 
 export const handbookHours = [
