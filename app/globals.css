@@ -453,7 +453,7 @@ button.button:disabled, .admin-table button:disabled { cursor: not-allowed; opac
 .signup-card h2, .signup-card h3 { margin: 8px 0 7px; color: var(--burgundy-dark); font: 700 23px/1.25 var(--serif); }
 .signup-card > p { margin: 0; color: var(--muted); font-size: 12px; }
 .signup-card__actions { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: auto; padding-top: 24px; }
-.home-signups__list { display: grid; max-height: 210px; overflow-y: auto; }
+.home-signups__list { display: grid; }
 .home-signup-row { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 12px; align-items: center; padding: 12px 0; }
 .home-signup-row + .home-signup-row { border-top: 1px solid var(--line); }
 .home-signup-row h3 { margin: 3px 0 0; color: var(--burgundy-dark); font: 700 16px/1.25 var(--serif); }

@@ -193,3 +193,16 @@ test("places the referenced stylesheet at the deployed artifact path", async () 
   const artifactPath = stylesheet.slice(deploymentPrefix.length);
   await access(new URL(artifactPath, outputRoot));
 });
+
+test("lets compact home sections grow with their content", async () => {
+  const html = await readRoute();
+  const stylesheetUrl = html.match(/<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"/i)?.[1];
+  assert.ok(stylesheetUrl, "exported HTML must reference a stylesheet");
+
+  const deploymentPrefix = process.env.GITHUB_ACTIONS === "true" ? "/stm-parent/" : "/";
+  const stylesheet = await readFile(new URL(stylesheetUrl.slice(deploymentPrefix.length), outputRoot), "utf8");
+  const signupsRule = stylesheet.match(/\.home-signups__list\s*\{([^}]*)\}/)?.[1] ?? "";
+
+  assert.ok(signupsRule, "exported stylesheet must include the compact signup list rule");
+  assert.doesNotMatch(signupsRule, /max-height|overflow-y/);
+});
