@@ -42,7 +42,7 @@ The Directory uses the same 2026–27 staff roster that appears in the searchabl
 
 ## What is included
 
-- Public navigation for Home, Newsletters, Events, Lunch, Handbook, and Directory
+- Public navigation for Home, Newsletters, Events, Handbook, and Directory
 - Automatic inbox-to-Smore newsletter publishing
 - Searchable native and OCR newsletter text
 - Unified local search across newsletter sections, the handbook, and events

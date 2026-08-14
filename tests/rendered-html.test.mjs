@@ -40,9 +40,9 @@ test("exports the finished parent companion home", async () => {
   assert.match(html, />Newsletters<\/a>/);
   assert.doesNotMatch(html, /href="(?:\/stm-parent)?\/sign-ups\.html"[^>]*>Sign Ups<\/a>/);
   assert.match(html, /href="(?:\/stm-parent)?\/newsletters\.html"[^>]*>Newsletters<\/a>/);
-  assert.match(html, /href="(?:\/stm-parent)?\/lunch\.html"[^>]*>Lunch<\/a>/);
+  assert.doesNotMatch(html, /href="(?:\/stm-parent)?\/lunch\.html"[^>]*>Lunch<\/a>/);
   assert.match(html, /href="(?:\/stm-parent)?\/directory\.html"[^>]*>Directory<\/a>/);
-  assert.match(html, />Home<\/a>.*>Newsletters<\/a>.*>Events<\/a>.*>Lunch<\/a>.*>Handbook<\/a>.*>Directory<\/a>/s);
+  assert.match(html, />Home<\/a>.*>Newsletters<\/a>.*>Events<\/a>.*>Handbook<\/a>.*>Directory<\/a>/s);
   assert.doesNotMatch(html, /href="(?:\/stm-parent)?\/(?:volunteer|archive)\.html"/);
   assert.doesNotMatch(html, /href="(?:\/stm-parent)?\/staff\.html"[^>]*>Directory<\/a>/);
   assert.doesNotMatch(html, />Volunteer<\/a>|>Archive<\/a>/);
