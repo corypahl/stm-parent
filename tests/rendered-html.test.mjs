@@ -17,13 +17,17 @@ test("exports the finished parent companion home", async () => {
   assert.doesNotMatch(html, /class="brand__mark"[^>]*>\s*M\s*<\/span>/);
   assert.match(html, /rel="icon"[^>]+favicon\.ico|favicon\.ico[^>]+rel="icon"/);
   assert.match(html, /apple-touch-icon\.png/);
-  assert.match(html, /What do you need to find\?/);
+  assert.match(html, /Search school information/);
   assert.match(html, /Search newsletters, handbook, and calendar/);
   assert.match(html, />Ask AI<\/button>/);
   assert.match(html, /Do not enter private student information/);
   assert.doesNotMatch(html, /AIza[A-Za-z0-9_-]{20,}/);
   assert.match(html, /Coming Up/);
+  assert.match(html, /class="home-dashboard"/);
+  assert.match(html, /class="home-dashboard__rail"/);
   assert.match(html, /<h2>Coming Up[\s\S]*?<h2>Sign Ups[\s\S]*?<h2>Latest News/);
+  assert.equal((html.match(/class="home-panel(?: |")/g) || []).length, 3);
+  assert.match(html, /newsletter-embed newsletter-embed--home/);
   assert.match(html, /Latest News/);
   assert.doesNotMatch(html, /On the calendar|School updates|Latest school newsletter/);
   assert.match(html, /<span class="eyebrow">Latest issue<\/span>/);
@@ -31,7 +35,7 @@ test("exports the finished parent companion home", async () => {
   assert.doesNotMatch(html, /No newsletter sections have been approved yet/);
   assert.doesNotMatch(html, /home-hero|Needs your attention|At a glance|Weekly overview|official school hours/);
   assert.doesNotMatch(html, /Good to know|Parent service organization|Explore opportunities|cta-panel/);
-  assert.match(html, /Sources: St\. Martha 2026–27 Academic Calendar and upcoming dates extracted from school newsletters/);
+  assert.match(html, /Sources: academic calendar and school newsletters/);
   assert.doesNotMatch(html, /Sample: back-to-school family night/);
   assert.doesNotMatch(html, /Grade Filter|grade-chip|All-school notices are always included/);
   assert.doesNotMatch(html, /calendar-category|<span class="badge[^>]*">(?:School day|No school|Family event|Faith|Academic)<\/span>/);

@@ -51,8 +51,10 @@ export function UnifiedSearch({ entries }: { entries: UnifiedSearchEntry[] }) {
   return (
     <section className="unified-search" aria-labelledby="unified-search-title">
       <div className="unified-search__intro">
-        <span className="eyebrow eyebrow--light">Newsletters · handbook · calendar</span>
-        <h1 id="unified-search-title">What do you need to find?</h1>
+        <div>
+          <span className="eyebrow eyebrow--light">Newsletters · handbook · calendar</span>
+          <h1 id="unified-search-title">Search school information</h1>
+        </div>
         <p>Search all three sources at once, or ask a question for a short answer linked to the supporting information.</p>
       </div>
       <form className="unified-search__form" onSubmit={(event) => { event.preventDefault(); void askQuestion(trimmedQuery); }}>

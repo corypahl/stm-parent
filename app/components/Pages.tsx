@@ -146,9 +146,35 @@ function CardGrid({ items }: { items: ContentItem[] }) {
   );
 }
 
-function LatestNewsletterSignups() {
+function LatestNewsletterSignups({ compact = false }: { compact?: boolean } = {}) {
   const newsletter = newsletters[0];
   const signups = newsletter?.signups ?? [];
+
+  if (compact) {
+    return (
+      <div className="home-signups">
+        {signups.length > 0 ? (
+          <div className="home-signups__list">
+            {signups.map((signup) => (
+              <article className="home-signup-row" key={signup.id}>
+                <div>
+                  <span className="eyebrow">Newsletter form</span>
+                  <h3>{signup.title}</h3>
+                </div>
+                <a className="button button--small button--outline" href={signup.url} target="_blank" rel="noreferrer">Open form ↗</a>
+              </article>
+            ))}
+          </div>
+        ) : <EmptyState>No signup form links were found in the latest newsletter.</EmptyState>}
+        {newsletter && (
+          <div className="home-panel__source">
+            <span>From {newsletter.title}</span>
+            <time dateTime={newsletter.newsletterDate}>{formatDate(`${newsletter.newsletterDate}T12:00:00`, { month: "short", day: "numeric", year: "numeric" })}</time>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <>
@@ -169,47 +195,49 @@ export function HomePage() {
     <>
       <UnifiedSearch entries={unifiedSearchEntries} />
 
-      <section className="home-section home-section--first">
-        <div>
-          <SectionHeading title="Coming Up" count={upcomingEvents.length} link={{ href: "/calendar", label: "Full calendar" }} />
-          <div className="calendar-preview">
-            {upcomingEvents.map((event) => (
-              <CalendarEventCard event={event} dateLabel="month" key={event.id} />
-            ))}
-          </div>
-          <p className="preview-source">Sources: St. Martha 2026–27 Academic Calendar and upcoming dates extracted from school newsletters.</p>
-        </div>
-      </section>
-
-      <section className="home-section">
-        <SectionHeading title="Sign Ups" />
-        <LatestNewsletterSignups />
-      </section>
-
-      <section className="home-section">
-        <SectionHeading title="Latest News" />
-        {latestNewsletter && embedUrl ? (
-          <article className="newsletter-embed">
-            <header className="newsletter-embed__header">
-              <div>
-                <span className="eyebrow">Latest issue</span>
-                <h2>{latestNewsletter.title}</h2>
-                <p>{formatDate(`${latestNewsletter.newsletterDate}T12:00:00`, { month: "long", day: "numeric", year: "numeric" })}</p>
-              </div>
-              <a className="button button--small" href={latestNewsletter.sourceUrl} target="_blank" rel="noreferrer">Open newsletter ↗</a>
-            </header>
-            <div className="newsletter-embed__frame">
-              <iframe
-                src={embedUrl}
-                title={`${latestNewsletter.title} embedded newsletter`}
-                loading="lazy"
-                referrerPolicy="strict-origin-when-cross-origin"
-              />
+      <div className="home-dashboard">
+        <div className="home-dashboard__rail">
+          <section className="home-panel">
+            <SectionHeading title="Coming Up" count={upcomingEvents.length} link={{ href: "/calendar", label: "Full calendar" }} />
+            <div className="calendar-preview home-calendar-list">
+              {upcomingEvents.map((event) => (
+                <CalendarEventCard event={event} dateLabel="month" key={event.id} />
+              ))}
             </div>
-            <p className="newsletter-embed__note">Embedded from Smore. Use the button above if the newsletter does not load on your device.</p>
-          </article>
-        ) : <EmptyState>The latest newsletter will appear here after an email containing a Smore link reaches the inbox.</EmptyState>}
-      </section>
+            <p className="home-panel__source">Sources: academic calendar and school newsletters</p>
+          </section>
+
+          <section className="home-panel">
+            <SectionHeading title="Sign Ups" />
+            <LatestNewsletterSignups compact />
+          </section>
+        </div>
+
+        <section className="home-panel home-panel--news">
+          <SectionHeading title="Latest News" link={{ href: "/newsletters", label: "All newsletters" }} />
+          {latestNewsletter && embedUrl ? (
+            <article className="newsletter-embed newsletter-embed--home">
+              <header className="newsletter-embed__header">
+                <div>
+                  <span className="eyebrow">Latest issue</span>
+                  <h2>{latestNewsletter.title}</h2>
+                  <p>{formatDate(`${latestNewsletter.newsletterDate}T12:00:00`, { month: "long", day: "numeric", year: "numeric" })}</p>
+                </div>
+                <a className="button button--small" href={latestNewsletter.sourceUrl} target="_blank" rel="noreferrer">Open newsletter ↗</a>
+              </header>
+              <div className="newsletter-embed__frame">
+                <iframe
+                  src={embedUrl}
+                  title={`${latestNewsletter.title} embedded newsletter`}
+                  loading="lazy"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                />
+              </div>
+              <p className="newsletter-embed__note">Embedded from Smore. Use the button above if the newsletter does not load on your device.</p>
+            </article>
+          ) : <EmptyState>The latest newsletter will appear here after an email containing a Smore link reaches the inbox.</EmptyState>}
+        </section>
+      </div>
     </>
   );
 }
