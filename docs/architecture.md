@@ -1,14 +1,15 @@
 # Architecture notes
 
-The public site remains a vinext static export deployed to GitHub Pages. Google Apps Script is the existing external service: it exposes the public newsletter archive and, when configured, securely proxies cited Gemini search answers without exposing the API key in browser code.
+The public site remains a vinext static export deployed through CloudFront from a private S3 origin. Google Apps Script is the existing external service: it exposes the public newsletter archive and, when configured, securely proxies cited Gemini search answers without exposing the API key in browser code.
 
 ## Publishing pipeline
 
 - Apps Script scans the dedicated Gmail inbox and publishes only newsletter titles, dates, and public Smore URLs.
-- GitHub Actions checks that feed every 30 minutes, downloads public Smore content, applies local OCR to newsletter images, and writes static JSON data.
+- `.github/workflows/inbox.yml` checks the inbox and Google Calendar feeds hourly from 8 a.m. through 8 p.m. on weekdays in the Detroit time zone. It downloads public Smore content, applies local OCR to newsletter images, and commits changed static JSON data.
 - Newsletter dates and signup links are extracted deterministically. Important Upcoming Dates sections are merged with the academic and Google calendars.
 - The newest lunch calendar image is OCRed into individual dated menu records.
-- The tested static export is deployed from `main` by `.github/workflows/pages.yml`.
+- The tested static export is deployed from `main` by `.github/workflows/cloudfront.yml` using short-lived AWS credentials from GitHub OIDC. Deployments never contact the inbox feed; the inbox workflow dispatches a deployment only after committing changed content.
+- CloudFront is the only public reader of the S3 origin. The bucket blocks all public access and grants object reads to the distribution through origin access control.
 
 Removing a newsletter from the dedicated inbox removes it during the next successful scheduled build. No spreadsheet review or approval process is part of the current pipeline.
 

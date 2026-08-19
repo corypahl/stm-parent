@@ -4,7 +4,7 @@ An unofficial, parent-created site that turns school communications into searcha
 
 The site combines automated Gmail and Google Calendar feeds with school information from the current parent and student handbook. It is not operated or endorsed by the school.
 
-Live site: [https://corypahl.github.io/stm-parent/](https://corypahl.github.io/stm-parent/)
+The production URL is the `SiteUrl` output of the `stm-parent-production` CloudFormation stack.
 
 ## Local development
 
@@ -36,7 +36,23 @@ npm run lint
 
 This is a Codex-first repository. Codex works directly on `main`, creates one intentional commit for each completed change, and pushes that commit to `origin/main` before finishing.
 
-Every push to `main` runs `.github/workflows/pages.yml`. The workflow tests, lints, creates a static export, and deploys `dist/client` to GitHub Pages. Request-time server features are intentionally unavailable while GitHub Pages is the deployment target.
+Every push to `main` runs `.github/workflows/cloudfront.yml`. The workflow tests, lints, creates a root-hosted static export, syncs `dist/client` to a private S3 bucket, and invalidates the CloudFront distribution. GitHub Actions authenticates to AWS with a repository- and branch-scoped OIDC role, so no long-lived AWS access keys are stored in GitHub. Request-time server features remain intentionally unavailable.
+
+Inbox and Google Calendar synchronization runs separately through `.github/workflows/inbox.yml`, once per hour from 8 a.m. through 8 p.m. on weekdays in `America/Detroit`. It retries transient feed failures, commits generated public content only when something changes, and then dispatches the CloudFront deployment workflow. This keeps inbox lookup failures distinct from deployment failures in the Actions list.
+
+## AWS hosting bootstrap
+
+The production infrastructure lives in `infrastructure/cloudfront.yml`. It creates the private bucket, CloudFront origin access control and distribution, security and cache policies, optional Route 53 records and ACM certificate, and the GitHub deployment role.
+
+Authenticate the AWS CLI with an administrator-capable profile, then run:
+
+```powershell
+aws sso login --profile AdministratorAccess-094492480032
+$env:AWS_PROFILE = "AdministratorAccess-094492480032"
+./scripts/bootstrap-cloudfront.ps1
+```
+
+The script reuses an account-level GitHub OIDC provider when one exists, deploys the stack in `us-east-1`, records the stack/region/role as GitHub repository variables, and dispatches the first deployment. To attach a Route 53 domain during bootstrap, supply both `-CustomDomainName` and `-HostedZoneId`. Re-running the script updates the same stack safely.
 
 The Directory uses the same 2026–27 staff roster that appears in the searchable handbook. Updating the handbook roster therefore updates both pages without a separate website scrape or review step.
 
@@ -57,4 +73,4 @@ The Directory uses the same 2026–27 staff roster that appears in the searchabl
 
 ## Explicitly deferred
 
-Public-site authentication, AI-generated content publication, a standalone application server, AWS infrastructure, and parent accounts remain deferred. See `docs/architecture.md` for the current capability boundaries.
+Public-site authentication, AI-generated content publication, a standalone application server, and parent accounts remain deferred. See `docs/architecture.md` for the current capability boundaries.

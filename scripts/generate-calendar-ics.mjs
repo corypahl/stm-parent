@@ -3,6 +3,7 @@ import { readFile, writeFile } from "node:fs/promises";
 const sourceUrl = new URL("../app/data/calendar.json", import.meta.url);
 const outputUrl = new URL("../public/documents/st-martha-2026-27-calendar.ics", import.meta.url);
 const events = JSON.parse(await readFile(sourceUrl, "utf8"));
+const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://corypahl.github.io/stm-parent").replace(/\/$/, "");
 
 function compactDate(value) {
   return value.replaceAll("-", "");
@@ -59,7 +60,7 @@ for (const event of events) {
     foldLine(`SUMMARY:${escapeIcal(event.title)}`),
     foldLine(`DESCRIPTION:${escapeIcal(description)}`),
     `CATEGORIES:${escapeIcal(event.category)}`,
-    "URL:https://corypahl.github.io/stm-parent/calendar.html",
+    `URL:${siteUrl}/calendar.html`,
     "END:VEVENT",
   );
 }

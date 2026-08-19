@@ -6,11 +6,11 @@ import { SiteShell } from "./components/SiteShell";
 export const dynamic = "force-static";
 
 const description = "An unofficial parent-created companion for St. Martha School news, events, deadlines, lunch, documents, and handbook search.";
-const imageUrl = "https://corypahl.github.io/stm-parent/og.png";
-const assetUrl = "https://corypahl.github.io/stm-parent";
+const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
+const imageUrl = `${siteUrl}/og.png`;
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://corypahl.github.io/stm-parent/"),
+  metadataBase: new URL(`${siteUrl}/`),
   title: {
     default: "St. Martha School · Unofficial Parent Site",
     template: "%s · St. Martha School Unofficial Parent Site",
@@ -18,11 +18,11 @@ export const metadata: Metadata = {
   description,
   icons: {
     icon: [
-      { url: `${assetUrl}/favicon.ico`, sizes: "any" },
-      { url: `${assetUrl}/favicon-32.png`, type: "image/png", sizes: "32x32" },
-      { url: `${assetUrl}/favicon-192.png`, type: "image/png", sizes: "192x192" },
+      { url: `${siteUrl}/favicon.ico`, sizes: "any" },
+      { url: `${siteUrl}/favicon-32.png`, type: "image/png", sizes: "32x32" },
+      { url: `${siteUrl}/favicon-192.png`, type: "image/png", sizes: "192x192" },
     ],
-    apple: [{ url: `${assetUrl}/apple-touch-icon.png`, type: "image/png", sizes: "180x180" }],
+    apple: [{ url: `${siteUrl}/apple-touch-icon.png`, type: "image/png", sizes: "180x180" }],
   },
   openGraph: {
     title: "St. Martha School · Unofficial Parent Site",

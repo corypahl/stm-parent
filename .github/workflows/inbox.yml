@@ -1,0 +1,94 @@
+name: Check school inbox
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 8-20 * * 1-5"
+      timezone: "America/Detroit"
+
+permissions:
+  actions: write
+  contents: write
+
+concurrency:
+  group: school-inbox-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check inbox and update generated content
+        shell: bash
+        env:
+          GOOGLE_CONTENT_FEED_URL: ${{ vars.GOOGLE_CONTENT_FEED_URL }}
+          GOOGLE_CALENDAR_ICS_URL: https://calendar.google.com/calendar/ical/stm.parent.updates%40gmail.com/public/basic.ics
+        run: |
+          for attempt in 1 2 3; do
+            if npm run sync:google; then
+              exit 0
+            fi
+
+            if [ "$attempt" -eq 3 ]; then
+              echo "Inbox synchronization failed after $attempt attempts."
+              exit 1
+            fi
+
+            delay=$((attempt * 15))
+            echo "Inbox synchronization failed on attempt $attempt; retrying in ${delay}s."
+            sleep "$delay"
+          done
+
+      - name: Commit updated content
+        id: content
+        shell: bash
+        run: |
+          git add -- \
+            app/data/calendar.json \
+            app/data/google-content.json \
+            app/data/google-newsletters.json \
+            app/data/latest-newsletter.json \
+            app/data/lunch.json \
+            app/data/newsletter-events.json
+
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "The inbox and calendar feeds contain no new public content."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Sync school inbox [skip ci]"
+          git pull --rebase origin main
+          git push origin HEAD:main
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Deploy updated content
+        if: steps.content.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run cloudfront.yml --ref main
+
+      - name: Summarize inbox check
+        shell: bash
+        run: |
+          if [ "${{ steps.content.outputs.changed }}" = "true" ]; then
+            echo "### New public school content found" >> "$GITHUB_STEP_SUMMARY"
+            echo "The generated content was committed and a CloudFront deployment was dispatched." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "### No new public school content" >> "$GITHUB_STEP_SUMMARY"
+            echo "No commit or deployment was needed." >> "$GITHUB_STEP_SUMMARY"
+          fi

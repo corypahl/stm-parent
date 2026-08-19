@@ -1,0 +1,92 @@
+name: Deploy to CloudFront
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: cloudfront-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    if: ${{ vars.AWS_DEPLOY_ROLE_ARN != '' }}
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION || 'us-east-1' }}
+      AWS_STACK_NAME: ${{ vars.AWS_STACK_NAME || 'stm-parent-production' }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests
+        run: npm run test:unit
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6.2.3
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          role-session-name: stm-parent-deploy
+
+      - name: Read hosting configuration
+        id: infrastructure
+        shell: bash
+        run: |
+          bucket_name="$(aws cloudformation describe-stacks --stack-name "$AWS_STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='BucketName'].OutputValue | [0]" --output text)"
+          distribution_id="$(aws cloudformation describe-stacks --stack-name "$AWS_STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='DistributionId'].OutputValue | [0]" --output text)"
+          site_url="$(aws cloudformation describe-stacks --stack-name "$AWS_STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='SiteUrl'].OutputValue | [0]" --output text)"
+          echo "bucket_name=$bucket_name" >> "$GITHUB_OUTPUT"
+          echo "distribution_id=$distribution_id" >> "$GITHUB_OUTPUT"
+          echo "site_url=$site_url" >> "$GITHUB_OUTPUT"
+          echo "Deploying to $site_url"
+
+      - name: Build static site
+        env:
+          NEXT_PUBLIC_PARENT_SITE_API_URL: ${{ vars.GOOGLE_CONTENT_FEED_URL }}
+          NEXT_PUBLIC_SITE_URL: ${{ steps.infrastructure.outputs.site_url }}
+        run: npm run build
+
+      - name: Verify static export
+        run: node --test tests/rendered-html.test.mjs
+
+      - name: Upload versioned assets
+        shell: bash
+        run: >-
+          aws s3 sync dist/client/_next "s3://${{ steps.infrastructure.outputs.bucket_name }}/_next"
+          --cache-control "public,max-age=31536000,immutable"
+          --no-progress
+          --only-show-errors
+
+      - name: Upload site
+        shell: bash
+        run: >-
+          aws s3 sync dist/client "s3://${{ steps.infrastructure.outputs.bucket_name }}"
+          --delete
+          --exclude "_next/*"
+          --cache-control "public,max-age=0,must-revalidate,s-maxage=300"
+          --no-progress
+          --only-show-errors
+
+      - name: Invalidate CloudFront cache
+        run: aws cloudfront create-invalidation --distribution-id "${{ steps.infrastructure.outputs.distribution_id }}" --paths "/*"
+
+      - name: Publish deployment URL
+        run: echo "### Deployed to ${{ steps.infrastructure.outputs.site_url }}" >> "$GITHUB_STEP_SUMMARY"
