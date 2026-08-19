@@ -1,46 +1,293 @@
 [
-  { "id": "2026-08-20-walkthrough", "date": "2026-08-20", "title": "Student Walk Through", "time": "4:00–5:30 p.m.", "details": "Meet the Miracles, 5:30–7:00 p.m.", "category": "Family event" },
-  { "id": "2026-08-24-first-day", "date": "2026-08-24", "title": "First day of school", "details": "Half day for kindergarten through grade 8.", "category": "School day" },
-  { "id": "2026-08-25-first-full-day", "date": "2026-08-25", "title": "First full day of school", "details": "Grades 1–8.", "category": "School day" },
-  { "id": "2026-08-25-kindergarten", "date": "2026-08-25", "endDate": "2026-08-26", "title": "Kindergarten half days", "category": "School day" },
-  { "id": "2026-09-04-labor-day", "date": "2026-09-04", "endDate": "2026-09-07", "title": "No school — Labor Day", "category": "No school" },
-  { "id": "2026-09-08-resume", "date": "2026-09-08", "title": "School resumes", "details": "Kindergarten through grade 8.", "category": "School day" },
-  { "id": "2026-09-09-preschool", "date": "2026-09-09", "title": "First day of preschool", "category": "School day" },
-  { "id": "2026-09-10-curriculum-night", "date": "2026-09-10", "title": "Curriculum Night", "time": "6:00 p.m.", "category": "Family event" },
-  { "id": "2026-09-24-grandparents", "date": "2026-09-24", "title": "Grandparents/VIP Day", "category": "Family event" },
-  { "id": "2026-09-25-cougar-commotion", "date": "2026-09-25", "title": "Cougar Commotion", "details": "At Lansing Catholic High School for grades 4–8.", "category": "Family event" },
-  { "id": "2026-10-13-protect-young-eyes", "date": "2026-10-13", "title": "Protect Young Eyes Parent Night", "time": "6:30–8:00 p.m.", "details": "Digital discernment presentation.", "category": "Family event" },
-  { "id": "2026-10-15-staff-pd", "date": "2026-10-15", "endDate": "2026-10-16", "title": "No school — Staff PD", "category": "No school" },
-  { "id": "2026-10-23-fundraiser", "date": "2026-10-23", "title": "St. Martha Celebrates fundraiser", "category": "Family event" },
-  { "id": "2026-10-27-quarter", "date": "2026-10-27", "title": "End of 1st quarter", "category": "Academic" },
-  { "id": "2026-10-30-trunk-or-treat", "date": "2026-10-30", "title": "Halloween Trunk or Treat", "details": "Report cards posted.", "category": "Family event" },
-  { "id": "2026-11-12-conferences", "date": "2026-11-12", "title": "Parent/Teacher Conferences", "details": "Half day with 11:30 a.m. dismissal.", "category": "Academic" },
-  { "id": "2026-11-13-conferences", "date": "2026-11-13", "title": "No school — Parent/Teacher Conferences", "category": "No school" },
-  { "id": "2026-11-25-thanksgiving", "date": "2026-11-25", "endDate": "2026-11-27", "title": "No school — Thanksgiving Break", "category": "No school" },
-  { "id": "2026-12-17-christmas-program", "date": "2026-12-17", "title": "PreK–8th Grade Christmas Program", "time": "6:30 p.m.", "category": "Family event" },
-  { "id": "2026-12-21-christmas-break", "date": "2026-12-21", "endDate": "2027-01-03", "title": "Christmas Break", "category": "No school" },
-  { "id": "2027-01-04-back", "date": "2027-01-04", "title": "Back to school", "category": "School day" },
-  { "id": "2027-01-15-quarter", "date": "2027-01-15", "title": "End of 2nd quarter", "category": "Academic" },
-  { "id": "2027-01-18-mlk", "date": "2027-01-18", "title": "No school — MLK Day / Staff PD", "category": "No school" },
-  { "id": "2027-01-21-report-cards", "date": "2027-01-21", "title": "Report cards posted", "category": "Academic" },
-  { "id": "2027-01-31-csw-mass", "date": "2027-01-31", "title": "Catholic Schools Week Mass", "time": "10:00 a.m.", "category": "Faith" },
-  { "id": "2027-02-01-csw", "date": "2027-02-01", "endDate": "2027-02-05", "title": "Catholic Schools Week", "category": "Faith" },
-  { "id": "2027-02-10-conferences", "date": "2027-02-10", "title": "Full school day and afternoon conferences", "details": "3:25 p.m. dismissal.", "category": "Academic" },
-  { "id": "2027-02-11-conferences", "date": "2027-02-11", "title": "Parent/Teacher Conferences", "details": "Half day with 11:30 a.m. dismissal.", "category": "Academic" },
-  { "id": "2027-02-12-presidents-weekend", "date": "2027-02-12", "endDate": "2027-02-15", "title": "No school — Presidents' Weekend", "category": "No school" },
-  { "id": "2027-03-01-book-fair", "date": "2027-03-01", "endDate": "2027-03-05", "title": "Ignatius Book Fair", "category": "Family event" },
-  { "id": "2027-03-04-literacy-night", "date": "2027-03-04", "title": "Family Literacy Night", "category": "Family event" },
-  { "id": "2027-03-23-quarter", "date": "2027-03-23", "title": "End of 3rd quarter", "category": "Academic" },
-  { "id": "2027-03-25-holy-thursday", "date": "2027-03-25", "title": "Half day — Holy Thursday", "details": "Report cards posted.", "category": "Faith" },
-  { "id": "2027-03-26-good-friday", "date": "2027-03-26", "title": "No school — Good Friday", "category": "No school" },
-  { "id": "2027-03-29-spring-break", "date": "2027-03-29", "endDate": "2027-04-02", "title": "Spring Break", "category": "No school" },
-  { "id": "2027-04-05-back", "date": "2027-04-05", "title": "Back to school", "category": "School day" },
-  { "id": "2027-05-02-first-communion", "date": "2027-05-02", "title": "First Communion", "category": "Faith" },
-  { "id": "2027-05-06-communion-brunch", "date": "2027-05-06", "title": "First Communion Brunch", "category": "Faith" },
-  { "id": "2027-05-13-spring-concert", "date": "2027-05-13", "title": "Spring Concert", "time": "2:00 p.m.", "category": "Family event" },
-  { "id": "2027-05-28-memorial", "date": "2027-05-28", "endDate": "2027-05-31", "title": "No school — Memorial Weekend", "category": "No school" },
-  { "id": "2027-06-03-graduation", "date": "2027-06-03", "title": "8th Grade Graduation Mass", "time": "8:30 a.m.", "category": "Faith" },
-  { "id": "2027-06-04-quarter", "date": "2027-06-04", "title": "End of 4th quarter", "category": "Academic" },
-  { "id": "2027-06-08-fun-day", "date": "2027-06-08", "title": "Fun Day", "category": "Family event" },
-  { "id": "2027-06-09-last-day", "date": "2027-06-09", "title": "Last day of school", "details": "Half day with 11:30 a.m. dismissal, Step Up Ceremony, and report cards posted.", "category": "School day" }
+  {
+    "id": "google-1ee5d3a60c98",
+    "date": "2026-08-20",
+    "title": "Student Walk Through",
+    "details": "4:00–5:30 p.m.\nMeet the Miracles, 5:30–7:00 p.m.",
+    "category": "Family event"
+  },
+  {
+    "id": "google-39f768226c14",
+    "date": "2026-08-24",
+    "title": "First day of school",
+    "details": "Half day for kindergarten through grade 8.",
+    "category": "School day"
+  },
+  {
+    "id": "google-9c53b3dedb47",
+    "date": "2026-08-25",
+    "title": "First full day of school",
+    "details": "Grades 1–8.",
+    "category": "Family event"
+  },
+  {
+    "id": "google-e8b50f11f1b1",
+    "date": "2026-08-25",
+    "endDate": "2026-08-26",
+    "title": "Kindergarten half days",
+    "category": "School day"
+  },
+  {
+    "id": "google-2cb1d3be63d0",
+    "date": "2026-09-04",
+    "endDate": "2026-09-07",
+    "title": "No school — Labor Day",
+    "category": "No school"
+  },
+  {
+    "id": "google-ef507bb969fe",
+    "date": "2026-09-08",
+    "title": "School resumes",
+    "details": "Kindergarten through grade 8.",
+    "category": "Family event"
+  },
+  {
+    "id": "google-a091e3364bf1",
+    "date": "2026-09-09",
+    "title": "First day of preschool",
+    "category": "School day"
+  },
+  {
+    "id": "google-d696d6f8e11d",
+    "date": "2026-09-10",
+    "title": "Curriculum Night",
+    "details": "6:00 p.m.",
+    "category": "Family event"
+  },
+  {
+    "id": "google-51ea35e6b39b",
+    "date": "2026-09-24",
+    "title": "Grandparents/VIP Day",
+    "category": "Family event"
+  },
+  {
+    "id": "google-ce023a28b9e5",
+    "date": "2026-09-25",
+    "title": "Cougar Commotion",
+    "details": "At Lansing Catholic High School for grades 4–8.",
+    "category": "Family event"
+  },
+  {
+    "id": "google-d44f5945b96e",
+    "date": "2026-10-13",
+    "title": "Protect Young Eyes Parent Night",
+    "details": "6:30–8:00 p.m.\nDigital discernment presentation.",
+    "category": "Family event"
+  },
+  {
+    "id": "google-5b8748c8f113",
+    "date": "2026-10-15",
+    "endDate": "2026-10-16",
+    "title": "No school — Staff PD",
+    "category": "No school"
+  },
+  {
+    "id": "google-5300dfabbff4",
+    "date": "2026-10-23",
+    "title": "St. Martha Celebrates fundraiser",
+    "category": "Family event"
+  },
+  {
+    "id": "google-435821fce25d",
+    "date": "2026-10-27",
+    "title": "End of 1st quarter",
+    "category": "Academic"
+  },
+  {
+    "id": "google-2131eebfca56",
+    "date": "2026-10-30",
+    "title": "Halloween Trunk or Treat",
+    "details": "Report cards posted.",
+    "category": "Family event"
+  },
+  {
+    "id": "google-2e6932e4f61b",
+    "date": "2026-11-12",
+    "title": "Parent/Teacher Conferences",
+    "details": "Half day with 11:30 a.m. dismissal.",
+    "category": "Academic"
+  },
+  {
+    "id": "google-518586a77ca4",
+    "date": "2026-11-13",
+    "title": "No school — Parent/Teacher Conferences",
+    "category": "No school"
+  },
+  {
+    "id": "google-105d770d7ee9",
+    "date": "2026-11-25",
+    "endDate": "2026-11-27",
+    "title": "No school — Thanksgiving Break",
+    "category": "No school"
+  },
+  {
+    "id": "google-4f618380c07a",
+    "date": "2026-12-17",
+    "title": "PreK–8th Grade Christmas Program",
+    "details": "6:30 p.m.",
+    "category": "Family event"
+  },
+  {
+    "id": "google-0d69535427d0",
+    "date": "2026-12-21",
+    "endDate": "2027-01-03",
+    "title": "Christmas Break",
+    "category": "No school"
+  },
+  {
+    "id": "google-c41c8b82abb4",
+    "date": "2027-01-04",
+    "title": "Back to school",
+    "category": "School day"
+  },
+  {
+    "id": "google-1d60133b0f4c",
+    "date": "2027-01-15",
+    "title": "End of 2nd quarter",
+    "category": "Academic"
+  },
+  {
+    "id": "google-3b953de6708c",
+    "date": "2027-01-18",
+    "title": "No school — MLK Day / Staff PD",
+    "category": "No school"
+  },
+  {
+    "id": "google-5c9ca7db8867",
+    "date": "2027-01-21",
+    "title": "Report cards posted",
+    "category": "Academic"
+  },
+  {
+    "id": "google-c4ca78180413",
+    "date": "2027-01-31",
+    "title": "Catholic Schools Week Mass",
+    "details": "10:00 a.m.",
+    "category": "Faith"
+  },
+  {
+    "id": "google-4a2b318e0866",
+    "date": "2027-02-01",
+    "endDate": "2027-02-05",
+    "title": "Catholic Schools Week",
+    "category": "Faith"
+  },
+  {
+    "id": "google-6c88c11ef7b7",
+    "date": "2027-02-10",
+    "title": "Full school day and afternoon conferences",
+    "details": "3:25 p.m. dismissal.",
+    "category": "Academic"
+  },
+  {
+    "id": "google-9a09f19ae3cc",
+    "date": "2027-02-11",
+    "title": "Parent/Teacher Conferences",
+    "details": "Half day with 11:30 a.m. dismissal.",
+    "category": "Academic"
+  },
+  {
+    "id": "google-9f1fe3d6799d",
+    "date": "2027-02-12",
+    "endDate": "2027-02-15",
+    "title": "No school — Presidents' Weekend",
+    "category": "No school"
+  },
+  {
+    "id": "google-e7eba34b257a",
+    "date": "2027-03-01",
+    "endDate": "2027-03-05",
+    "title": "Ignatius Book Fair",
+    "category": "Family event"
+  },
+  {
+    "id": "google-3b8766ef1cb9",
+    "date": "2027-03-04",
+    "title": "Family Literacy Night",
+    "category": "Family event"
+  },
+  {
+    "id": "google-06a647a9cf1c",
+    "date": "2027-03-23",
+    "title": "End of 3rd quarter",
+    "category": "Academic"
+  },
+  {
+    "id": "google-2db876125ae6",
+    "date": "2027-03-25",
+    "title": "Half day — Holy Thursday",
+    "details": "Report cards posted.",
+    "category": "Faith"
+  },
+  {
+    "id": "google-a1179fde80ef",
+    "date": "2027-03-26",
+    "title": "No school — Good Friday",
+    "category": "No school"
+  },
+  {
+    "id": "google-261365f9aef1",
+    "date": "2027-03-29",
+    "endDate": "2027-04-02",
+    "title": "Spring Break",
+    "category": "No school"
+  },
+  {
+    "id": "google-a783c3094989",
+    "date": "2027-04-05",
+    "title": "Back to school",
+    "category": "School day"
+  },
+  {
+    "id": "google-ae8d84c5b8c7",
+    "date": "2027-05-02",
+    "title": "First Communion",
+    "category": "Faith"
+  },
+  {
+    "id": "google-8a72d0a901cf",
+    "date": "2027-05-06",
+    "title": "First Communion Brunch",
+    "category": "Faith"
+  },
+  {
+    "id": "google-23c91bfc092a",
+    "date": "2027-05-13",
+    "title": "Spring Concert",
+    "details": "2:00 p.m.",
+    "category": "Family event"
+  },
+  {
+    "id": "google-b24b4991233e",
+    "date": "2027-05-28",
+    "endDate": "2027-05-31",
+    "title": "No school — Memorial Weekend",
+    "category": "No school"
+  },
+  {
+    "id": "google-9aa948b62066",
+    "date": "2027-06-03",
+    "title": "8th Grade Graduation Mass",
+    "details": "8:30 a.m.",
+    "category": "Faith"
+  },
+  {
+    "id": "google-d47d42bcc942",
+    "date": "2027-06-04",
+    "title": "End of 4th quarter",
+    "category": "Academic"
+  },
+  {
+    "id": "google-9f6a41ff09c2",
+    "date": "2027-06-08",
+    "title": "Fun Day",
+    "category": "Family event"
+  },
+  {
+    "id": "google-0136202adf90",
+    "date": "2027-06-09",
+    "title": "Last day of school",
+    "details": "Half day with 11:30 a.m. dismissal, Step Up Ceremony, and report cards posted.",
+    "category": "School day"
+  }
 ]

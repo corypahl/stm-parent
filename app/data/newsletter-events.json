@@ -1,1 +1,48 @@
-[]
+[
+  {
+    "id": "newsletter-smore-3evgw-2026-08-11-new-family-night",
+    "date": "2026-08-11",
+    "title": "New Family Night",
+    "time": "5:00 p.m.",
+    "details": "Automatically extracted from Summer News Notes 08.10.26. Verify details in the newsletter.",
+    "category": "Family event",
+    "sourceUrl": "https://app.smore.com/n/3evgw",
+    "sourceLabel": "Summer News Notes 08.10.26"
+  },
+  {
+    "id": "newsletter-smore-3evgw-2026-08-20-meet-the-miracles-supply-drop-off",
+    "date": "2026-08-20",
+    "title": "Meet the Miracles & Supply Drop-Off",
+    "details": "Automatically extracted from Summer News Notes 08.10.26. Verify details in the newsletter.",
+    "category": "Family event",
+    "sourceUrl": "https://app.smore.com/n/3evgw",
+    "sourceLabel": "Summer News Notes 08.10.26"
+  },
+  {
+    "id": "newsletter-smore-3evgw-2026-08-24-first-day-of-school-half-day",
+    "date": "2026-08-24",
+    "title": "First Day of School (Half Day)",
+    "details": "Automatically extracted from Summer News Notes 08.10.26. Verify details in the newsletter.",
+    "category": "School day",
+    "sourceUrl": "https://app.smore.com/n/3evgw",
+    "sourceLabel": "Summer News Notes 08.10.26"
+  },
+  {
+    "id": "newsletter-smore-3evgw-2026-09-09-4-yo-preschoolers-begin",
+    "date": "2026-09-09",
+    "title": "4 YO Preschoolers begin",
+    "details": "Automatically extracted from Summer News Notes 08.10.26. Verify details in the newsletter.",
+    "category": "School day",
+    "sourceUrl": "https://app.smore.com/n/3evgw",
+    "sourceLabel": "Summer News Notes 08.10.26"
+  },
+  {
+    "id": "newsletter-smore-3evgw-2026-09-10-3-yo-preschoolers-begin",
+    "date": "2026-09-10",
+    "title": "3 YO Preschoolers begin",
+    "details": "Automatically extracted from Summer News Notes 08.10.26. Verify details in the newsletter.",
+    "category": "School day",
+    "sourceUrl": "https://app.smore.com/n/3evgw",
+    "sourceLabel": "Summer News Notes 08.10.26"
+  }
+]
