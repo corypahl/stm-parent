@@ -187,7 +187,7 @@ test("places the referenced stylesheet at the deployed artifact path", async () 
   const stylesheet = html.match(/<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"/i)?.[1];
   assert.ok(stylesheet, "exported HTML must reference a stylesheet");
 
-  const deploymentPrefix = "/";
+  const deploymentPrefix = process.env.DEPLOY_TARGET === "github-pages" ? "/stm-parent/" : "/";
   assert.ok(stylesheet.startsWith(deploymentPrefix), "stylesheet URL must use the configured base path");
 
   const artifactPath = stylesheet.slice(deploymentPrefix.length);
@@ -199,7 +199,7 @@ test("lets compact home sections grow with their content", async () => {
   const stylesheetUrl = html.match(/<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"/i)?.[1];
   assert.ok(stylesheetUrl, "exported HTML must reference a stylesheet");
 
-  const deploymentPrefix = "/";
+  const deploymentPrefix = process.env.DEPLOY_TARGET === "github-pages" ? "/stm-parent/" : "/";
   const stylesheet = await readFile(new URL(stylesheetUrl.slice(deploymentPrefix.length), outputRoot), "utf8");
   const signupsRule = stylesheet.match(/\.home-signups__list\s*\{([^}]*)\}/)?.[1] ?? "";
 

@@ -6,7 +6,7 @@ METHOD:PUBLISH
 X-WR-CALNAME:St. Martha School Parent Events — Unofficial
 X-WR-TIMEZONE:America/Detroit
 BEGIN:VEVENT
-UID:2026-08-20-walkthrough@stm-parent
+UID:google-1ee5d3a60c98@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20260820
 DTEND;VALUE=DATE:20260821
@@ -17,7 +17,7 @@ CATEGORIES:Family event
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2026-08-24-first-day@stm-parent
+UID:google-39f768226c14@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20260824
 DTEND;VALUE=DATE:20260825
@@ -28,17 +28,17 @@ CATEGORIES:School day
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2026-08-25-first-full-day@stm-parent
+UID:google-9c53b3dedb47@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20260825
 DTEND;VALUE=DATE:20260826
 SUMMARY:First full day of school
 DESCRIPTION:Grades 1–8.\nSource: St. Martha 2026–27 Academic Calendar
-CATEGORIES:School day
+CATEGORIES:Family event
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2026-08-25-kindergarten@stm-parent
+UID:google-e8b50f11f1b1@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20260825
 DTEND;VALUE=DATE:20260827
@@ -48,7 +48,7 @@ CATEGORIES:School day
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2026-09-04-labor-day@stm-parent
+UID:google-2cb1d3be63d0@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20260904
 DTEND;VALUE=DATE:20260908
@@ -58,18 +58,18 @@ CATEGORIES:No school
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2026-09-08-resume@stm-parent
+UID:google-ef507bb969fe@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20260908
 DTEND;VALUE=DATE:20260909
 SUMMARY:School resumes
 DESCRIPTION:Kindergarten through grade 8.\nSource: St. Martha 2026–27 A
  cademic Calendar
-CATEGORIES:School day
+CATEGORIES:Family event
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2026-09-09-preschool@stm-parent
+UID:google-a091e3364bf1@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20260909
 DTEND;VALUE=DATE:20260910
@@ -79,7 +79,7 @@ CATEGORIES:School day
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2026-09-10-curriculum-night@stm-parent
+UID:google-d696d6f8e11d@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20260910
 DTEND;VALUE=DATE:20260911
@@ -89,7 +89,7 @@ CATEGORIES:Family event
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2026-09-24-grandparents@stm-parent
+UID:google-51ea35e6b39b@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20260924
 DTEND;VALUE=DATE:20260925
@@ -99,7 +99,7 @@ CATEGORIES:Family event
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2026-09-25-cougar-commotion@stm-parent
+UID:google-ce023a28b9e5@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20260925
 DTEND;VALUE=DATE:20260926
@@ -110,7 +110,7 @@ CATEGORIES:Family event
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2026-10-13-protect-young-eyes@stm-parent
+UID:google-d44f5945b96e@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20261013
 DTEND;VALUE=DATE:20261014
@@ -121,7 +121,7 @@ CATEGORIES:Family event
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2026-10-15-staff-pd@stm-parent
+UID:google-5b8748c8f113@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20261015
 DTEND;VALUE=DATE:20261017
@@ -131,7 +131,7 @@ CATEGORIES:No school
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2026-10-23-fundraiser@stm-parent
+UID:google-5300dfabbff4@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20261023
 DTEND;VALUE=DATE:20261024
@@ -141,7 +141,7 @@ CATEGORIES:Family event
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2026-10-27-quarter@stm-parent
+UID:google-435821fce25d@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20261027
 DTEND;VALUE=DATE:20261028
@@ -151,7 +151,7 @@ CATEGORIES:Academic
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2026-10-30-trunk-or-treat@stm-parent
+UID:google-2131eebfca56@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20261030
 DTEND;VALUE=DATE:20261031
@@ -162,7 +162,7 @@ CATEGORIES:Family event
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2026-11-12-conferences@stm-parent
+UID:google-2e6932e4f61b@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20261112
 DTEND;VALUE=DATE:20261113
@@ -173,7 +173,7 @@ CATEGORIES:Academic
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2026-11-13-conferences@stm-parent
+UID:google-518586a77ca4@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20261113
 DTEND;VALUE=DATE:20261114
@@ -183,7 +183,7 @@ CATEGORIES:No school
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2026-11-25-thanksgiving@stm-parent
+UID:google-105d770d7ee9@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20261125
 DTEND;VALUE=DATE:20261128
@@ -193,7 +193,7 @@ CATEGORIES:No school
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2026-12-17-christmas-program@stm-parent
+UID:google-4f618380c07a@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20261217
 DTEND;VALUE=DATE:20261218
@@ -203,7 +203,7 @@ CATEGORIES:Family event
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2026-12-21-christmas-break@stm-parent
+UID:google-0d69535427d0@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20261221
 DTEND;VALUE=DATE:20270104
@@ -213,7 +213,7 @@ CATEGORIES:No school
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2027-01-04-back@stm-parent
+UID:google-c41c8b82abb4@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20270104
 DTEND;VALUE=DATE:20270105
@@ -223,7 +223,7 @@ CATEGORIES:School day
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2027-01-15-quarter@stm-parent
+UID:google-1d60133b0f4c@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20270115
 DTEND;VALUE=DATE:20270116
@@ -233,7 +233,7 @@ CATEGORIES:Academic
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2027-01-18-mlk@stm-parent
+UID:google-3b953de6708c@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20270118
 DTEND;VALUE=DATE:20270119
@@ -243,7 +243,7 @@ CATEGORIES:No school
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2027-01-21-report-cards@stm-parent
+UID:google-5c9ca7db8867@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20270121
 DTEND;VALUE=DATE:20270122
@@ -253,7 +253,7 @@ CATEGORIES:Academic
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2027-01-31-csw-mass@stm-parent
+UID:google-c4ca78180413@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20270131
 DTEND;VALUE=DATE:20270201
@@ -263,7 +263,7 @@ CATEGORIES:Faith
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2027-02-01-csw@stm-parent
+UID:google-4a2b318e0866@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20270201
 DTEND;VALUE=DATE:20270206
@@ -273,7 +273,7 @@ CATEGORIES:Faith
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2027-02-10-conferences@stm-parent
+UID:google-6c88c11ef7b7@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20270210
 DTEND;VALUE=DATE:20270211
@@ -284,7 +284,7 @@ CATEGORIES:Academic
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2027-02-11-conferences@stm-parent
+UID:google-9a09f19ae3cc@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20270211
 DTEND;VALUE=DATE:20270212
@@ -295,7 +295,7 @@ CATEGORIES:Academic
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2027-02-12-presidents-weekend@stm-parent
+UID:google-9f1fe3d6799d@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20270212
 DTEND;VALUE=DATE:20270216
@@ -305,7 +305,7 @@ CATEGORIES:No school
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2027-03-01-book-fair@stm-parent
+UID:google-e7eba34b257a@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20270301
 DTEND;VALUE=DATE:20270306
@@ -315,7 +315,7 @@ CATEGORIES:Family event
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2027-03-04-literacy-night@stm-parent
+UID:google-3b8766ef1cb9@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20270304
 DTEND;VALUE=DATE:20270305
@@ -325,7 +325,7 @@ CATEGORIES:Family event
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2027-03-23-quarter@stm-parent
+UID:google-06a647a9cf1c@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20270323
 DTEND;VALUE=DATE:20270324
@@ -335,7 +335,7 @@ CATEGORIES:Academic
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2027-03-25-holy-thursday@stm-parent
+UID:google-2db876125ae6@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20270325
 DTEND;VALUE=DATE:20270326
@@ -346,7 +346,7 @@ CATEGORIES:Faith
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2027-03-26-good-friday@stm-parent
+UID:google-a1179fde80ef@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20270326
 DTEND;VALUE=DATE:20270327
@@ -356,7 +356,7 @@ CATEGORIES:No school
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2027-03-29-spring-break@stm-parent
+UID:google-261365f9aef1@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20270329
 DTEND;VALUE=DATE:20270403
@@ -366,7 +366,7 @@ CATEGORIES:No school
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2027-04-05-back@stm-parent
+UID:google-a783c3094989@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20270405
 DTEND;VALUE=DATE:20270406
@@ -376,7 +376,7 @@ CATEGORIES:School day
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2027-05-02-first-communion@stm-parent
+UID:google-ae8d84c5b8c7@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20270502
 DTEND;VALUE=DATE:20270503
@@ -386,7 +386,7 @@ CATEGORIES:Faith
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2027-05-06-communion-brunch@stm-parent
+UID:google-8a72d0a901cf@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20270506
 DTEND;VALUE=DATE:20270507
@@ -396,7 +396,7 @@ CATEGORIES:Faith
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2027-05-13-spring-concert@stm-parent
+UID:google-23c91bfc092a@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20270513
 DTEND;VALUE=DATE:20270514
@@ -406,7 +406,7 @@ CATEGORIES:Family event
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2027-05-28-memorial@stm-parent
+UID:google-b24b4991233e@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20270528
 DTEND;VALUE=DATE:20270601
@@ -416,7 +416,7 @@ CATEGORIES:No school
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2027-06-03-graduation@stm-parent
+UID:google-9aa948b62066@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20270603
 DTEND;VALUE=DATE:20270604
@@ -426,7 +426,7 @@ CATEGORIES:Faith
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2027-06-04-quarter@stm-parent
+UID:google-d47d42bcc942@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20270604
 DTEND;VALUE=DATE:20270605
@@ -436,7 +436,7 @@ CATEGORIES:Academic
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2027-06-08-fun-day@stm-parent
+UID:google-9f6a41ff09c2@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20270608
 DTEND;VALUE=DATE:20270609
@@ -446,7 +446,7 @@ CATEGORIES:Family event
 URL:https://corypahl.github.io/stm-parent/calendar.html
 END:VEVENT
 BEGIN:VEVENT
-UID:2027-06-09-last-day@stm-parent
+UID:google-0136202adf90@stm-parent
 DTSTAMP:20260807T000000Z
 DTSTART;VALUE=DATE:20270609
 DTEND;VALUE=DATE:20270610

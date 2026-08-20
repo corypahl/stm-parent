@@ -37,7 +37,7 @@ jobs:
           GOOGLE_CALENDAR_ICS_URL: https://calendar.google.com/calendar/ical/stm.parent.updates%40gmail.com/public/basic.ics
         run: |
           for attempt in 1 2 3; do
-            if npm run sync:google; then
+            if npm run sync:google && npm run calendar:generate; then
               exit 0
             fi
 
@@ -51,6 +51,22 @@ jobs:
             sleep "$delay"
           done
 
+      - name: Report synchronized content
+        id: newsletter
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require("node:fs");
+          const latest = JSON.parse(fs.readFileSync("app/data/latest-newsletter.json", "utf8"));
+          const newsletters = JSON.parse(fs.readFileSync("app/data/google-newsletters.json", "utf8"));
+          if (!latest?.title || !latest.newsletterDate || !latest.sourceUrl) {
+            throw new Error("Inbox sync did not produce a valid latest newsletter record.");
+          }
+          const title = latest.title.replace(/[\r\n]+/g, " ").trim();
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `date=${latest.newsletterDate}\nsource=${latest.sourceUrl}\ntitle=${title}\n`);
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `### Inbox result\n- Newsletters found: **${newsletters.length}**\n- Latest newsletter: **${title}**\n- Newsletter date: **${latest.newsletterDate}**\n- Source: ${latest.sourceUrl}\n`);
+          NODE
+
       - name: Commit updated content
         id: content
         shell: bash
@@ -61,7 +77,8 @@ jobs:
             app/data/google-newsletters.json \
             app/data/latest-newsletter.json \
             app/data/lunch.json \
-            app/data/newsletter-events.json
+            app/data/newsletter-events.json \
+            public/documents/st-martha-2026-27-calendar.ics
 
           if git diff --cached --quiet; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
@@ -76,8 +93,14 @@ jobs:
           git push origin HEAD:main
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
-      - name: Deploy updated content
+      - name: Deploy updated content to GitHub Pages
         if: steps.content.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --ref main
+
+      - name: Deploy updated content to CloudFront
+        if: steps.content.outputs.changed == 'true' && vars.AWS_DEPLOY_ROLE_ARN != ''
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run cloudfront.yml --ref main
@@ -87,8 +110,21 @@ jobs:
         run: |
           if [ "${{ steps.content.outputs.changed }}" = "true" ]; then
             echo "### New public school content found" >> "$GITHUB_STEP_SUMMARY"
-            echo "The generated content was committed and a CloudFront deployment was dispatched." >> "$GITHUB_STEP_SUMMARY"
+            echo "The generated content was committed and a GitHub Pages deployment was dispatched." >> "$GITHUB_STEP_SUMMARY"
           else
             echo "### No new public school content" >> "$GITHUB_STEP_SUMMARY"
             echo "No commit or deployment was needed." >> "$GITHUB_STEP_SUMMARY"
           fi
+
+      - name: Upload inbox diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: inbox-diagnostics-${{ github.run_id }}
+          if-no-files-found: ignore
+          retention-days: 14
+          path: |
+            app/data/latest-newsletter.json
+            app/data/google-newsletters.json
+            app/data/newsletter-events.json
+            app/data/calendar.json

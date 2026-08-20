@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "vinext dev",
     "build": "npm run calendar:generate && vinext build",
+    "build:pages": "npm run build && node scripts/prepare-pages.mjs",
     "calendar:generate": "node scripts/generate-calendar-ics.mjs",
     "sync:google": "node scripts/sync-google-content.mjs && node scripts/sync-google-calendar.mjs",
     "start": "vite preview --outDir dist/client",

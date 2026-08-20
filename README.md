@@ -4,7 +4,7 @@ An unofficial, parent-created site that turns school communications into searcha
 
 The site combines automated Gmail and Google Calendar feeds with school information from the current parent and student handbook. It is not operated or endorsed by the school.
 
-The production URL is the `SiteUrl` output of the `stm-parent-production` CloudFormation stack.
+Live site: [https://corypahl.github.io/stm-parent/](https://corypahl.github.io/stm-parent/)
 
 ## Local development
 
@@ -36,13 +36,13 @@ npm run lint
 
 This is a Codex-first repository. Codex works directly on `main`, creates one intentional commit for each completed change, and pushes that commit to `origin/main` before finishing.
 
-Every push to `main` runs `.github/workflows/cloudfront.yml`. The workflow tests, lints, creates a root-hosted static export, syncs `dist/client` to a private S3 bucket, and invalidates the CloudFront distribution. GitHub Actions authenticates to AWS with a repository- and branch-scoped OIDC role, so no long-lived AWS access keys are stored in GitHub. Request-time server features remain intentionally unavailable.
+Every push to `main` runs `.github/workflows/pages.yml`. This deployment-only workflow reports the exact newsletter it expects, tests and lints the application, builds the static export, verifies that the expected newsletter is present before upload, and verifies the live homepage after GitHub Pages publishes it. Diagnostic artifacts are retained for 14 days.
 
-Inbox and Google Calendar synchronization runs separately through `.github/workflows/inbox.yml`, once per hour from 8 a.m. through 8 p.m. on weekdays in `America/Detroit`. It retries transient feed failures, commits generated public content only when something changes, and then dispatches the CloudFront deployment workflow. This keeps inbox lookup failures distinct from deployment failures in the Actions list.
+Inbox and Google Calendar synchronization runs separately through `.github/workflows/inbox.yml`, once per hour from 8 a.m. through 8 p.m. on weekdays in `America/Detroit`. It retries transient feed failures, reports the newest extracted newsletter, commits generated public content only when something changes, and then dispatches the Pages deployment workflow. Its generated data is also retained as a 14-day diagnostic artifact. This keeps extraction, content handoff, build, and live-publishing failures distinguishable in the Actions list.
 
 ## AWS hosting bootstrap
 
-The production infrastructure lives in `infrastructure/cloudfront.yml`. It creates the private bucket, CloudFront origin access control and distribution, security and cache policies, optional Route 53 records and ACM certificate, and the GitHub deployment role.
+The future production infrastructure lives in `infrastructure/cloudfront.yml`. It creates the private bucket, CloudFront origin access control and distribution, security and cache policies, optional Route 53 records and ACM certificate, and the GitHub deployment role. Until the AWS role is configured, GitHub Pages remains the active deployment target.
 
 Authenticate the AWS CLI with an administrator-capable profile, then run:
 
